@@ -97,7 +97,7 @@ textarea{resize:vertical;min-height:60px;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 
 /* ── BUTTONS ── */
-.btn{padding:10px 14px;border:none;border-radius:var(--r-sm);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;user-select:none;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:opacity .15s,transform .1s;}
+.btn{padding:10px 14px;border:none;border-radius:var(--r-sm);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;user-select:none;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:opacity .15s,transform .1s;opacity:1;}
 .btn:active{opacity:.82;transform:scale(.97);}
 .btn-save{background:linear-gradient(135deg,var(--teal),#0d9488);width:100%;padding:14px;font-size:15px;margin-top:6px;border-radius:var(--r-sm);}
 .btn-blue{background:var(--blue);}
@@ -834,7 +834,7 @@ function showTabNew(id){
       <input id="campOffer" placeholder="e.g. Visit us for Diwali offers!" oninput="updateCampMsg()">
     </div>
     <div class="fg">
-      <label>Audience</label>
+      <label>Audience &nbsp;<button onclick="updateCampCount()" style="background:#e0f2fe;color:#0284c7;border:none;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">&#8635; Refresh Count</button></label>
       <select id="campAudience" onchange="updateCampCount()">
         <option value="all_leads">All Active Leads</option>
         <option value="hot_leads">Hot Leads Only</option>
@@ -854,8 +854,8 @@ function showTabNew(id){
       <label>Message Preview</label>
       <textarea id="campMsg" style="min-height:120px;font-size:12px;"></textarea>
     </div>
-    <button class="btn btn-primary btn-full" style="margin-bottom:8px;" onclick="startCampaign()">&#128640; Start Campaign</button>
-    <button class="btn btn-gray btn-full" onclick="resetCampaign()">&#8634; Reset Progress</button>
+    <button onclick="startCampaign()" style="width:100%;padding:14px;margin-bottom:8px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#128640; Start Campaign</button>
+    <button onclick="resetCampaign()" style="width:100%;padding:12px;background:#6b7280;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#8634; Reset Progress</button>
   </div>
 
   <!-- BROADCAST HELPER -->
@@ -977,17 +977,18 @@ function showTabNew(id){
 
   <!-- Action Buttons -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-    <button class="btn btn-teal btn-full" onclick="exportDirVCF()">&#128222; Export VCF</button>
-    <button class="btn btn-primary btn-full" onclick="exportDirCSV()">&#128229; Export CSV</button>
+    <button onclick="exportDirVCF()" style="padding:12px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#128222; Export VCF</button>
+    <button onclick="exportDirCSV()" style="padding:12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#128229; Export CSV</button>
   </div>
 
-  <!-- Import CSV Button - directly opens file picker -->
+  <!-- Import CSV -->
   <div style="margin-bottom:8px;">
-    <button class="btn btn-full" style="background:#7c3aed;color:#fff;padding:12px;" onclick="document.getElementById('dirCSVFile').click()">
+    <button onclick="document.getElementById('dirCSVFile').click()" 
+      style="width:100%;padding:13px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">
       &#128229; Import Contacts from CSV
     </button>
-    <input type="file" id="dirCSVFile" accept=".csv,.txt" style="display:none;" onchange="importDirCSV(this)">
-    <div id="dirImportResult" style="margin-top:6px;font-size:13px;font-weight:600;text-align:center;min-height:18px;"></div>
+    <input type="file" id="dirCSVFile" accept=".csv,.txt,.CSV" style="display:none;" onchange="importDirCSV(this)">
+    <div id="dirImportResult" style="margin-top:8px;font-size:13px;font-weight:600;text-align:center;min-height:20px;padding:4px;"></div>
   </div>
 
   <!-- Bulk Delete Bar (shows when contacts selected) -->
@@ -1057,7 +1058,7 @@ function showTabNew(id){
       <input id="campOffer" placeholder="e.g. Visit us for Diwali offers!" oninput="updateCampMsg()">
     </div>
     <div class="fg">
-      <label>Audience</label>
+      <label>Audience &nbsp;<button onclick="updateCampCount()" style="background:#e0f2fe;color:#0284c7;border:none;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">&#8635; Refresh Count</button></label>
       <select id="campAudience" onchange="updateCampCount()">
         <option value="all_leads">All Active Leads</option>
         <option value="hot_leads">Hot Leads Only</option>
@@ -1077,8 +1078,8 @@ function showTabNew(id){
       <label>Message Preview</label>
       <textarea id="campMsg" style="min-height:120px;font-size:12px;"></textarea>
     </div>
-    <button class="btn btn-primary btn-full" style="margin-bottom:8px;" onclick="startCampaign()">&#128640; Start Campaign</button>
-    <button class="btn btn-gray btn-full" onclick="resetCampaign()">&#8634; Reset Progress</button>
+    <button onclick="startCampaign()" style="width:100%;padding:14px;margin-bottom:8px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#128640; Start Campaign</button>
+    <button onclick="resetCampaign()" style="width:100%;padding:12px;background:#6b7280;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#8634; Reset Progress</button>
   </div>
 
   <!-- BROADCAST HELPER -->
@@ -1386,6 +1387,10 @@ onSnapshot(DOC, snap => {
     ss("Ready", "");
   }
   render(); checkRem();
+  // Update campaign count if campaigns tab is open
+  if(document.getElementById("campaigns")?.classList.contains("active")){
+    if(window.updateCampCount) window.updateCampCount();
+  }
 }, err => {
   try { const r=localStorage.getItem("srisai_ns2"); if(r){const q=JSON.parse(r);db=q.db;billCounter=q.billCounter||100000;} } catch(e){}
   ss("Offline - local data", "err");
