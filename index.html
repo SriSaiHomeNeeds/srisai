@@ -1582,8 +1582,7 @@ function importDirCSV(input){
   const res=g("dirImportResult");if(res)res.innerHTML="Reading...";
   const reader=new FileReader();
   reader.onload=function(e){
-    const lines=e.target.result.split(/?
-/).filter(l=>l.trim());
+    const lines=e.target.result.split(/\r?\n/).filter(l=>l.trim());
     let added=0,skipped=0,existing=buildDirectory();
     lines.slice(1).forEach(line=>{
       const cols=line.split(",").map(c=>c.replace(/^"|"$/g,"").trim());
