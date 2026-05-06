@@ -214,6 +214,8 @@ function showTabNew(id){
   if(id==="campaigns"){if(window.renderFestivals)window.renderFestivals();if(window.updateCampMsg)window.updateCampMsg();if(window.renderCampHistory)window.renderCampHistory();}
   if(id==="directory"&&window.renderDir)window.renderDir();
   if(id==="stock"){if(window.renderStock)window.renderStock();if(window.updateStockDatalist)window.updateStockDatalist();}
+  if(id==="reports"&&window._showAdminPanel)setTimeout(window._showAdminPanel,50);
+  if(id==="sales"&&window.updateStockDatalist)window.updateStockDatalist();
   if(window._appRender)window._appRender();
 }
 
@@ -1950,17 +1952,12 @@ function changeStaffPin() {
 window.changeStaffPin = changeStaffPin;
 
 // ADMIN PANEL
-function _showAdminPanel() {
+window._showAdminPanel = function _showAdminPanel() {
   var panel = g("adminPanel");
   if(panel) panel.style.display = window._isAdmin ? "block" : "none";
 }
 
-// SHOWTABNEW + admin panel
-var _stn2 = showTabNew;
-function showTabNew(id) {
-  _stn2(id);
-  if(id === "reports") setTimeout(_showAdminPanel, 50);
-}
+// showTabNew handled in head script
 
 // EXPORT BTN 2
 var be2 = g("btnExport2");
@@ -2289,14 +2286,7 @@ if(btnAS) {
 }
 window.addSaleWithStock = addSaleWithStock;
 
-// Update datalist when stock tab opens
-var _origSTN3 = showTabNew;
-function showTabNew(id) {
-  _origSTN3(id);
-  if(id==="stock") { renderStock(); updateStockDatalist(); }
-  if(id==="sales") updateStockDatalist();
-  if(id==="reports") setTimeout(_showAdminPanel, 50);
-}
+// showTabNew handled in head script
 
 </script>
 </body>
