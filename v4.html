@@ -213,7 +213,21 @@ function showTabNew(id){
   if(window.renderIntel&&id==="intel")window.renderIntel();
   if(id==="campaigns"){if(window.renderFestivals)window.renderFestivals();if(window.updateCampMsg)window.updateCampMsg();if(window.renderCampHistory)window.renderCampHistory();}
   if(id==="directory"&&window.renderDir)window.renderDir();
+  if(id==="stock"){if(window.renderStock)window.renderStock();if(window.updateStockDatalist)window.updateStockDatalist();}
   if(window._appRender)window._appRender();
+}
+
+function showAddStock(){
+  var form=document.getElementById("addStockForm");
+  if(!form)return;
+  form.style.display=form.style.display==="none"?"block":"none";
+  if(form.style.display==="block"){
+    var dt=document.getElementById("stDate");
+    if(dt&&!dt.value)dt.value=new Date().toISOString().split("T")[0];
+    var al=document.getElementById("stAlert");
+    if(al&&!al.value)al.value="2";
+    form.scrollIntoView({behavior:"smooth"});
+  }
 }
 </script>
 </head>
@@ -648,10 +662,7 @@ function showTabNew(id){
       <div style="font-size:10px;opacity:.8;margin-bottom:4px;">PURCHASE VALUE</div>
       <div style="font-size:16px;font-weight:900;">&#8377;<span id="stPurchaseVal">0</span></div>
     </div>
-    <div style="background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;border-radius:var(--r);padding:12px;text-align:center;">
-      <div style="font-size:10px;opacity:.8;margin-bottom:4px;">SELLING VALUE</div>
-      <div style="font-size:16px;font-weight:900;">&#8377;<span id="stSellVal">0</span></div>
-    </div>
+
   </div>
 
   <!-- Category Tiles -->
@@ -663,42 +674,42 @@ function showTabNew(id){
       <div id="catCount_ALL" class="mc-sub">0 items</div>
     </button>
     <button class="menu-card" onclick="filterStock('SOF')" id="cat_SOF" style="padding:12px 8px;">
-      <div class="mc-icon">&#128763;</div>
+      <div class="mc-icon">🛋</div>
       <div class="mc-label" style="font-size:11px;">Sofa</div>
       <div id="catCount_SOF" class="mc-sub">0 items</div>
     </button>
     <button class="menu-card" onclick="filterStock('COT')" id="cat_COT" style="padding:12px 8px;">
-      <div class="mc-icon">&#127812;</div>
+      <div class="mc-icon">🛏</div>
       <div class="mc-label" style="font-size:11px;">Cots / Beds</div>
       <div id="catCount_COT" class="mc-sub">0 items</div>
     </button>
     <button class="menu-card" onclick="filterStock('DRS')" id="cat_DRS" style="padding:12px 8px;">
-      <div class="mc-icon">&#129706;</div>
+      <div class="mc-icon">🪞</div>
       <div class="mc-label" style="font-size:11px;">Dressing Table</div>
       <div id="catCount_DRS" class="mc-sub">0 items</div>
     </button>
     <button class="menu-card" onclick="filterStock('DIN')" id="cat_DIN" style="padding:12px 8px;">
-      <div class="mc-icon">&#127869;</div>
+      <div class="mc-icon">🍽</div>
       <div class="mc-label" style="font-size:11px;">Dining Sets</div>
       <div id="catCount_DIN" class="mc-sub">0 items</div>
     </button>
     <button class="menu-card" onclick="filterStock('TVS')" id="cat_TVS" style="padding:12px 8px;">
-      <div class="mc-icon">&#128250;</div>
+      <div class="mc-icon">📺</div>
       <div class="mc-label" style="font-size:11px;">TV Stands</div>
       <div id="catCount_TVS" class="mc-sub">0 items</div>
     </button>
     <button class="menu-card" onclick="filterStock('IRC')" id="cat_IRC" style="padding:12px 8px;">
-      <div class="mc-icon">&#128296;</div>
+      <div class="mc-icon">🔧</div>
       <div class="mc-label" style="font-size:11px;">Iron Cots</div>
       <div id="catCount_IRC" class="mc-sub">0 items</div>
     </button>
     <button class="menu-card" onclick="filterStock('CTB')" id="cat_CTB" style="padding:12px 8px;">
-      <div class="mc-icon">&#9749;</div>
+      <div class="mc-icon">☕</div>
       <div class="mc-label" style="font-size:11px;">Center Table</div>
       <div id="catCount_CTB" class="mc-sub">0 items</div>
     </button>
     <button class="menu-card" onclick="filterStock('WRD')" id="cat_WRD" style="padding:12px 8px;">
-      <div class="mc-icon">&#128682;</div>
+      <div class="mc-icon">🚪</div>
       <div class="mc-label" style="font-size:11px;">Wardrobes</div>
       <div id="catCount_WRD" class="mc-sub">0 items</div>
     </button>
@@ -726,7 +737,7 @@ function showTabNew(id){
     <div class="row2">
       <div class="fg" style="margin-bottom:8px;">
         <label>Category *</label>
-        <select id="stCat" onchange="genStockId()">
+        <select id="stCat" onchange="if(window.genStockId)window.genStockId()">
           <option value="">Select...</option>
           <option value="SOF">Sofa</option>
           <option value="COT">Cots / Beds</option>
@@ -762,15 +773,9 @@ function showTabNew(id){
         <input id="stAlert" type="number" placeholder="2" min="0">
       </div>
     </div>
-    <div class="row2">
-      <div class="fg" style="margin-bottom:8px;">
-        <label>Purchase Price (&#8377;)</label>
-        <input id="stBuyPrice" type="number" placeholder="0">
-      </div>
-      <div class="fg" style="margin-bottom:8px;">
-        <label>Selling Price (&#8377;)</label>
-        <input id="stSellPrice" type="number" placeholder="0">
-      </div>
+    <div class="fg" style="margin-bottom:8px;">
+      <label>Purchase Price (&#8377;)</label>
+      <input id="stBuyPrice" type="number" placeholder="0">
     </div>
     <div class="row2">
       <div class="fg" style="margin-bottom:8px;">
@@ -1972,8 +1977,8 @@ var CAT_NAMES = {
   "TVS":"TV Stands","IRC":"Iron Cots","CTB":"Center Table","WRD":"Wardrobes","OTH":"Other"
 };
 var CAT_EMOJI = {
-  "SOF":"&#128763;","COT":"&#127812;","DRS":"&#129706;","DIN":"&#127869;",
-  "TVS":"&#128250;","IRC":"&#128296;","CTB":"&#9749;","WRD":"&#128682;","OTH":"&#128230;"
+  "SOF":"🛋","COT":"🛏","DRS":"🪞","DIN":"🍽",
+  "TVS":"📺","IRC":"🔧","CTB":"☕","WRD":"🚪","OTH":"📦"
 };
 
 function genStockId() {
@@ -1986,19 +1991,7 @@ function genStockId() {
 }
 window.genStockId = genStockId;
 
-function showAddStock() {
-  var form = g("addStockForm");
-  if(!form) return;
-  form.style.display = form.style.display === "none" ? "block" : "none";
-  if(form.style.display === "block") {
-    // Set today as default date
-    var dt = g("stDate"); if(dt) dt.value = new Date().toISOString().split("T")[0];
-    // Set default alert level
-    var al = g("stAlert"); if(al && !al.value) al.value = "2";
-    form.scrollIntoView({behavior:"smooth"});
-  }
-}
-window.showAddStock = showAddStock;
+// showAddStock defined in head script
 
 function saveStockItem() {
   var cat  = g("stCat").value.trim();
@@ -2024,7 +2017,6 @@ function saveStockItem() {
     qty:      qty,
     alert:    parseInt(g("stAlert").value) || 2,
     buyPrice: parseFloat(g("stBuyPrice").value) || 0,
-    sellPrice:parseFloat(g("stSellPrice").value) || 0,
     supplier: g("stSupplier").value.trim(),
     date:     g("stDate").value,
     addedQty: qty,
@@ -2032,7 +2024,7 @@ function saveStockItem() {
   });
 
   // Clear form
-  ["stCat","stId","stName","stDesc","stQty","stAlert","stBuyPrice","stSellPrice","stSupplier"].forEach(function(id){
+  ["stCat","stId","stName","stDesc","stQty","stAlert","stBuyPrice","stSupplier"].forEach(function(id){
     var el=g(id); if(el) el.value="";
   });
 
@@ -2084,7 +2076,6 @@ function renderStock() {
   var totalPurchase=0, totalSell=0, inStock=0, low=0, out=0;
   all.forEach(function(s){
     totalPurchase += (s.buyPrice||0) * (s.qty||0);
-    totalSell     += (s.sellPrice||0) * (s.qty||0);
     if(s.qty<=0) out++;
     else if(s.qty<=(s.alert||2)) low++;
     else inStock++;
@@ -2095,7 +2086,6 @@ function renderStock() {
   e(["stLow",low]);
   e(["stOut",out]);
   e(["stPurchaseVal",totalPurchase.toFixed(2)]);
-  e(["stSellVal",totalSell.toFixed(2)]);
 
   // Alert badge on home
   var badge = g("stockAlertBadge");
@@ -2131,9 +2121,8 @@ function renderStock() {
         '<span class="stock-badge '+badgeCls+'">'+badgeTxt+'</span>' +
       '</div>' +
       '<div class="stock-prices">' +
-        '<span class="stock-price-buy">Buy: &#8377;'+(s.buyPrice||0).toFixed(2)+'</span>' +
-        '<span class="stock-price-sell">Sell: &#8377;'+(s.sellPrice||0).toFixed(2)+'</span>' +
-        (s.supplier ? '<span style="color:var(--muted);font-size:12px;">'+s.supplier+'</span>' : "") +
+        '<span class="stock-price-buy">&#128176; Purchase: &#8377;'+(s.buyPrice||0).toFixed(2)+'</span>' +
+        (s.supplier ? '<span style="color:var(--muted);font-size:12px;">| '+s.supplier+'</span>' : "") +
       '</div>' +
       '<div style="font-size:11px;color:var(--muted);">Added: '+s.date+(s.history?' | '+s.history.length+' transactions':'')+'</div>' +
       '<div class="stock-actions">' +
@@ -2164,14 +2153,12 @@ function editStockItem(ri) {
   var s = db.stock[ri]; if(!s) return;
   var newName  = prompt("Item Name:", s.name); if(newName===null) return;
   var newDesc  = prompt("Description:", s.desc||"");
-  var newSell  = prompt("Selling Price (Rs.):", s.sellPrice||0);
   var newBuy   = prompt("Purchase Price (Rs.):", s.buyPrice||0);
   var newAlert = prompt("Low Stock Alert Level:", s.alert||2);
   var newSupp  = prompt("Supplier:", s.supplier||"");
 
   if(newName)  s.name      = newName.trim();
   if(newDesc!==null)  s.desc = newDesc.trim();
-  if(newSell!==null)  s.sellPrice = parseFloat(newSell)||0;
   if(newBuy!==null)   s.buyPrice  = parseFloat(newBuy)||0;
   if(newAlert!==null) s.alert     = parseInt(newAlert)||2;
   if(newSupp!==null)  s.supplier  = newSupp.trim();
