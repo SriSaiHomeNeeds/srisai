@@ -123,24 +123,19 @@ textarea{resize:vertical;min-height:60px;}
 .funnel-bar{margin-bottom:10px;}.funnel-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;font-weight:600;}.funnel-track{background:#e2e8f0;border-radius:20px;height:24px;overflow:hidden;}.funnel-fill{height:100%;border-radius:20px;display:flex;align-items:center;padding-left:10px;font-size:11px;font-weight:700;color:#fff;}
 .fest-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}.fest-item:last-child{border-bottom:none;}.fest-icon{font-size:24px;width:38px;text-align:center;}.fest-info{flex:1;}.fest-name{font-weight:700;font-size:14px;}.fest-date{font-size:11px;color:var(--muted);margin-top:2px;}.fest-days{font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;}.days-soon{background:#fef2f2;color:#dc2626;}.days-near{background:#fffbeb;color:#d97706;}.days-far{background:#f0fdf4;color:#16a34a;}
 .camp-hist-item{padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}.camp-hist-item:last-child{border-bottom:none;}
+@media(max-width:480px){.tile{padding:12px 10px;}.tv{font-size:18px;}.ti{font-size:18px;}.menu-card{padding:12px 6px;}.mc-icon{font-size:22px;}.mc-label{font-size:11px;}.btn{padding:9px 12px;font-size:12px;}.row2{grid-template-columns:1fr 1fr;}.pin-btn{padding:15px;font-size:22px;}}
+html{-webkit-overflow-scrolling:touch;}
+
 .stock-card{background:#fff;border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:var(--shadow);border-left:4px solid var(--border);}
 .stock-card.in-stock{border-left-color:#16a34a;}
 .stock-card.low-stock{border-left-color:#d97706;}
 .stock-card.out-stock{border-left-color:#dc2626;}
 .stock-id{font-family:monospace;font-size:11px;font-weight:700;color:#2563eb;background:#eff6ff;padding:2px 8px;border-radius:6px;display:inline-block;margin-bottom:4px;}
 .stock-name{font-weight:800;font-size:15px;color:var(--text);margin-bottom:2px;}
-.stock-desc{font-size:12px;color:var(--muted);margin-bottom:6px;}
 .stock-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
-.sb-in{background:#f0fdf4;color:#16a34a;}
-.sb-low{background:#fffbeb;color:#d97706;}
-.sb-out{background:#fef2f2;color:#dc2626;}
-.stock-prices{display:flex;gap:12px;font-size:12px;margin:6px 0;}
-.stock-price-buy{color:var(--muted);}
-.stock-price-sell{color:#16a34a;font-weight:700;}
+.sb-in{background:#f0fdf4;color:#16a34a;}.sb-low{background:#fffbeb;color:#d97706;}.sb-out{background:#fef2f2;color:#dc2626;}
 .stock-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
-.cat-btn-on{border-color:#2563eb;background:#eff6ff;}
-@media(max-width:480px){@media(max-width:480px){.tile{padding:12px 10px;}.tv{font-size:18px;}.ti{font-size:18px;}.menu-card{padding:12px 6px;}.mc-icon{font-size:22px;}.mc-label{font-size:11px;}.btn{padding:9px 12px;font-size:12px;}.row2{grid-template-columns:1fr 1fr;}.pin-btn{padding:15px;font-size:22px;}}
-html{-webkit-overflow-scrolling:touch;}
+
 </style>
 <script>
 var _ADMIN_PIN = "1978";
@@ -213,68 +208,7 @@ function showTabNew(id){
   if(window.renderIntel&&id==="intel")window.renderIntel();
   if(id==="campaigns"){if(window.renderFestivals)window.renderFestivals();if(window.updateCampMsg)window.updateCampMsg();if(window.renderCampHistory)window.renderCampHistory();}
   if(id==="directory"&&window.renderDir)window.renderDir();
-  if(id==="stock"){if(window.renderStock)window.renderStock();if(window.updateStockDatalist)window.updateStockDatalist();}
-  if(id==="reports"&&window._showAdminPanel)setTimeout(window._showAdminPanel,50);
-  if(id==="sales"&&window.updateStockDatalist)window.updateStockDatalist();
   if(window._appRender)window._appRender();
-}
-
-function genStockId(){
-  var cat = document.getElementById("stCat") ? document.getElementById("stCat").value : "";
-  if(!cat) return;
-  var stocks = window._getDb ? window._getDb().stock||[] : [];
-  var items = stocks.filter(function(s){return s.cat===cat;});
-  var next = items.length + 1;
-  var num = next < 10 ? "00"+next : next < 100 ? "0"+next : ""+next;
-  var el = document.getElementById("stId");
-  if(el) el.value = "SSHN-" + cat + "-" + num;
-}
-
-function saveStockItem(){
-  var db = window._getDb ? window._getDb() : null;
-  if(!db){alert("App not ready yet. Please wait.");return;}
-  var cat  = document.getElementById("stCat").value.trim();
-  var name = document.getElementById("stName").value.trim();
-  var qty  = parseInt(document.getElementById("stQty").value)||0;
-  if(!cat||!name){alert("Category and Item Name are required.");return;}
-  var stId = document.getElementById("stId").value.trim();
-  if(!stId){genStockId();stId=document.getElementById("stId").value.trim();}
-  if(!stId){alert("Please select a Category first.");return;}
-  if(db.stock.find(function(s){return s.id===stId;})){
-    alert("Product ID already exists: "+stId);return;
-  }
-  db.stock.push({
-    id:stId, cat:cat, name:name,
-    desc:document.getElementById("stDesc").value.trim(),
-    qty:qty,
-    alert:parseInt(document.getElementById("stAlert").value)||2,
-    buyPrice:parseFloat(document.getElementById("stBuyPrice").value)||0,
-    supplier:document.getElementById("stSupplier").value.trim(),
-    date:document.getElementById("stDate").value,
-    addedQty:qty,
-    history:[{action:"Added "+qty+" units",qty:qty,date:new Date().toISOString().split("T")[0]}]
-  });
-  ["stCat","stId","stName","stDesc","stQty","stAlert","stBuyPrice","stSupplier"].forEach(function(id){
-    var el=document.getElementById(id);if(el)el.value="";
-  });
-  if(window._appRender)window._appRender();
-  if(window.renderStock)window.renderStock();
-  if(window.saveDB)window.saveDB();
-  document.getElementById("addStockForm").style.display="none";
-  alert("Stock saved: "+stId);
-}
-
-function showAddStock(){
-  var form=document.getElementById("addStockForm");
-  if(!form)return;
-  form.style.display=form.style.display==="none"?"block":"none";
-  if(form.style.display==="block"){
-    var dt=document.getElementById("stDate");
-    if(dt&&!dt.value)dt.value=new Date().toISOString().split("T")[0];
-    var al=document.getElementById("stAlert");
-    if(al&&!al.value)al.value="2";
-    form.scrollIntoView({behavior:"smooth"});
-  }
 }
 </script>
 </head>
@@ -338,7 +272,7 @@ function showAddStock(){
     <button class="menu-card" onclick="showTabNew('intel')"><div class="mc-icon">&#129504;</div><div class="mc-label">Smart</div><div class="mc-sub">AI Tips</div></button>
     <button class="menu-card" onclick="showTabNew('campaigns')"><div class="mc-icon">&#127881;</div><div class="mc-label">Campaign</div><div class="mc-sub">Festival</div></button>
     <button class="menu-card" onclick="showTabNew('directory')"><div class="mc-icon">&#128101;</div><div class="mc-label">Contacts</div><div class="mc-sub">Directory</div></button>
-    <button class="menu-card" onclick="showTabNew('stock')" style="position:relative;"><div class="mc-icon">&#128230;</div><div class="mc-label">Stock</div><div class="mc-sub">Inventory</div><div id="stockAlertBadge" style="display:none;position:absolute;top:6px;right:6px;background:#dc2626;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;display:none;align-items:center;justify-content:center;"></div></button>
+    <button class="menu-card" onclick="showTabNew('stock')" style="position:relative;"><div class="mc-icon">&#128230;</div><div class="mc-label">Stock</div><div class="mc-sub">Inventory</div><div id="stockAlertBadge" style="display:none;position:absolute;top:6px;right:6px;background:#dc2626;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;align-items:center;justify-content:center;"></div></button>
     <button class="menu-card" onclick="showTabNew('reports')"><div class="mc-icon">&#128202;</div><div class="mc-label">Reports</div><div class="mc-sub">More</div></button>
   </div>
   <div class="card"><div class="card-title">&#128276; Today Follow-ups</div><div id="todayFU"></div></div>
@@ -370,16 +304,15 @@ function showAddStock(){
         </select>
       </div>
     </div>
-    <div class="fg">
-      <label>Item / Product</label>
+    <div class="fg"><label>Item / Product</label>
       <div style="display:flex;gap:8px;">
-        <input id="sItem" placeholder="Type item name..." style="flex:1;">
+        <input id="sItem" placeholder="Type or pick from stock..." style="flex:1;">
         <button type="button" onclick="openStockPicker('sale')" style="padding:10px 12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;touch-action:manipulation;">&#128230; Pick</button>
       </div>
-      <div id="sStockInfo" style="font-size:12px;font-weight:600;margin-top:6px;min-height:18px;padding:6px 10px;border-radius:8px;display:none;"></div>
+      <div id="sStockInfo" style="display:none;font-size:12px;font-weight:600;margin-top:6px;padding:6px 10px;border-radius:8px;"></div>
     </div>
     <input type="hidden" id="sStockId">
-    <div class="fg"><label>Total Sale Amount (&#8377;) *</label><input id="sAmt" type="number" placeholder="0" style="font-size:16px;"></div>
+    <div class="fg"><label>Total Sale Amount (&#8377;) *</label><input id="sAmt" type="number" placeholder="0"></div>
     <div class="due-box">
       <div class="due-title">Advance and Due Details</div>
       <div class="row2">
@@ -467,13 +400,12 @@ function showAddStock(){
       <div class="fg"><label>Phone</label><input id="oPhone" type="tel" placeholder="Mobile number"></div>
       <div class="fg"><label>Delivery Date *</label><input id="oDate" type="date"></div>
     </div>
-    <div class="fg">
-      <label>Item / Product</label>
+    <div class="fg"><label>Item / Product</label>
       <div style="display:flex;gap:8px;">
-        <input id="oItem" placeholder="Type item name..." style="flex:1;">
+        <input id="oItem" placeholder="Type or pick from stock..." style="flex:1;">
         <button type="button" onclick="openStockPicker('order')" style="padding:10px 12px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;touch-action:manipulation;">&#128230; Pick</button>
       </div>
-      <div id="oStockInfo" style="font-size:12px;font-weight:600;margin-top:6px;min-height:18px;padding:6px 10px;border-radius:8px;display:none;"></div>
+      <div id="oStockInfo" style="display:none;font-size:12px;font-weight:600;margin-top:6px;padding:6px 10px;border-radius:8px;"></div>
     </div>
     <input type="hidden" id="oStockId">
     <div class="fg"><label>Delivery Address</label><input id="oAddr" placeholder="Full delivery address"></div>
@@ -696,197 +628,117 @@ function showAddStock(){
 </div>
 
 
-<!-- STOCK -->
+<!-- STOCK PICKER MODAL -->
+<div id="stockPickerOv" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:800;overflow-y:auto;padding:16px;">
+  <div style="background:#fff;border-radius:14px;width:100%;max-width:500px;margin:0 auto;">
+    <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:15px;font-weight:800;">&#128230; Pick from Stock</div>
+      <button onclick="closeStockPicker()" style="background:none;border:none;font-size:22px;cursor:pointer;">&#10005;</button>
+    </div>
+    <div style="padding:10px 16px;border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap;">
+      <button class="pill on" onclick="pickerFilter('ALL',this)" style="margin-right:6px;">All</button>
+      <button class="pill" onclick="pickerFilter('SOF',this)" style="margin-right:6px;">Sofa</button>
+      <button class="pill" onclick="pickerFilter('COT',this)" style="margin-right:6px;">Cots</button>
+      <button class="pill" onclick="pickerFilter('DRS',this)" style="margin-right:6px;">Dressing</button>
+      <button class="pill" onclick="pickerFilter('DIN',this)" style="margin-right:6px;">Dining</button>
+      <button class="pill" onclick="pickerFilter('TVS',this)" style="margin-right:6px;">TV Stand</button>
+      <button class="pill" onclick="pickerFilter('IRC',this)" style="margin-right:6px;">Iron Cot</button>
+      <button class="pill" onclick="pickerFilter('CTB',this)" style="margin-right:6px;">Center Table</button>
+      <button class="pill" onclick="pickerFilter('WRD',this)" style="margin-right:6px;">Wardrobe</button>
+      <button class="pill" onclick="pickerFilter('OTH',this)" style="margin-right:6px;">Other</button>
+    </div>
+    <div style="padding:10px 16px;border-bottom:1px solid var(--border);">
+      <input id="pickerSearch" placeholder="Search stock..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;" oninput="renderPickerList()">
+    </div>
+    <div id="pickerList" style="max-height:50vh;overflow-y:auto;padding:10px 16px;"></div>
+    <div style="padding:12px 16px;border-top:1px solid var(--border);">
+      <button onclick="closeStockPicker()" style="width:100%;padding:12px;background:#f1f5f9;color:#374151;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Enter Manually (no stock deduction)</button>
+    </div>
+  </div>
+</div>
+
+<!-- STOCK SECTION -->
 <div id="stock" class="section">
   <div class="sec-nav">
     <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
     <div class="sec-nav-title">&#128230; Stock / Inventory</div>
     <div style="width:44px;"></div>
   </div>
-
-  <!-- Stock Stats -->
   <div class="sum-row" style="background:#f0fdf4;border-color:#bbf7d0;color:#16a34a;">
-    Items: <b id="stTotal">0</b> &nbsp;|&nbsp;
-    In Stock: <b id="stInStock">0</b> &nbsp;|&nbsp;
-    Low: <b id="stLow" style="color:#d97706;">0</b> &nbsp;|&nbsp;
-    Out: <b id="stOut" style="color:#dc2626;">0</b>
+    Items: <b id="stTotal">0</b> &nbsp;|&nbsp; In Stock: <b id="stInStock">0</b> &nbsp;|&nbsp; Low: <b id="stLow" style="color:#d97706;">0</b> &nbsp;|&nbsp; Out: <b id="stOut" style="color:#dc2626;">0</b>
   </div>
-
-  <!-- Stock Value -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-    <div style="background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;border-radius:var(--r);padding:12px;text-align:center;">
-      <div style="font-size:10px;opacity:.8;margin-bottom:4px;">PURCHASE VALUE</div>
-      <div style="font-size:16px;font-weight:900;">&#8377;<span id="stPurchaseVal">0</span></div>
-    </div>
-
+  <div style="background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;border-radius:var(--r);padding:12px 16px;margin-bottom:12px;text-align:center;">
+    <div style="font-size:10px;opacity:.8;margin-bottom:2px;">TOTAL PURCHASE VALUE</div>
+    <div style="font-size:20px;font-weight:900;">&#8377;<span id="stPurchaseVal">0</span></div>
   </div>
-
-  <!-- Category Tiles -->
-  <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">&#128230; Categories</div>
-  <div class="menu-grid" style="margin-bottom:14px;">
-    <button class="menu-card on" onclick="filterStock('ALL')" id="cat_ALL" style="padding:12px 8px;border-color:#2563eb;background:#eff6ff;">
-      <div class="mc-icon">&#128230;</div>
-      <div class="mc-label" style="font-size:11px;">All Items</div>
-      <div id="catCount_ALL" class="mc-sub">0 items</div>
+  <div class="menu-grid" style="margin-bottom:12px;">
+    <button class="menu-card" onclick="filterStock('ALL')" id="cat_ALL" style="padding:10px 6px;border-color:#2563eb;background:#eff6ff;">
+      <div class="mc-icon">&#128230;</div><div class="mc-label" style="font-size:10px;">All</div><div id="catCount_ALL" class="mc-sub">0</div>
     </button>
-    <button class="menu-card" onclick="filterStock('SOF')" id="cat_SOF" style="padding:12px 8px;">
-      <div class="mc-icon">🛋</div>
-      <div class="mc-label" style="font-size:11px;">Sofa</div>
-      <div id="catCount_SOF" class="mc-sub">0 items</div>
+    <button class="menu-card" onclick="filterStock('SOF')" id="cat_SOF" style="padding:10px 6px;">
+      <div class="mc-icon">&#128763;</div><div class="mc-label" style="font-size:10px;">Sofa</div><div id="catCount_SOF" class="mc-sub">0</div>
     </button>
-    <button class="menu-card" onclick="filterStock('COT')" id="cat_COT" style="padding:12px 8px;">
-      <div class="mc-icon">🛏</div>
-      <div class="mc-label" style="font-size:11px;">Cots / Beds</div>
-      <div id="catCount_COT" class="mc-sub">0 items</div>
+    <button class="menu-card" onclick="filterStock('COT')" id="cat_COT" style="padding:10px 6px;">
+      <div class="mc-icon">&#127812;</div><div class="mc-label" style="font-size:10px;">Cots</div><div id="catCount_COT" class="mc-sub">0</div>
     </button>
-    <button class="menu-card" onclick="filterStock('DRS')" id="cat_DRS" style="padding:12px 8px;">
-      <div class="mc-icon">🪞</div>
-      <div class="mc-label" style="font-size:11px;">Dressing Table</div>
-      <div id="catCount_DRS" class="mc-sub">0 items</div>
+    <button class="menu-card" onclick="filterStock('DRS')" id="cat_DRS" style="padding:10px 6px;">
+      <div class="mc-icon">&#129706;</div><div class="mc-label" style="font-size:10px;">Dressing</div><div id="catCount_DRS" class="mc-sub">0</div>
     </button>
-    <button class="menu-card" onclick="filterStock('DIN')" id="cat_DIN" style="padding:12px 8px;">
-      <div class="mc-icon">🍽</div>
-      <div class="mc-label" style="font-size:11px;">Dining Sets</div>
-      <div id="catCount_DIN" class="mc-sub">0 items</div>
+    <button class="menu-card" onclick="filterStock('DIN')" id="cat_DIN" style="padding:10px 6px;">
+      <div class="mc-icon">&#127869;</div><div class="mc-label" style="font-size:10px;">Dining</div><div id="catCount_DIN" class="mc-sub">0</div>
     </button>
-    <button class="menu-card" onclick="filterStock('TVS')" id="cat_TVS" style="padding:12px 8px;">
-      <div class="mc-icon">📺</div>
-      <div class="mc-label" style="font-size:11px;">TV Stands</div>
-      <div id="catCount_TVS" class="mc-sub">0 items</div>
+    <button class="menu-card" onclick="filterStock('TVS')" id="cat_TVS" style="padding:10px 6px;">
+      <div class="mc-icon">&#128250;</div><div class="mc-label" style="font-size:10px;">TV Stand</div><div id="catCount_TVS" class="mc-sub">0</div>
     </button>
-    <button class="menu-card" onclick="filterStock('IRC')" id="cat_IRC" style="padding:12px 8px;">
-      <div class="mc-icon">🔧</div>
-      <div class="mc-label" style="font-size:11px;">Iron Cots</div>
-      <div id="catCount_IRC" class="mc-sub">0 items</div>
+    <button class="menu-card" onclick="filterStock('IRC')" id="cat_IRC" style="padding:10px 6px;">
+      <div class="mc-icon">&#128296;</div><div class="mc-label" style="font-size:10px;">Iron Cot</div><div id="catCount_IRC" class="mc-sub">0</div>
     </button>
-    <button class="menu-card" onclick="filterStock('CTB')" id="cat_CTB" style="padding:12px 8px;">
-      <div class="mc-icon">☕</div>
-      <div class="mc-label" style="font-size:11px;">Center Table</div>
-      <div id="catCount_CTB" class="mc-sub">0 items</div>
+    <button class="menu-card" onclick="filterStock('CTB')" id="cat_CTB" style="padding:10px 6px;">
+      <div class="mc-icon">&#9749;</div><div class="mc-label" style="font-size:10px;">Ctr Table</div><div id="catCount_CTB" class="mc-sub">0</div>
     </button>
-    <button class="menu-card" onclick="filterStock('WRD')" id="cat_WRD" style="padding:12px 8px;">
-      <div class="mc-icon">🚪</div>
-      <div class="mc-label" style="font-size:11px;">Wardrobes</div>
-      <div id="catCount_WRD" class="mc-sub">0 items</div>
+    <button class="menu-card" onclick="filterStock('WRD')" id="cat_WRD" style="padding:10px 6px;">
+      <div class="mc-icon">&#128682;</div><div class="mc-label" style="font-size:10px;">Wardrobe</div><div id="catCount_WRD" class="mc-sub">0</div>
     </button>
-    <button class="menu-card" onclick="filterStock('OTH')" id="cat_OTH" style="padding:12px 8px;">
-      <div class="mc-icon">&#128230;</div>
-      <div class="mc-label" style="font-size:11px;">Other</div>
-      <div id="catCount_OTH" class="mc-sub">0 items</div>
+    <button class="menu-card" onclick="filterStock('OTH')" id="cat_OTH" style="padding:10px 6px;">
+      <div class="mc-icon">&#128230;</div><div class="mc-label" style="font-size:10px;">Other</div><div id="catCount_OTH" class="mc-sub">0</div>
     </button>
   </div>
-
-  <!-- Search -->
-  <div class="sw" style="margin-bottom:8px;">
-    <span class="si">&#128269;</span>
-    <input id="searchStock" placeholder="Search by name or ID..." oninput="renderStock()">
-  </div>
-
-  <!-- Add Stock Button -->
-  <button onclick="showAddStock()" style="width:100%;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px;touch-action:manipulation;">
-    &#43; Add New Stock Item
-  </button>
-
-  <!-- Add Stock Form -->
+  <div class="sw"><span class="si">&#128269;</span><input id="searchStock" placeholder="Search by name or ID..." oninput="renderStock()"></div>
+  <button onclick="showAddStock()" style="width:100%;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px;touch-action:manipulation;">&#43; Add New Stock Item</button>
   <div id="addStockForm" class="card" style="display:none;border:2px solid #16a34a;">
     <div class="card-title" style="color:#16a34a;">&#43; New Stock Item</div>
     <div class="row2">
-      <div class="fg" style="margin-bottom:8px;">
-        <label>Category *</label>
+      <div class="fg" style="margin-bottom:8px;"><label>Category *</label>
         <select id="stCat" onchange="genStockId()">
           <option value="">Select...</option>
-          <option value="SOF">Sofa</option>
-          <option value="COT">Cots / Beds</option>
-          <option value="DRS">Dressing Table</option>
-          <option value="DIN">Dining Sets</option>
-          <option value="TVS">TV Stands</option>
-          <option value="IRC">Iron Cots</option>
-          <option value="CTB">Center Table</option>
-          <option value="WRD">Wardrobes</option>
+          <option value="SOF">Sofa</option><option value="COT">Cots / Beds</option>
+          <option value="DRS">Dressing Table</option><option value="DIN">Dining Sets</option>
+          <option value="TVS">TV Stands</option><option value="IRC">Iron Cots</option>
+          <option value="CTB">Center Table</option><option value="WRD">Wardrobes</option>
           <option value="OTH">Other</option>
         </select>
       </div>
-      <div class="fg" style="margin-bottom:8px;">
-        <label>Product ID (auto)</label>
+      <div class="fg" style="margin-bottom:8px;"><label>Product ID (auto)</label>
         <input id="stId" placeholder="SSHN-SOF-001" readonly style="background:#f0fdf4;font-family:monospace;font-size:13px;font-weight:700;color:#16a34a;">
       </div>
     </div>
-    <div class="fg" style="margin-bottom:8px;">
-      <label>Item Name *</label>
-      <input id="stName" placeholder="e.g. 3-Seater Fabric Sofa">
-    </div>
-    <div class="fg" style="margin-bottom:8px;">
-      <label>Description</label>
-      <input id="stDesc" placeholder="e.g. Brown colour, 6ft wide">
+    <div class="fg" style="margin-bottom:8px;"><label>Item Name *</label><input id="stName" placeholder="e.g. 3-Seater Fabric Sofa"></div>
+    <div class="fg" style="margin-bottom:8px;"><label>Description</label><input id="stDesc" placeholder="e.g. Brown colour, 6ft wide"></div>
+    <div class="row2">
+      <div class="fg" style="margin-bottom:8px;"><label>Qty in Stock *</label><input id="stQty" type="number" placeholder="0" min="0"></div>
+      <div class="fg" style="margin-bottom:8px;"><label>Low Stock Alert</label><input id="stAlert" type="number" placeholder="2" min="0"></div>
     </div>
     <div class="row2">
-      <div class="fg" style="margin-bottom:8px;">
-        <label>Qty in Stock *</label>
-        <input id="stQty" type="number" placeholder="0" min="0">
-      </div>
-      <div class="fg" style="margin-bottom:8px;">
-        <label>Low Stock Alert</label>
-        <input id="stAlert" type="number" placeholder="2" min="0">
-      </div>
+      <div class="fg" style="margin-bottom:8px;"><label>Purchase Price (&#8377;)</label><input id="stBuyPrice" type="number" placeholder="0"></div>
+      <div class="fg" style="margin-bottom:8px;"><label>Supplier</label><input id="stSupplier" placeholder="e.g. Nilkamal"></div>
     </div>
-    <div class="fg" style="margin-bottom:8px;">
-      <label>Purchase Price (&#8377;)</label>
-      <input id="stBuyPrice" type="number" placeholder="0">
-    </div>
-    <div class="row2">
-      <div class="fg" style="margin-bottom:8px;">
-        <label>Supplier Name</label>
-        <input id="stSupplier" placeholder="e.g. Nilkamal">
-      </div>
-      <div class="fg" style="margin-bottom:8px;">
-        <label>Purchase Date</label>
-        <input id="stDate" type="date">
-      </div>
-    </div>
+    <div class="fg" style="margin-bottom:8px;"><label>Purchase Date</label><input id="stDate" type="date"></div>
     <div style="display:flex;gap:8px;">
       <button onclick="saveStockItem()" style="flex:2;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Save Stock</button>
       <button onclick="g('addStockForm').style.display='none'" style="flex:1;padding:13px;background:#e5e7eb;color:#374151;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
     </div>
   </div>
-
-  <!-- Stock List -->
   <div id="stockList"></div>
-</div>
-
-
-<!-- STOCK PICKER MODAL -->
-<div id="stockPickerOv" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:800;overflow-y:auto;padding:16px;">
-  <div style="background:#fff;border-radius:14px;width:100%;max-width:500px;margin:0 auto;box-shadow:0 20px 40px rgba(0,0,0,.2);">
-    <div style="padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-      <div style="font-size:15px;font-weight:800;">&#128230; Pick from Stock</div>
-      <button onclick="closeStockPicker()" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);line-height:1;">&#10005;</button>
-    </div>
-    <!-- Category filter pills -->
-    <div style="padding:10px 16px;border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap;">
-      <button class="pill on" onclick="pickerFilter('ALL',this)" style="margin-right:6px;">All</button>
-      <button class="pill" onclick="pickerFilter('SOF',this)" style="margin-right:6px;">&#128763; Sofa</button>
-      <button class="pill" onclick="pickerFilter('COT',this)" style="margin-right:6px;">&#128716; Cots</button>
-      <button class="pill" onclick="pickerFilter('DRS',this)" style="margin-right:6px;">&#129706; Dressing</button>
-      <button class="pill" onclick="pickerFilter('DIN',this)" style="margin-right:6px;">&#127869; Dining</button>
-      <button class="pill" onclick="pickerFilter('TVS',this)" style="margin-right:6px;">&#128250; TV Stand</button>
-      <button class="pill" onclick="pickerFilter('IRC',this)" style="margin-right:6px;">&#128296; Iron Cot</button>
-      <button class="pill" onclick="pickerFilter('CTB',this)" style="margin-right:6px;">&#9749; Center Table</button>
-      <button class="pill" onclick="pickerFilter('WRD',this)" style="margin-right:6px;">&#128682; Wardrobe</button>
-      <button class="pill" onclick="pickerFilter('OTH',this)" style="margin-right:6px;">&#128230; Other</button>
-    </div>
-    <!-- Search -->
-    <div style="padding:10px 16px;border-bottom:1px solid var(--border);">
-      <input id="pickerSearch" placeholder="&#128269; Search stock..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;" oninput="renderPickerList()">
-    </div>
-    <!-- Stock list -->
-    <div id="pickerList" style="max-height:50vh;overflow-y:auto;padding:10px 16px;"></div>
-    <!-- No stock option -->
-    <div style="padding:12px 16px;border-top:1px solid var(--border);">
-      <button onclick="closeStockPicker()" style="width:100%;padding:12px;background:#f1f5f9;color:#374151;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">
-        &#128221; Enter Manually (not from stock)
-      </button>
-    </div>
-  </div>
 </div>
 
 <!-- EDIT OVERLAY -->
@@ -946,7 +798,6 @@ const DOC   = doc(fdb, "srisai", "data_no_stock");
 let db = { sales:[], leads:[], orders:[], payments:[], expenses:[], stock:[] };
 const TODAY = new Date().toISOString().split("T")[0];
 let billCounter = 100000;
-let stockCounters = {};
 let curBillIdx  = -1;
 let saleFilter  = "all";
 let leadFilter  = "all";
@@ -1070,10 +921,10 @@ function addSale(){
   const adv=parseFloat(g("sAdv").value)||0,d=Math.max(0,amt-adv),dd=g("sDueDate").value,del=g("sDelivery").value==="yes";
   if(d>0&&!dd){if(!confirm("Balance due Rs."+d.toFixed(2)+" but no Due Date. Continue?"))return;}
   const bill=g("sBill").value.trim()||genBill();
-  const stockId = window._pendingStockId || (g("sStockId")?g("sStockId").value.trim().toUpperCase():"");
   const sale={bill,date:g("sDate").value||TODAY,n:name,phone:g("sPhone").value.trim(),mode:g("sMode").value,
     item:g("sItem").value.trim(),amt,adv,dueDate:dd,note:g("sNote").value.trim(),delivery:del,
-    delDate:del?g("sDelDate").value:"",delAddr:del?g("sDelAddr").value.trim():"",stockId:stockId};
+    delDate:del?g("sDelDate").value:"",delAddr:del?g("sDelAddr").value.trim():"",
+    stockId:window._pendingStockId||""};
   db.sales.push(sale);
   if(del&&sale.delDate) db.orders.push({n:name,phone:sale.phone,item:sale.item,d:sale.delDate,addr:sale.delAddr,linkBill:bill,note:"Auto from Sale #"+bill,done:false});
   ["sBill","sName","sPhone","sItem","sAmt","sAdv","sDue","sDueDate","sNote","sDelDate","sDelAddr"].forEach(id=>g(id).value="");
@@ -1093,13 +944,10 @@ function addLead(){
 function addOrder(){
   const name=g("oName").value.trim(),date=g("oDate").value;
   if(!name||!date){alert("Name and Delivery Date required.");return;}
-  const stockId = window._pendingStockId || "";
   db.orders.push({n:name,phone:g("oPhone").value.trim(),item:g("oItem").value.trim(),d:date,
-    addr:g("oAddr").value.trim(),linkBill:g("oLinkBill").value.trim(),note:g("oNote").value.trim(),
-    done:false, stockId:stockId});
+    addr:g("oAddr").value.trim(),linkBill:g("oLinkBill").value.trim(),note:g("oNote").value.trim(),done:false,stockId:window._pendingStockId||""});
   ["oName","oPhone","oItem","oDate","oAddr","oLinkBill","oNote"].forEach(id=>g(id).value="");
-  saveDB();render();checkRem();
-  alert("Order saved!"+(stockId?" Stock reserved: "+stockId:""));
+  saveDB();render();checkRem();alert("Order saved!");
 }
 function addPayment(){
   const name=g("pName").value.trim(),amt=parseFloat(g("pAmt").value)||0,date=g("pDate").value;
@@ -1115,9 +963,9 @@ function addExpense(){
   ["eDesc","eAmt","eNote","eExpDate"].forEach(id=>g(id).value="");
   saveDB();render();alert("Expense saved!");
 }
-// btnAS handled by addSaleWithStock (set after stock init)
+g("btnAS").addEventListener("click",addSale);
 g("btnAL").addEventListener("click",addLead);
-// btnAO handled by addOrderWithStock
+g("btnAO").addEventListener("click",addOrder);
 g("btnAP").addEventListener("click",addPayment);
 g("btnAE").addEventListener("click",addExpense);
 
@@ -1505,6 +1353,7 @@ function renderSync() {
 }
 window._appRender = renderSync;
 window.saveDB = saveDB;
+window._getDb = function(){ return db; };
 
 // === WA SALE MSG ===
 function waSaleMsg(i) {
@@ -2047,540 +1896,321 @@ function changeStaffPin() {
 window.changeStaffPin = changeStaffPin;
 
 // ADMIN PANEL
-window._showAdminPanel = function _showAdminPanel() {
+function _showAdminPanel() {
   var panel = g("adminPanel");
   if(panel) panel.style.display = window._isAdmin ? "block" : "none";
 }
 
-// showTabNew handled in head script
+// SHOWTABNEW + admin panel
+var _stn2 = showTabNew;
+function showTabNew(id) {
+  _stn2(id);
+  if(id === "reports") setTimeout(_showAdminPanel, 50);
+}
 
 // EXPORT BTN 2
 var be2 = g("btnExport2");
 if(be2) be2.addEventListener("click", exportData);
 
-
 // ================================================================
-// STOCK MANAGEMENT
+// STOCK MANAGEMENT JS - all in one clean block
 // ================================================================
 var _stockFilter = "ALL";
+var _pickerTarget = "sale";
+var _pickerCatFilter = "ALL";
+var CAT_NAMES = {"SOF":"Sofa","COT":"Cots/Beds","DRS":"Dressing Table","DIN":"Dining","TVS":"TV Stand","IRC":"Iron Cot","CTB":"Center Table","WRD":"Wardrobe","OTH":"Other"};
 
-var CAT_NAMES = {
-  "SOF":"Sofa","COT":"Cots / Beds","DRS":"Dressing Table","DIN":"Dining Sets",
-  "TVS":"TV Stands","IRC":"Iron Cots","CTB":"Center Table","WRD":"Wardrobes","OTH":"Other"
-};
-var CAT_EMOJI = {
-  "SOF":"🛋","COT":"🛏","DRS":"🪞","DIN":"🍽",
-  "TVS":"📺","IRC":"🔧","CTB":"☕","WRD":"🚪","OTH":"📦"
-};
-
-// genStockId defined in head script
-
-// showAddStock defined in head script
-
-// saveStockItem defined in head script
-window.saveStockItem = saveStockItem;
+// RENDER STOCK LIST
+function renderStock() {
+  var all = db.stock || [];
+  var q = (g("searchStock")?g("searchStock").value||"":"").toLowerCase().trim();
+  var cats = ["SOF","COT","DRS","DIN","TVS","IRC","CTB","WRD","OTH"];
+  var allCnt = all.length;
+  var el = g("catCount_ALL"); if(el) el.textContent = allCnt;
+  cats.forEach(function(c){
+    var cnt = all.filter(function(s){return s.cat===c;}).length;
+    var el2 = g("catCount_"+c); if(el2) el2.textContent = cnt;
+  });
+  var filtered = _stockFilter==="ALL" ? all : all.filter(function(s){return s.cat===_stockFilter;});
+  if(q) filtered = filtered.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0||s.id.toLowerCase().indexOf(q)>=0;});
+  var inStock=0,low=0,out=0,totalPurchase=0;
+  all.forEach(function(s){
+    totalPurchase+=(s.buyPrice||0)*(s.qty||0);
+    if(s.qty<=0)out++;else if(s.qty<=(s.alert||2))low++;else inStock++;
+  });
+  if(g("stTotal"))g("stTotal").textContent=all.length;
+  if(g("stInStock"))g("stInStock").textContent=inStock;
+  if(g("stLow"))g("stLow").textContent=low;
+  if(g("stOut"))g("stOut").textContent=out;
+  if(g("stPurchaseVal"))g("stPurchaseVal").textContent=totalPurchase.toFixed(0);
+  var badge=g("stockAlertBadge");
+  if(badge){var alerts=low+out;badge.style.display=alerts>0?"flex":"none";badge.textContent=alerts;}
+  var sl=g("stockList");if(!sl)return;
+  if(filtered.length===0){sl.innerHTML='<div class="empty"><div class="ei">&#128230;</div><p>No stock items. Tap "+ Add New Stock Item"</p></div>';return;}
+  sl.innerHTML=filtered.map(function(s){
+    var ri=db.stock.indexOf(s);
+    var reserved=(db.orders||[]).filter(function(o){return !o.done&&o.stockId===s.id;}).length;
+    var avail=s.qty-reserved;
+    var statusCls=s.qty<=0?"out-stock":s.qty<=(s.alert||2)?"low-stock":"in-stock";
+    var badgeCls=s.qty<=0?"sb-out":s.qty<=(s.alert||2)?"sb-low":"sb-in";
+    var badgeTxt=s.qty<=0?"Out of Stock":s.qty<=(s.alert||2)?"Low ("+s.qty+" left)":"In Stock ("+s.qty+")";
+    return '<div class="stock-card '+statusCls+'">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;">'+
+        '<div><div class="stock-id">'+esc(s.id)+'</div>'+
+        '<div class="stock-name">'+esc(s.name)+'</div>'+
+        (s.desc?'<div style="font-size:12px;color:var(--muted);">'+esc(s.desc)+'</div>':'')+
+        '</div><span class="stock-badge '+badgeCls+'">'+badgeTxt+'</span>'+
+      '</div>'+
+      '<div style="font-size:12px;color:var(--muted);margin:6px 0;">'+
+        '&#8377; Buy: '+(s.buyPrice||0).toFixed(0)+
+        (s.supplier?' | '+esc(s.supplier):'')+
+        (reserved>0?' | <b style="color:#d97706;">'+reserved+' reserved</b>':'')+
+      '</div>'+
+      '<div class="stock-actions">'+
+        '<button class="btn btn-sm" style="background:#16a34a;color:#fff;" onclick="addMoreStock('+ri+')">&#43; Qty</button>'+
+        '<button class="btn btn-sm btn-blue" onclick="editStockItem('+ri+')">&#9998; Edit</button>'+
+        '<button class="btn btn-sm btn-del" onclick="deleteStockItem('+ri+')">&#128465;</button>'+
+      '</div></div>';
+  }).join("");
+}
+window.renderStock = renderStock;
 
 function filterStock(cat) {
-  _stockFilter = cat;
-  // Update category button styles
-  document.querySelectorAll("[id^='cat_']").forEach(function(b) {
-    b.style.borderColor = "";
-    b.style.background = "";
-  });
-  var activeBtn = g("cat_" + cat);
-  if(activeBtn) { activeBtn.style.borderColor = "#2563eb"; activeBtn.style.background = "#eff6ff"; }
+  _stockFilter=cat;
+  document.querySelectorAll("[id^='cat_']").forEach(function(b){b.style.borderColor="";b.style.background="";});
+  var ab=g("cat_"+cat);if(ab){ab.style.borderColor="#2563eb";ab.style.background="#eff6ff";}
   renderStock();
 }
 window.filterStock = filterStock;
 
-function renderStock() {
-  var all = db.stock || [];
-  var q = (g("searchStock") ? g("searchStock").value || "" : "").trim().toLowerCase();
-
-  // Update category counts
-  var catCounts = {"ALL": all.length};
-  Object.keys(CAT_NAMES).forEach(function(c) {
-    catCounts[c] = all.filter(function(s){return s.cat===c;}).length;
-    var el = g("catCount_"+c); if(el) el.textContent = catCounts[c] + " items";
-  });
-  var allEl = g("catCount_ALL"); if(allEl) allEl.textContent = all.length + " items";
-
-  // Filter by category
-  var filtered = _stockFilter === "ALL" ? all : all.filter(function(s){return s.cat===_stockFilter;});
-
-  // Search filter
-  if(q) filtered = filtered.filter(function(s){
-    return s.name.toLowerCase().indexOf(q)>=0 ||
-           s.id.toLowerCase().indexOf(q)>=0 ||
-           (s.desc&&s.desc.toLowerCase().indexOf(q)>=0) ||
-           (s.supplier&&s.supplier.toLowerCase().indexOf(q)>=0);
-  });
-
-  // Update stats
-  var totalPurchase=0, totalSell=0, inStock=0, low=0, out=0;
-  all.forEach(function(s){
-    totalPurchase += (s.buyPrice||0) * (s.qty||0);
-    if(s.qty<=0) out++;
-    else if(s.qty<=(s.alert||2)) low++;
-    else inStock++;
-  });
-  var e = function(v){var el=g(v[0]);if(el)el.textContent=v[1];};
-  e(["stTotal",all.length]);
-  e(["stInStock",inStock]);
-  e(["stLow",low]);
-  e(["stOut",out]);
-  e(["stPurchaseVal",totalPurchase.toFixed(2)]);
-
-  // Alert badge on home
-  var badge = g("stockAlertBadge");
-  if(badge) {
-    var alerts = low + out;
-    if(alerts > 0) { badge.style.display="flex"; badge.textContent=alerts; }
-    else badge.style.display="none";
-  }
-
-  // Render list
-  var sl = g("stockList"); if(!sl) return;
-  if(filtered.length===0) {
-    sl.innerHTML = q ?
-      '<div class="empty">No items matching "'+q+'"</div>' :
-      '<div class="empty"><div class="ei">&#128230;</div><p>No stock items yet.<br>Tap "+ Add New Stock Item" to start.</p></div>';
-    return;
-  }
-
-  var html = "";
-  filtered.forEach(function(s, i) {
-    var ri = db.stock.indexOf(s);
-    var statusCls = s.qty<=0 ? "out-stock" : s.qty<=(s.alert||2) ? "low-stock" : "in-stock";
-    var badgeCls  = s.qty<=0 ? "sb-out" : s.qty<=(s.alert||2) ? "sb-low" : "sb-in";
-    var badgeTxt  = s.qty<=0 ? "Out of Stock" : s.qty<=(s.alert||2) ? "Low Stock ("+s.qty+" left)" : "In Stock ("+s.qty+")";
-
-    html += '<div class="stock-card '+statusCls+'">' +
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
-        '<div>' +
-          '<div class="stock-id">'+s.id+'</div>' +
-          '<div class="stock-name">'+(CAT_EMOJI[s.cat]||"&#128230;")+" "+s.name+'</div>' +
-          (s.desc ? '<div class="stock-desc">'+s.desc+'</div>' : "") +
-        '</div>' +
-        '<span class="stock-badge '+badgeCls+'">'+badgeTxt+'</span>' +
-      '</div>' +
-      '<div class="stock-prices">' +
-        '<span class="stock-price-buy">&#128176; Purchase: &#8377;'+(s.buyPrice||0).toFixed(2)+'</span>' +
-        (s.supplier ? '<span style="color:var(--muted);font-size:12px;">| '+s.supplier+'</span>' : "") +
-      '</div>' +
-      '<div style="font-size:11px;color:var(--muted);">Added: '+s.date+(s.history?' | '+s.history.length+' transactions':'')+'</div>' +
-      '<div class="stock-actions">' +
-        '<button class="btn btn-sm" style="background:#16a34a;color:#fff;" onclick="addMoreStock('+ri+')">&#43; Add Qty</button>' +
-        '<button class="btn btn-sm btn-blue" onclick="editStockItem('+ri+')">&#9998; Edit</button>' +
-        '<button class="btn btn-sm" style="background:#6b7280;color:#fff;" onclick="viewStockHistory('+ri+')">&#128203; History</button>' +
-        '<button class="btn btn-sm btn-del" onclick="deleteStockItem('+ri+')">&#128465;</button>' +
-      '</div>' +
-    '</div>';
-  });
-  sl.innerHTML = html;
-}
-window.renderStock = renderStock;
-
 function addMoreStock(ri) {
-  var s = db.stock[ri]; if(!s) return;
-  var n = prompt("Current qty: "+s.qty+"\nAdd how many units?","");
-  if(!n || isNaN(Number(n)) || Number(n)<=0) return;
-  var add = parseInt(n);
-  s.qty += add;
-  if(!s.history) s.history=[];
-  s.history.push({action:"Added "+add+" units", qty:s.qty, date:new Date().toISOString().split("T")[0]});
-  saveDB(); renderStock(); alert("Updated! New qty: "+s.qty);
+  var s=db.stock[ri];if(!s)return;
+  var n=prompt("Current qty: "+s.qty+"\nAdd how many units?","1");
+  if(!n||isNaN(Number(n))||Number(n)<=0)return;
+  var add=parseInt(n);
+  s.qty+=add;
+  if(!s.history)s.history=[];
+  s.history.push({action:"Added "+add+" units",qty:s.qty,date:new Date().toISOString().split("T")[0]});
+  saveDB();renderStock();
 }
 window.addMoreStock = addMoreStock;
 
 function editStockItem(ri) {
-  var s = db.stock[ri]; if(!s) return;
-  var newName  = prompt("Item Name:", s.name); if(newName===null) return;
-  var newDesc  = prompt("Description:", s.desc||"");
-  var newBuy   = prompt("Purchase Price (Rs.):", s.buyPrice||0);
-  var newAlert = prompt("Low Stock Alert Level:", s.alert||2);
-  var newSupp  = prompt("Supplier:", s.supplier||"");
-
-  if(newName)  s.name      = newName.trim();
-  if(newDesc!==null)  s.desc = newDesc.trim();
-  if(newBuy!==null)   s.buyPrice  = parseFloat(newBuy)||0;
-  if(newAlert!==null) s.alert     = parseInt(newAlert)||2;
-  if(newSupp!==null)  s.supplier  = newSupp.trim();
-
-  saveDB(); renderStock(); updateStockDatalist();
-  alert("Stock item updated!");
+  var s=db.stock[ri];if(!s)return;
+  var newName=prompt("Item Name:",s.name);if(newName===null)return;
+  var newDesc=prompt("Description:",s.desc||"");
+  var newBuy=prompt("Purchase Price (Rs.):",s.buyPrice||0);
+  var newAlert=prompt("Low Stock Alert Level:",s.alert||2);
+  var newSupp=prompt("Supplier:",s.supplier||"");
+  if(newName)s.name=newName.trim();
+  if(newDesc!==null)s.desc=newDesc.trim();
+  if(newBuy!==null)s.buyPrice=parseFloat(newBuy)||0;
+  if(newAlert!==null)s.alert=parseInt(newAlert)||2;
+  if(newSupp!==null)s.supplier=newSupp.trim();
+  saveDB();renderStock();
 }
 window.editStockItem = editStockItem;
 
-function viewStockHistory(ri) {
-  var s = db.stock[ri]; if(!s) return;
-  if(!s.history || s.history.length===0) { alert("No history for "+s.name); return; }
-  var msg = s.name + " (" + s.id + ") - Transaction History:\n\n";
-  s.history.forEach(function(h,i) {
-    msg += (i+1)+". "+h.date+" | "+h.action+" | Qty: "+h.qty+"\n";
-  });
-  alert(msg);
-}
-window.viewStockHistory = viewStockHistory;
-
 function deleteStockItem(ri) {
-  if(!window._isAdmin) { alert("Only Admin can delete stock items."); return; }
-  var s = db.stock[ri]; if(!s) return;
-  if(!confirm("Delete "+s.name+" ("+s.id+")?\nThis cannot be undone.")) return;
-  db.stock.splice(ri, 1);
-  saveDB(); renderStock(); updateStockDatalist();
+  if(!window._isAdmin){alert("Admin only.");return;}
+  var s=db.stock[ri];if(!s)return;
+  if(!confirm("Delete "+s.name+"?"))return;
+  db.stock.splice(ri,1);
+  saveDB();renderStock();
 }
 window.deleteStockItem = deleteStockItem;
 
-// ================================================================
-// STOCK + SALES INTEGRATION
-// ================================================================
-
-
-
-// showTabNew handled in head script
-
-
-// ================================================================
-// STOCK PICKER - Modal system
-// ================================================================
-var _pickerTarget = "sale"; // "sale" or "order"
-var _pickerCatFilter = "ALL";
-
+// STOCK PICKER MODAL
 function openStockPicker(target) {
-  _pickerTarget = target || "sale";
-  _pickerCatFilter = "ALL";
-  // Reset pills
+  _pickerTarget=target||"sale";
+  _pickerCatFilter="ALL";
   document.querySelectorAll("#stockPickerOv .pill").forEach(function(p){p.classList.remove("on");});
-  var firstPill = document.querySelector("#stockPickerOv .pill");
-  if(firstPill) firstPill.classList.add("on");
-  var ps = g("pickerSearch"); if(ps) ps.value = "";
-  g("stockPickerOv").style.display = "block";
+  var fp=document.querySelector("#stockPickerOv .pill");if(fp)fp.classList.add("on");
+  var ps=g("pickerSearch");if(ps)ps.value="";
+  g("stockPickerOv").style.display="block";
   renderPickerList();
-  var ps2 = g("pickerSearch"); if(ps2) ps2.focus();
 }
 window.openStockPicker = openStockPicker;
 
-function closeStockPicker() {
-  g("stockPickerOv").style.display = "none";
-}
+function closeStockPicker(){g("stockPickerOv").style.display="none";}
 window.closeStockPicker = closeStockPicker;
 
-function pickerFilter(cat, btn) {
-  _pickerCatFilter = cat;
+function pickerFilter(cat,btn){
+  _pickerCatFilter=cat;
   document.querySelectorAll("#stockPickerOv .pill").forEach(function(p){p.classList.remove("on");});
-  if(btn) btn.classList.add("on");
+  if(btn)btn.classList.add("on");
   renderPickerList();
 }
 window.pickerFilter = pickerFilter;
 
-function renderPickerList() {
-  var pl = g("pickerList"); if(!pl) return;
-  var q = (g("pickerSearch") ? g("pickerSearch").value : "").toLowerCase().trim();
-  var all = (db.stock||[]);
-
-  // Filter by category
-  var filtered = _pickerCatFilter === "ALL" ? all : all.filter(function(s){return s.cat===_pickerCatFilter;});
-
-  // Filter by search
-  if(q) filtered = filtered.filter(function(s){
-    return s.name.toLowerCase().indexOf(q)>=0 || s.id.toLowerCase().indexOf(q)>=0 || (s.desc&&s.desc.toLowerCase().indexOf(q)>=0);
-  });
-
-  if(filtered.length === 0) {
-    // Show add to stock option
-    pl.innerHTML = '<div class="empty" style="padding:20px;">' +
-      '<div class="ei" style="font-size:32px;">&#128230;</div>' +
-      '<p style="margin-bottom:12px;">No stock items found' + (q?' for "'+q+'"':'') + '</p>' +
-      '<button onclick="closeStockPicker();showTabNew('stock')" style="padding:10px 16px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#43; Add to Stock First</button>' +
-      '</div>';
+function renderPickerList(){
+  var pl=g("pickerList");if(!pl)return;
+  var q=(g("pickerSearch")?g("pickerSearch").value||"":"").toLowerCase().trim();
+  var all=db.stock||[];
+  var filtered=_pickerCatFilter==="ALL"?all:all.filter(function(s){return s.cat===_pickerCatFilter;});
+  if(q)filtered=filtered.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0||s.id.toLowerCase().indexOf(q)>=0;});
+  if(filtered.length===0){
+    pl.innerHTML='<div class="empty" style="padding:20px;"><div class="ei" style="font-size:32px;">&#128230;</div><p>No stock found</p>'+
+      '<button onclick="closeStockPicker();showTabNew(\'stock\')" style="padding:10px 16px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;">&#43; Add Stock First</button></div>';
     return;
   }
-
-  var CAT_EMJ = {"SOF":"&#128763;","COT":"&#127812;","DRS":"&#129706;","DIN":"&#127869;","TVS":"&#128250;","IRC":"&#128296;","CTB":"&#9749;","WRD":"&#128682;","OTH":"&#128230;"};
-
-  pl.innerHTML = filtered.map(function(s) {
-    // Calculate available qty (total - reserved by pending orders)
-    var reserved = (db.orders||[]).filter(function(o){return !o.done && o.stockId===s.id;}).length;
-    var available = s.qty - reserved;
-    var statusColor = available<=0?"#dc2626":available<=(s.alert||2)?"#d97706":"#16a34a";
-    var statusTxt = available<=0?"Out of Stock":available<=(s.alert||2)?"Low ("+available+" left)":"In Stock ("+available+")";
-    var disabled = available<=0?"opacity:.5;":"";
-
-    return '<div onclick="'+(available>0?"pickStockItem('"+s.id+"')":"alert('This item is out of stock!')")+'" style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--border);cursor:pointer;'+disabled+'touch-action:manipulation;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">' +
-      '<div style="font-size:28px;width:36px;text-align:center;">'+(CAT_EMJ[s.cat]||"&#128230;")+'</div>' +
-      '<div style="flex:1;">' +
-        '<div style="font-weight:700;font-size:14px;">'+s.name+'</div>' +
-        '<div style="font-size:11px;color:#2563eb;font-family:monospace;font-weight:600;">'+s.id+'</div>' +
-        (s.desc?'<div style="font-size:11px;color:var(--muted);">'+s.desc+'</div>':'') +
-      '</div>' +
-      '<div style="text-align:right;">' +
-        '<div style="font-size:12px;font-weight:700;color:'+statusColor+';">'+statusTxt+'</div>' +
-        (reserved>0?'<div style="font-size:10px;color:#d97706;">'+reserved+' reserved</div>':'') +
-        '<div style="font-size:11px;color:var(--muted);">Buy: &#8377;'+(s.buyPrice||0).toFixed(0)+'</div>' +
-      '</div>' +
-    '</div>';
-  }).join("") +
-  // Always show manual entry option at bottom
-  '<div style="padding:12px;text-align:center;">' +
-    '<div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Item not in list?</div>' +
-    '<button onclick="closeStockPicker()" style="padding:8px 16px;background:#f1f5f9;color:#374151;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Enter Manually</button>' +
-  '</div>';
+  pl.innerHTML=filtered.map(function(s){
+    var reserved=(db.orders||[]).filter(function(o){return !o.done&&o.stockId===s.id;}).length;
+    var avail=s.qty-reserved;
+    var statusColor=avail<=0?"#dc2626":avail<=(s.alert||2)?"#d97706":"#16a34a";
+    var statusTxt=avail<=0?"Out of Stock":avail<=(s.alert||2)?"Low ("+avail+")":"In Stock ("+avail+")";
+    var disable=avail<=0?"opacity:.5;pointer-events:none;":"";
+    return '<div onclick="pickStockItem(\''+s.id+'\')" style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--border);cursor:pointer;'+disable+'">'+
+      '<div style="flex:1;"><div style="font-weight:700;font-size:14px;">'+esc(s.name)+'</div>'+
+      '<div style="font-size:11px;color:#2563eb;font-family:monospace;">'+s.id+'</div>'+
+      (s.desc?'<div style="font-size:11px;color:var(--muted);">'+esc(s.desc)+'</div>':'')+
+      '</div><div style="text-align:right;"><div style="font-size:12px;font-weight:700;color:'+statusColor+';">'+statusTxt+'</div>'+
+      '<div style="font-size:11px;color:var(--muted);">&#8377;'+( s.buyPrice||0).toFixed(0)+'</div></div></div>';
+  }).join("");
 }
 window.renderPickerList = renderPickerList;
 
-function pickStockItem(stockId) {
-  var s = (db.stock||[]).find(function(x){return x.id===stockId;});
-  if(!s) return;
+function pickStockItem(stockId){
+  var s=(db.stock||[]).find(function(x){return x.id===stockId;});
+  if(!s)return;
   closeStockPicker();
-
-  if(_pickerTarget === "sale") {
-    // Fill sales form
-    var si = g("sItem"); if(si) si.value = s.name;
-    var sid = g("sStockId"); if(sid) sid.value = s.id;
-    // Pre-fill amount with buy price (user can change)
-    var amt = g("sAmt");
-    if(amt) { amt.value = s.buyPrice || ""; amt.focus(); amt.select(); }
-    // Show info banner
-    var info = g("sStockInfo");
-    if(info) {
-      info.style.display = "block";
-      info.style.background = s.qty<=(s.alert||2) ? "#fffbeb" : "#f0fdf4";
-      info.style.color = s.qty<=(s.alert||2) ? "#d97706" : "#16a34a";
-      info.innerHTML = "&#10003; <b>"+s.name+"</b> &nbsp;|&nbsp; ID: <b>"+s.id+"</b> &nbsp;|&nbsp; In Stock: <b>"+s.qty+"</b> &nbsp;|&nbsp; Ref Price: &#8377;"+s.buyPrice.toFixed(0)+" <span style=\"font-weight:400;font-size:10px;\">(editable)</span>";
-    }
-  } else if(_pickerTarget === "order") {
-    // Fill orders form
-    var oi = g("oItem"); if(oi) oi.value = s.name;
-    var osid = g("oStockId"); if(osid) osid.value = s.id;
-    // Show info banner
-    var oinfo = g("oStockInfo");
-    if(oinfo) {
-      var reserved = (db.orders||[]).filter(function(o){return !o.done&&o.stockId===s.id;}).length;
-      var avail = s.qty - reserved;
-      oinfo.style.display = "block";
-      oinfo.style.background = "#f5f3ff";
-      oinfo.style.color = "#7c3aed";
-      oinfo.innerHTML = "&#128230; <b>"+s.name+"</b> &nbsp;|&nbsp; ID: <b>"+s.id+"</b> &nbsp;|&nbsp; Available: <b>"+avail+"</b>"+(reserved>0?" ("+reserved+" reserved)":"");
-    }
+  if(_pickerTarget==="sale"){
+    var si=g("sItem");if(si)si.value=s.name;
+    var sid=g("sStockId");if(sid)sid.value=s.id;
+    var amt=g("sAmt");if(amt){amt.value=s.buyPrice||"";amt.focus();amt.select();}
+    var info=g("sStockInfo");
+    if(info){info.style.display="block";info.style.background=s.qty<=(s.alert||2)?"#fffbeb":"#f0fdf4";info.style.color=s.qty<=(s.alert||2)?"#d97706":"#16a34a";
+    info.innerHTML="&#10003; <b>"+esc(s.name)+"</b> | "+s.id+" | Stock: <b>"+s.qty+"</b> | Ref: &#8377;"+(s.buyPrice||0).toFixed(0)+" <span style='font-weight:400;font-size:10px;'>(edit amount above)</span>";}
+  } else {
+    var oi=g("oItem");if(oi)oi.value=s.name;
+    var osid=g("oStockId");if(osid)osid.value=s.id;
+    var oinfo=g("oStockInfo");
+    if(oinfo){var reserved=(db.orders||[]).filter(function(o){return !o.done&&o.stockId===s.id;}).length;
+    oinfo.style.display="block";oinfo.style.background="#f5f3ff";oinfo.style.color="#7c3aed";
+    oinfo.innerHTML="&#128230; <b>"+esc(s.name)+"</b> | "+s.id+" | Available: <b>"+(s.qty-reserved)+"</b>"+(reserved>0?" ("+reserved+" reserved)":"");}
   }
 }
 window.pickStockItem = pickStockItem;
 
-// Update datalist (kept for compatibility)
-function updateStockDatalist() {
-  // Re-render picker if open
-  if(g("stockPickerOv") && g("stockPickerOv").style.display !== "none") renderPickerList();
-}
-window.updateStockDatalist = updateStockDatalist;
-
-// ================================================================
-// SALE WITH STOCK DEDUCTION
-// ================================================================
-function addSaleWithStock() {
-  var nm   = g("sName") ? g("sName").value.trim() : "";
-  var item = g("sItem") ? g("sItem").value.trim() : "";
-  var amt  = parseFloat(g("sAmt") ? g("sAmt").value : 0);
-  var sid  = g("sStockId") ? g("sStockId").value.trim().toUpperCase() : "";
-
-  if(!nm)  { alert("Customer Name is required."); return; }
-  if(!item){ alert("Item / Product is required."); return; }
-  if(!amt || amt<=0){ alert("Enter a valid amount."); return; }
-
-  // Deduct stock if ID provided
-  var stockDeducted = false;
-  if(sid) {
-    var stock = (db.stock||[]).find(function(s){return s.id===sid;});
-    if(stock) {
-      if(stock.qty <= 0) {
-        if(!confirm("WARNING: "+stock.name+" is OUT OF STOCK!
-Save sale anyway?")) return;
-      } else {
-        stock.qty -= 1;
-        if(!stock.history) stock.history = [];
-        stock.history.push({
-          action: "Sold 1 unit (Sale to " + nm + ")",
-          qty: stock.qty,
-          date: new Date().toISOString().split("T")[0]
-        });
-        stockDeducted = true;
-      }
-    } else {
-      if(!confirm("Stock ID '"+sid+"' not found in inventory.
-Save sale without stock deduction?")) return;
-    }
-  }
-
-  // Save sale
-  var saleObj = {
-    n:    nm,
-    phone:g("sPhone") ? g("sPhone").value.trim() : "",
-    item: item,
-    amt:  amt,
-    adv:  parseFloat(g("sAdv") ? g("sAdv").value : 0) || 0,
-    pay:  g("sPay") ? g("sPay").value : "Cash",
-    del:  g("sDel") ? g("sDel").value : "",
-    note: g("sNote") ? g("sNote").value.trim() : "",
-    date: g("sDate") ? g("sDate").value : new Date().toISOString().split("T")[0],
-    dueDate: g("sDue") ? g("sDue").value : "",
-    bill: nextBill(),
-    status: "open",
-    stockId: sid
-  };
-  db.sales.push(saleObj);
-
-  // Clear form
-  ["sName","sPhone","sItem","sAmt","sAdv","sNote","sDue"].forEach(function(id){
-    var el=g(id); if(el) el.value="";
-  });
-  var si=g("sStockId"); if(si) si.value="";
-  var info=g("sStockInfo"); if(info){info.style.display="none";info.innerHTML="";}
-
-  saveDB(); render(); checkRem();
-
-  var msg = "Sale saved! Bill: " + saleObj.bill;
-  if(stockDeducted) msg += "
-Stock deducted: " + sid;
-  alert(msg);
-}
-
-// SALE WITH STOCK - wrap original addSale
-window.addSaleWithStock = function() {
-  var sid = g("sStockId") ? g("sStockId").value.trim().toUpperCase() : "";
-  if(sid) {
-    var stock = (db.stock||[]).find(function(s){return s.id===sid;});
-    if(stock) {
-      if(stock.qty <= 0) {
-        if(!confirm("WARNING: "+stock.name+" is OUT OF STOCK!\nSave sale anyway?")) return;
-      } else {
-        stock.qty -= 1;
-        if(!stock.history) stock.history=[];
-        stock.history.push({action:"Sold 1 unit",qty:stock.qty,date:new Date().toISOString().split("T")[0]});
-      }
-    }
-  }
-  window._pendingStockId = sid; addSale(); // call original - handles all validation and saving
-  window._pendingStockId = "";
-  // Clear stock fields after sale
-  var si=g("sStockId"); if(si) si.value="";
-  var info=g("sStockInfo"); if(info){info.style.display="none";}
-  if(window.renderStock) window.renderStock();
-};
-var btnAS2 = g("btnAS");
-if(btnAS2) btnAS2.onclick = window.addSaleWithStock;
-// ================================================================
-// ORDER WITH STOCK RESERVATION
-// ================================================================
-// Patch addOrder to save stockId and reserve stock
-// ORDER WITH STOCK - wrap original addOrder
-window.addOrderWithStock = function() {
-  var osid = g("oStockId") ? g("oStockId").value.trim().toUpperCase() : "";
-  if(osid) {
-    var stock = (db.stock||[]).find(function(s){return s.id===osid;});
-    if(stock && stock.qty <= 0) {
-      if(!confirm("WARNING: "+stock.name+" is OUT OF STOCK!\nSave order anyway?")) return;
-    }
-    // Note: stock deduction happens when order is DELIVERED (markDone)
-  }
-  // Store stockId temporarily for addOrder to pick up
-  window._pendingStockId = osid;
-  addOrder(); // call original
-  window._pendingStockId = "";
-  var info=g("oStockInfo"); if(info){info.style.display="none";}
-  var osidEl=g("oStockId"); if(osidEl) osidEl.value="";
-};
-var btnAO2 = g("btnAO");
-if(btnAO2) btnAO2.onclick = window.addOrderWithStock;
-
-// When order is MARKED DONE - deduct stock
-var _origMarkDone = window.markDone;
-function markDoneWithStock(type, ri) {
-  if(type === "orders") {
-    var order = db.orders[ri];
-    if(order && order.stockId && !order.done) {
-      var stock = (db.stock||[]).find(function(s){return s.id===order.stockId;});
+// SALE STOCK DEDUCTION - wrap original addSale
+var _origBtnAS = g("btnAS");
+if(_origBtnAS) {
+  _origBtnAS.onclick = function() {
+    var sid = g("sStockId")?g("sStockId").value.trim().toUpperCase():"";
+    if(sid) {
+      var stock=(db.stock||[]).find(function(s){return s.id===sid;});
       if(stock) {
-        if(stock.qty > 0) {
-          stock.qty -= 1;
-          if(!stock.history) stock.history=[];
-          stock.history.push({
-            action:"Delivered 1 unit (Order to "+order.n+")",
-            qty:stock.qty,
-            date:new Date().toISOString().split("T")[0]
-          });
-        }
+        if(stock.qty<=0){if(!confirm("OUT OF STOCK: "+stock.name+"\nSave sale anyway?"))return;}
+        else{stock.qty-=1;if(!stock.history)stock.history=[];stock.history.push({action:"Sold 1 (Sale)",qty:stock.qty,date:new Date().toISOString().split("T")[0]});}
       }
     }
-  }
-  if(_origMarkDone) _origMarkDone(type, ri);
-  else {
-    // Fallback
-    var arr = db[type]; if(!arr) return;
-    var item = arr[ri]; if(!item) return;
-    item.done = true;
-    saveDB(); render();
-  }
+    window._pendingStockId=sid;
+    addSale();
+    window._pendingStockId="";
+    var si=g("sStockId");if(si)si.value="";
+    var info=g("sStockInfo");if(info)info.style.display="none";
+    renderStock();
+  };
 }
-window.markDone = markDoneWithStock;
 
-// ================================================================
-// STOCK REPORT in Reports section
-// ================================================================
-function renderStockReport() {
-  var rout = g("reportOut"); if(!rout) return;
-  var stock = db.stock || [];
-  if(stock.length===0) {
-    rout.innerHTML += '<div class="card" style="margin-top:12px;"><div class="card-title">&#128230; Stock Summary</div><div class="empty">No stock items yet</div></div>';
-    return;
-  }
-
-  var totalPurchaseVal = stock.reduce(function(s,x){return s+(x.buyPrice||0)*(x.qty||0);},0);
-  var totalQty = stock.reduce(function(s,x){return s+(x.qty||0);},0);
-  var outOfStock = stock.filter(function(x){return x.qty<=0;});
-  var lowStock = stock.filter(function(x){return x.qty>0&&x.qty<=(x.alert||2);});
-
-  var html = '<div class="card" style="margin-top:12px;">' +
-    '<div class="card-title">&#128230; Stock Summary</div>' +
-    '<div class="sum-row" style="background:#f0fdf4;border-color:#bbf7d0;color:#16a34a;">Total Items: <b>'+stock.length+'</b> | Total Qty: <b>'+totalQty+'</b> | Purchase Value: <b>&#8377;'+totalPurchaseVal.toFixed(2)+'</b></div>';
-
-  if(outOfStock.length>0) {
-    html += '<div style="background:#fef2f2;border-radius:8px;padding:10px;margin-bottom:8px;">' +
-      '<div style="font-weight:700;color:#dc2626;margin-bottom:6px;">&#128308; Out of Stock ('+outOfStock.length+' items)</div>' +
-      outOfStock.map(function(s){return '<div style="font-size:13px;padding:4px 0;">'+s.id+' - '+s.name+'</div>';}).join("") +
-    '</div>';
-  }
-  if(lowStock.length>0) {
-    html += '<div style="background:#fffbeb;border-radius:8px;padding:10px;margin-bottom:8px;">' +
-      '<div style="font-weight:700;color:#d97706;margin-bottom:6px;">&#128993; Low Stock ('+lowStock.length+' items)</div>' +
-      lowStock.map(function(s){return '<div style="font-size:13px;padding:4px 0;">'+s.id+' - '+s.name+' ('+s.qty+' left)</div>';}).join("") +
-    '</div>';
-  }
-
-  html += '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;">' +
-    '<tr style="background:#f8fafc;"><th style="padding:8px 6px;text-align:left;">Product ID</th><th style="padding:8px 6px;text-align:left;">Name</th><th style="padding:8px 6px;text-align:center;">Qty</th><th style="padding:8px 6px;text-align:right;">Buy Price</th><th style="padding:8px 6px;text-align:right;">Value</th></tr>';
-
-  stock.forEach(function(s) {
-    var statusColor = s.qty<=0?"#dc2626":s.qty<=(s.alert||2)?"#d97706":"#16a34a";
-    html += '<tr style="border-bottom:1px solid var(--border);">' +
-      '<td style="padding:7px 6px;font-family:monospace;font-size:11px;color:#2563eb;">'+s.id+'</td>' +
-      '<td style="padding:7px 6px;">'+s.name+'</td>' +
-      '<td style="padding:7px 6px;text-align:center;font-weight:700;color:'+statusColor+';">'+s.qty+'</td>' +
-      '<td style="padding:7px 6px;text-align:right;">&#8377;'+(s.buyPrice||0).toFixed(0)+'</td>' +
-      '<td style="padding:7px 6px;text-align:right;">&#8377;'+((s.buyPrice||0)*(s.qty||0)).toFixed(0)+'</td>' +
-    '</tr>';
-  });
-  html += '</table></div>';
-  rout.innerHTML = html + rout.innerHTML;
+// ORDER STOCK RESERVE - wrap original addOrder
+var _origBtnAO = g("btnAO");
+if(_origBtnAO) {
+  _origBtnAO.onclick = function() {
+    var osid=g("oStockId")?g("oStockId").value.trim().toUpperCase():"";
+    if(osid){var stock=(db.stock||[]).find(function(s){return s.id===osid;});
+      if(stock&&stock.qty<=0){if(!confirm("OUT OF STOCK: "+stock.name+"\nSave order anyway?"))return;}
+    }
+    window._pendingStockId=osid;
+    addOrder();
+    window._pendingStockId="";
+    var info=g("oStockInfo");if(info)info.style.display="none";
+    var osidEl=g("oStockId");if(osidEl)osidEl.value="";
+  };
 }
-window.renderStockReport = renderStockReport;
 
-// Auto-render stock report when reports tab opens
-var _origShowAdminPanel2 = window._showAdminPanel;
-window._showAdminPanel = function() {
-  if(_origShowAdminPanel2) _origShowAdminPanel2();
-  renderStockReport();
+// MARK DONE - deduct stock when order delivered
+var _origMarkDone2 = window.markDone;
+window.markDone = function(type,ri){
+  if(type==="orders"){
+    var order=db.orders[ri];
+    if(order&&order.stockId&&!order.done){
+      var stock=(db.stock||[]).find(function(s){return s.id===order.stockId;});
+      if(stock&&stock.qty>0){stock.qty-=1;if(!stock.history)stock.history=[];stock.history.push({action:"Delivered (Order to "+order.n+")",qty:stock.qty,date:new Date().toISOString().split("T")[0]});}
+    }
+  }
+  if(_origMarkDone2)_origMarkDone2(type,ri);
+  renderStock();
 };
+
+// Patch addSale to include stockId
+var _origAddSale = addSale;
+addSale = function(){
+  // stockId stored via _pendingStockId
+  _origAddSale();
+};
+
+// Patch addOrder to include stockId
+var _origAddOrder2 = addOrder;
+addOrder = function(){
+  var _origPush = db.orders.push.bind(db.orders);
+  db.orders.push = function(obj){
+    obj.stockId = window._pendingStockId||"";
+    db.orders.push = _origPush;
+    return _origPush(obj);
+  };
+  _origAddOrder2();
+  db.orders.push = _origPush;
+};
+
+// Show stock section
+window.showTabNew = (function(orig){
+  return function(id){
+    orig(id);
+    if(id==="stock")renderStock();
+  };
+})(showTabNew);
 
 </script>
 </body>
 </html>
+function genStockId(){
+  var cat=document.getElementById("stCat")?document.getElementById("stCat").value:"";
+  if(!cat)return;
+  var db=window._getDb?window._getDb():{stock:[]};
+  var items=(db.stock||[]).filter(function(s){return s.cat===cat;});
+  var next=items.length+1;
+  var num=next<10?"00"+next:next<100?"0"+next:""+next;
+  var el=document.getElementById("stId");if(el)el.value="SSHN-"+cat+"-"+num;
+}
+
+function saveStockItem(){
+  var db=window._getDb?window._getDb():null;
+  if(!db){alert("Please wait for app to load.");return;}
+  var cat=document.getElementById("stCat").value.trim();
+  var name=document.getElementById("stName").value.trim();
+  var qty=parseInt(document.getElementById("stQty").value)||0;
+  if(!cat||!name){alert("Category and Item Name are required.");return;}
+  var stId=document.getElementById("stId").value.trim();
+  if(!stId){genStockId();stId=document.getElementById("stId").value.trim();}
+  if(!stId){alert("Please select a Category.");return;}
+  if((db.stock||[]).find(function(s){return s.id===stId;})){alert("ID already exists: "+stId);return;}
+  if(!db.stock)db.stock=[];
+  db.stock.push({
+    id:stId,cat:cat,name:name,
+    desc:document.getElementById("stDesc").value.trim(),
+    qty:qty,alert:parseInt(document.getElementById("stAlert").value)||2,
+    buyPrice:parseFloat(document.getElementById("stBuyPrice").value)||0,
+    supplier:document.getElementById("stSupplier").value.trim(),
+    date:document.getElementById("stDate").value,
+    history:[{action:"Added "+qty+" units",qty:qty,date:new Date().toISOString().split("T")[0]}]
+  });
+  ["stCat","stId","stName","stDesc","stQty","stAlert","stBuyPrice","stSupplier","stDate"].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.value="";
+  });
+  if(window.saveDB)window.saveDB();
+  if(window.renderStock)window.renderStock();
+  document.getElementById("addStockForm").style.display="none";
+  alert("Stock saved: "+stId);
+}
+
