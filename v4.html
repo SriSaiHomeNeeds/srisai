@@ -2088,9 +2088,9 @@ function pickStockItem(stockId){
 window.pickStockItem = pickStockItem;
 
 // SALE STOCK DEDUCTION - wrap original addSale
-var _origBtnAS = g("btnAS");
-if(_origBtnAS) {
-  _origBtnAS.onclick = function() {
+var _bAS = g("btnAS");
+if(_bAS) {
+  _bAS.onclick = function() {
     var sid = g("sStockId")?g("sStockId").value.trim().toUpperCase():"";
     if(sid) {
       var stock=(db.stock||[]).find(function(s){return s.id===sid;});
@@ -2109,9 +2109,9 @@ if(_origBtnAS) {
 }
 
 // ORDER STOCK RESERVE - wrap original addOrder
-var _origBtnAO = g("btnAO");
-if(_origBtnAO) {
-  _origBtnAO.onclick = function() {
+var _bAO = g("btnAO");
+if(_bAO) {
+  _bAO.onclick = function() {
     var osid=g("oStockId")?g("oStockId").value.trim().toUpperCase():"";
     if(osid){var stock=(db.stock||[]).find(function(s){return s.id===osid;});
       if(stock&&stock.qty<=0){if(!confirm("OUT OF STOCK: "+stock.name+"\nSave order anyway?"))return;}
@@ -2138,25 +2138,7 @@ window.markDone = function(type,ri){
   renderStock();
 };
 
-// Patch addSale to include stockId
-var _origAddSale = addSale;
-addSale = function(){
-  // stockId stored via _pendingStockId
-  _origAddSale();
-};
-
-// Patch addOrder to include stockId
-var _origAddOrder2 = addOrder;
-addOrder = function(){
-  var _origPush = db.orders.push.bind(db.orders);
-  db.orders.push = function(obj){
-    obj.stockId = window._pendingStockId||"";
-    db.orders.push = _origPush;
-    return _origPush(obj);
-  };
-  _origAddOrder2();
-  db.orders.push = _origPush;
-};
+// addSale/addOrder patched via stockId in sale/order objects
 
 // showTabNew in head handles stock tab
 
