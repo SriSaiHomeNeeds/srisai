@@ -1901,12 +1901,7 @@ function _showAdminPanel() {
   if(panel) panel.style.display = window._isAdmin ? "block" : "none";
 }
 
-// SHOWTABNEW + admin panel
-var _stn2 = showTabNew;
-function showTabNew(id) {
-  _stn2(id);
-  if(id === "reports") setTimeout(_showAdminPanel, 50);
-}
+// showTabNew in head handles reports
 
 // EXPORT BTN 2
 var be2 = g("btnExport2");
@@ -2163,54 +2158,8 @@ addOrder = function(){
   db.orders.push = _origPush;
 };
 
-// Show stock section
-window.showTabNew = (function(orig){
-  return function(id){
-    orig(id);
-    if(id==="stock")renderStock();
-  };
-})(showTabNew);
+// showTabNew in head handles stock tab
 
 </script>
 </body>
 </html>
-function genStockId(){
-  var cat=document.getElementById("stCat")?document.getElementById("stCat").value:"";
-  if(!cat)return;
-  var db=window._getDb?window._getDb():{stock:[]};
-  var items=(db.stock||[]).filter(function(s){return s.cat===cat;});
-  var next=items.length+1;
-  var num=next<10?"00"+next:next<100?"0"+next:""+next;
-  var el=document.getElementById("stId");if(el)el.value="SSHN-"+cat+"-"+num;
-}
-
-function saveStockItem(){
-  var db=window._getDb?window._getDb():null;
-  if(!db){alert("Please wait for app to load.");return;}
-  var cat=document.getElementById("stCat").value.trim();
-  var name=document.getElementById("stName").value.trim();
-  var qty=parseInt(document.getElementById("stQty").value)||0;
-  if(!cat||!name){alert("Category and Item Name are required.");return;}
-  var stId=document.getElementById("stId").value.trim();
-  if(!stId){genStockId();stId=document.getElementById("stId").value.trim();}
-  if(!stId){alert("Please select a Category.");return;}
-  if((db.stock||[]).find(function(s){return s.id===stId;})){alert("ID already exists: "+stId);return;}
-  if(!db.stock)db.stock=[];
-  db.stock.push({
-    id:stId,cat:cat,name:name,
-    desc:document.getElementById("stDesc").value.trim(),
-    qty:qty,alert:parseInt(document.getElementById("stAlert").value)||2,
-    buyPrice:parseFloat(document.getElementById("stBuyPrice").value)||0,
-    supplier:document.getElementById("stSupplier").value.trim(),
-    date:document.getElementById("stDate").value,
-    history:[{action:"Added "+qty+" units",qty:qty,date:new Date().toISOString().split("T")[0]}]
-  });
-  ["stCat","stId","stName","stDesc","stQty","stAlert","stBuyPrice","stSupplier","stDate"].forEach(function(id){
-    var el=document.getElementById(id);if(el)el.value="";
-  });
-  if(window.saveDB)window.saveDB();
-  if(window.renderStock)window.renderStock();
-  document.getElementById("addStockForm").style.display="none";
-  alert("Stock saved: "+stId);
-}
-
