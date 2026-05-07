@@ -334,7 +334,7 @@ function showAddStock(){
       <div id="sStockInfo" style="font-size:12px;font-weight:600;margin-top:6px;min-height:18px;padding:6px 10px;border-radius:8px;display:none;"></div>
     </div>
     <input type="hidden" id="sStockId">
-    <div class="fg"><label>Total Sale Amount (&#8377;) * <span id="sAmtHint" style="color:#16a34a;font-size:10px;font-weight:600;"></span></label><input id="sAmt" type="number" placeholder="0"></div>
+    <div class="fg"><label>Total Sale Amount (&#8377;) *</label><input id="sAmt" type="number" placeholder="0" style="font-size:16px;"></div>
     <div class="due-box">
       <div class="due-title">Advance and Due Details</div>
       <div class="row2">
@@ -1025,9 +1025,10 @@ function addSale(){
   const adv=parseFloat(g("sAdv").value)||0,d=Math.max(0,amt-adv),dd=g("sDueDate").value,del=g("sDelivery").value==="yes";
   if(d>0&&!dd){if(!confirm("Balance due Rs."+d.toFixed(2)+" but no Due Date. Continue?"))return;}
   const bill=g("sBill").value.trim()||genBill();
+  const stockId = window._pendingStockId || (g("sStockId")?g("sStockId").value.trim().toUpperCase():"");
   const sale={bill,date:g("sDate").value||TODAY,n:name,phone:g("sPhone").value.trim(),mode:g("sMode").value,
     item:g("sItem").value.trim(),amt,adv,dueDate:dd,note:g("sNote").value.trim(),delivery:del,
-    delDate:del?g("sDelDate").value:"",delAddr:del?g("sDelAddr").value.trim():""};
+    delDate:del?g("sDelDate").value:"",delAddr:del?g("sDelAddr").value.trim():"",stockId:stockId};
   db.sales.push(sale);
   if(del&&sale.delDate) db.orders.push({n:name,phone:sale.phone,item:sale.item,d:sale.delDate,addr:sale.delAddr,linkBill:bill,note:"Auto from Sale #"+bill,done:false});
   ["sBill","sName","sPhone","sItem","sAmt","sAdv","sDue","sDueDate","sNote","sDelDate","sDelAddr"].forEach(id=>g(id).value="");
@@ -1047,10 +1048,13 @@ function addLead(){
 function addOrder(){
   const name=g("oName").value.trim(),date=g("oDate").value;
   if(!name||!date){alert("Name and Delivery Date required.");return;}
+  const stockId = window._pendingStockId || "";
   db.orders.push({n:name,phone:g("oPhone").value.trim(),item:g("oItem").value.trim(),d:date,
-    addr:g("oAddr").value.trim(),linkBill:g("oLinkBill").value.trim(),note:g("oNote").value.trim(),done:false});
+    addr:g("oAddr").value.trim(),linkBill:g("oLinkBill").value.trim(),note:g("oNote").value.trim(),
+    done:false, stockId:stockId});
   ["oName","oPhone","oItem","oDate","oAddr","oLinkBill","oNote"].forEach(id=>g(id).value="");
-  saveDB();render();checkRem();alert("Order saved!");
+  saveDB();render();checkRem();
+  alert("Order saved!"+(stockId?" Stock reserved: "+stockId:""));
 }
 function addPayment(){
   const name=g("pName").value.trim(),amt=parseFloat(g("pAmt").value)||0,date=g("pDate").value;
@@ -1066,9 +1070,9 @@ function addExpense(){
   ["eDesc","eAmt","eNote","eExpDate"].forEach(id=>g(id).value="");
   saveDB();render();alert("Expense saved!");
 }
-g("btnAS").addEventListener("click",addSale);
+// btnAS handled by addSaleWithStock (set after stock init)
 g("btnAL").addEventListener("click",addLead);
-g("btnAO").addEventListener("click",addOrder);
+// btnAO handled by addOrderWithStock
 g("btnAP").addEventListener("click",addPayment);
 g("btnAE").addEventListener("click",addExpense);
 
@@ -2336,25 +2340,30 @@ function pickStockItem(stockId) {
     // Fill sales form
     var si = g("sItem"); if(si) si.value = s.name;
     var sid = g("sStockId"); if(sid) sid.value = s.id;
-    // Show info
+    // Pre-fill amount with buy price (user can change)
+    var amt = g("sAmt");
+    if(amt) { amt.value = s.buyPrice || ""; amt.focus(); amt.select(); }
+    // Show info banner
     var info = g("sStockInfo");
     if(info) {
       info.style.display = "block";
       info.style.background = s.qty<=(s.alert||2) ? "#fffbeb" : "#f0fdf4";
       info.style.color = s.qty<=(s.alert||2) ? "#d97706" : "#16a34a";
-      info.innerHTML = "&#10003; <b>"+s.name+"</b> | ID: "+s.id+" | Stock: <b>"+s.qty+"</b> units | Buy Price: &#8377;"+s.buyPrice.toFixed(0);
+      info.innerHTML = "&#10003; <b>"+s.name+"</b> &nbsp;|&nbsp; ID: <b>"+s.id+"</b> &nbsp;|&nbsp; In Stock: <b>"+s.qty+"</b> &nbsp;|&nbsp; Ref Price: &#8377;"+s.buyPrice.toFixed(0)+" <span style=\"font-weight:400;font-size:10px;\">(editable)</span>";
     }
   } else if(_pickerTarget === "order") {
     // Fill orders form
     var oi = g("oItem"); if(oi) oi.value = s.name;
     var osid = g("oStockId"); if(osid) osid.value = s.id;
-    // Show info
+    // Show info banner
     var oinfo = g("oStockInfo");
     if(oinfo) {
+      var reserved = (db.orders||[]).filter(function(o){return !o.done&&o.stockId===s.id;}).length;
+      var avail = s.qty - reserved;
       oinfo.style.display = "block";
       oinfo.style.background = "#f5f3ff";
       oinfo.style.color = "#7c3aed";
-      oinfo.innerHTML = "&#128230; <b>"+s.name+"</b> | ID: "+s.id+" | Stock: <b>"+s.qty+"</b> units";
+      oinfo.innerHTML = "&#128230; <b>"+s.name+"</b> &nbsp;|&nbsp; ID: <b>"+s.id+"</b> &nbsp;|&nbsp; Available: <b>"+avail+"</b>"+(reserved>0?" ("+reserved+" reserved)":"");
     }
   }
 }
@@ -2437,69 +2446,55 @@ Stock deducted: " + sid;
   alert(msg);
 }
 
-// Wire to Save Sale button
-var btnAS = g("btnAS");
-if(btnAS) {
-  // Remove existing listeners by cloning
-  var newBtnAS = btnAS.cloneNode(true);
-  btnAS.parentNode.replaceChild(newBtnAS, btnAS);
-  newBtnAS.addEventListener("click", addSaleWithStock);
-}
-window.addSaleWithStock = addSaleWithStock;
+// SALE WITH STOCK - wrap original addSale
+window.addSaleWithStock = function() {
+  var sid = g("sStockId") ? g("sStockId").value.trim().toUpperCase() : "";
+  if(sid) {
+    var stock = (db.stock||[]).find(function(s){return s.id===sid;});
+    if(stock) {
+      if(stock.qty <= 0) {
+        if(!confirm("WARNING: "+stock.name+" is OUT OF STOCK!\nSave sale anyway?")) return;
+      } else {
+        stock.qty -= 1;
+        if(!stock.history) stock.history=[];
+        stock.history.push({action:"Sold 1 unit",qty:stock.qty,date:new Date().toISOString().split("T")[0]});
+      }
+    }
+  }
+  window._pendingStockId = sid; addSale(); // call original - handles all validation and saving
+  window._pendingStockId = "";
+  // Clear stock fields after sale
+  var si=g("sStockId"); if(si) si.value="";
+  var info=g("sStockInfo"); if(info){info.style.display="none";}
+  if(window.renderStock) window.renderStock();
+};
+var btnAS2 = g("btnAS");
+if(btnAS2) btnAS2.onclick = window.addSaleWithStock;var btnAS2 = g("btnAS");
+if(btnAS2) btnAS2.onclick = addSaleWithStock;
 
 // ================================================================
 // ORDER WITH STOCK RESERVATION
 // ================================================================
 // Patch addOrder to save stockId and reserve stock
-var _origBtnAO2 = g("btnAO");
-if(_origBtnAO2) {
-  var newBtnAO = _origBtnAO2.cloneNode(true);
-  _origBtnAO2.parentNode.replaceChild(newBtnAO, _origBtnAO2);
-  newBtnAO.addEventListener("click", addOrderWithStock);
-}
-
-function addOrderWithStock() {
-  var name = g("oName") ? g("oName").value.trim() : "";
-  var date = g("oDate") ? g("oDate").value : "";
-  if(!name||!date){alert("Name and Delivery Date required.");return;}
-
+// ORDER WITH STOCK - wrap original addOrder
+window.addOrderWithStock = function() {
   var osid = g("oStockId") ? g("oStockId").value.trim().toUpperCase() : "";
-
-  // Check stock availability
   if(osid) {
     var stock = (db.stock||[]).find(function(s){return s.id===osid;});
-    if(stock && stock.qty<=0) {
-      if(!confirm("WARNING: "+stock.name+" is OUT OF STOCK!
-Save order anyway?")) return;
+    if(stock && stock.qty <= 0) {
+      if(!confirm("WARNING: "+stock.name+" is OUT OF STOCK!\nSave order anyway?")) return;
     }
+    // Note: stock deduction happens when order is DELIVERED (markDone)
   }
-
-  var photoInp = g("oPhoto");
-  var photoData = (photoInp && photoInp._photoData) ? photoInp._photoData : null;
-
-  db.orders.push({
-    n:name, phone:g("oPhone")?g("oPhone").value.trim():"",
-    item:g("oItem")?g("oItem").value.trim():"",
-    d:date, addr:g("oAddr")?g("oAddr").value.trim():"",
-    linkBill:g("oLinkBill")?g("oLinkBill").value.trim():"",
-    note:g("oNote")?g("oNote").value.trim():"",
-    photo:photoData, done:false,
-    stockId: osid
-  });
-
-  // Clear form
-  ["oName","oPhone","oItem","oDate","oAddr","oLinkBill","oNote"].forEach(function(id){
-    var el=g(id); if(el) el.value="";
-  });
-  var osinfo=g("oStockInfo"); if(osinfo){osinfo.style.display="none";osinfo.innerHTML="";}
-  var oStockIdEl=g("oStockId"); if(oStockIdEl) oStockIdEl.value="";
-  if(photoInp){photoInp.value="";photoInp._photoData=null;}
-  var prev=g("oPhotoPreview"); if(prev) prev.style.display="none";
-
-  saveDB(); render(); checkRem();
-  alert("Order saved!" + (osid?" Stock reserved: "+osid:""));
-}
-window.addOrderWithStock = addOrderWithStock;
+  // Store stockId temporarily for addOrder to pick up
+  window._pendingStockId = osid;
+  addOrder(); // call original
+  window._pendingStockId = "";
+  var info=g("oStockInfo"); if(info){info.style.display="none";}
+  var osidEl=g("oStockId"); if(osidEl) osidEl.value="";
+};
+var btnAO2 = g("btnAO");
+if(btnAO2) btnAO2.onclick = window.addOrderWithStock;
 
 // When order is MARKED DONE - deduct stock
 var _origMarkDone = window.markDone;
