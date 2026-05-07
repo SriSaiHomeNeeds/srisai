@@ -210,6 +210,62 @@ function showTabNew(id){
   if(id==="directory"&&window.renderDir)window.renderDir();
   if(window._appRender)window._appRender();
 }
+
+function showAddStock(){
+  var form=document.getElementById("addStockForm");
+  if(!form)return;
+  form.style.display=form.style.display==="none"?"block":"none";
+  if(form.style.display==="block"){
+    var dt=document.getElementById("stDate");
+    if(dt&&!dt.value)dt.value=new Date().toISOString().split("T")[0];
+    var al=document.getElementById("stAlert");
+    if(al&&!al.value)al.value="2";
+    form.scrollIntoView({behavior:"smooth"});
+  }
+}
+
+function genStockId(){
+  var cat=document.getElementById("stCat")?document.getElementById("stCat").value:"";
+  if(!cat)return;
+  var _db=window._getDb?window._getDb():{stock:[]};
+  var items=(_db.stock||[]).filter(function(s){return s.cat===cat;});
+  var next=items.length+1;
+  var num=next<10?"00"+next:next<100?"0"+next:""+next;
+  var el=document.getElementById("stId");if(el)el.value="SSHN-"+cat+"-"+num;
+}
+
+function saveStockItem(){
+  var _db=window._getDb?window._getDb():null;
+  if(!_db){alert("App loading, please wait a moment.");return;}
+  var cat=document.getElementById("stCat").value.trim();
+  var name=document.getElementById("stName").value.trim();
+  var qty=parseInt(document.getElementById("stQty").value)||0;
+  if(!cat||!name){alert("Category and Item Name are required.");return;}
+  var stId=document.getElementById("stId").value.trim();
+  if(!stId){genStockId();stId=document.getElementById("stId").value.trim();}
+  if(!stId){alert("Please select a Category first.");return;}
+  if((_db.stock||[]).find(function(s){return s.id===stId;})){
+    alert("Product ID already exists: "+stId);return;
+  }
+  if(!_db.stock)_db.stock=[];
+  _db.stock.push({
+    id:stId,cat:cat,name:name,
+    desc:document.getElementById("stDesc").value.trim(),
+    qty:qty,
+    alert:parseInt(document.getElementById("stAlert").value)||2,
+    buyPrice:parseFloat(document.getElementById("stBuyPrice").value)||0,
+    supplier:document.getElementById("stSupplier").value.trim(),
+    date:document.getElementById("stDate").value,
+    history:[{action:"Added "+qty+" units",qty:qty,date:new Date().toISOString().split("T")[0]}]
+  });
+  ["stCat","stId","stName","stDesc","stQty","stAlert","stBuyPrice","stSupplier","stDate"].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.value="";
+  });
+  if(window.saveDB)window.saveDB();
+  if(window.renderStock)window.renderStock();
+  document.getElementById("addStockForm").style.display="none";
+  alert("Stock item saved: "+stId);
+}
 </script>
 </head>
 <body>
