@@ -219,6 +219,51 @@ function showTabNew(id){
   if(window._appRender)window._appRender();
 }
 
+function genStockId(){
+  var cat = document.getElementById("stCat") ? document.getElementById("stCat").value : "";
+  if(!cat) return;
+  var stocks = window._getDb ? window._getDb().stock||[] : [];
+  var items = stocks.filter(function(s){return s.cat===cat;});
+  var next = items.length + 1;
+  var num = next < 10 ? "00"+next : next < 100 ? "0"+next : ""+next;
+  var el = document.getElementById("stId");
+  if(el) el.value = "SSHN-" + cat + "-" + num;
+}
+
+function saveStockItem(){
+  var db = window._getDb ? window._getDb() : null;
+  if(!db){alert("App not ready yet. Please wait.");return;}
+  var cat  = document.getElementById("stCat").value.trim();
+  var name = document.getElementById("stName").value.trim();
+  var qty  = parseInt(document.getElementById("stQty").value)||0;
+  if(!cat||!name){alert("Category and Item Name are required.");return;}
+  var stId = document.getElementById("stId").value.trim();
+  if(!stId){genStockId();stId=document.getElementById("stId").value.trim();}
+  if(!stId){alert("Please select a Category first.");return;}
+  if(db.stock.find(function(s){return s.id===stId;})){
+    alert("Product ID already exists: "+stId);return;
+  }
+  db.stock.push({
+    id:stId, cat:cat, name:name,
+    desc:document.getElementById("stDesc").value.trim(),
+    qty:qty,
+    alert:parseInt(document.getElementById("stAlert").value)||2,
+    buyPrice:parseFloat(document.getElementById("stBuyPrice").value)||0,
+    supplier:document.getElementById("stSupplier").value.trim(),
+    date:document.getElementById("stDate").value,
+    addedQty:qty,
+    history:[{action:"Added "+qty+" units",qty:qty,date:new Date().toISOString().split("T")[0]}]
+  });
+  ["stCat","stId","stName","stDesc","stQty","stAlert","stBuyPrice","stSupplier"].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.value="";
+  });
+  if(window._appRender)window._appRender();
+  if(window.renderStock)window.renderStock();
+  if(window.saveDB)window.saveDB();
+  document.getElementById("addStockForm").style.display="none";
+  alert("Stock saved: "+stId);
+}
+
 function showAddStock(){
   var form=document.getElementById("addStockForm");
   if(!form)return;
@@ -748,7 +793,7 @@ function showAddStock(){
     <div class="row2">
       <div class="fg" style="margin-bottom:8px;">
         <label>Category *</label>
-        <select id="stCat" onchange="if(window.genStockId)window.genStockId()">
+        <select id="stCat" onchange="genStockId()">
           <option value="">Select...</option>
           <option value="SOF">Sofa</option>
           <option value="COT">Cots / Beds</option>
@@ -1459,6 +1504,7 @@ function renderSync() {
   }
 }
 window._appRender = renderSync;
+window.saveDB = saveDB;
 
 // === WA SALE MSG ===
 function waSaleMsg(i) {
@@ -2027,59 +2073,11 @@ var CAT_EMOJI = {
   "TVS":"📺","IRC":"🔧","CTB":"☕","WRD":"🚪","OTH":"📦"
 };
 
-function genStockId() {
-  var cat = g("stCat") ? g("stCat").value : "";
-  if(!cat) return;
-  var items = db.stock.filter(function(s){return s.cat===cat;});
-  var next = items.length + 1;
-  var num = next < 10 ? "00"+next : next < 100 ? "0"+next : ""+next;
-  if(g("stId")) g("stId").value = "SSHN-" + cat + "-" + num;
-}
-window.genStockId = genStockId;
+// genStockId defined in head script
 
 // showAddStock defined in head script
 
-function saveStockItem() {
-  var cat  = g("stCat").value.trim();
-  var name = g("stName").value.trim();
-  var qty  = parseInt(g("stQty").value) || 0;
-  if(!cat || !name) { alert("Category and Item Name are required."); return; }
-
-  // Auto-generate ID if empty
-  var stId = g("stId").value.trim();
-  if(!stId) { genStockId(); stId = g("stId").value.trim(); }
-
-  // Check duplicate ID
-  if(db.stock.find(function(s){return s.id===stId;})) {
-    alert("Product ID already exists: " + stId);
-    return;
-  }
-
-  db.stock.push({
-    id:       stId,
-    cat:      cat,
-    name:     name,
-    desc:     g("stDesc").value.trim(),
-    qty:      qty,
-    alert:    parseInt(g("stAlert").value) || 2,
-    buyPrice: parseFloat(g("stBuyPrice").value) || 0,
-    supplier: g("stSupplier").value.trim(),
-    date:     g("stDate").value,
-    addedQty: qty,
-    history:  [{action:"Added", qty:qty, date:new Date().toISOString().split("T")[0]}]
-  });
-
-  // Clear form
-  ["stCat","stId","stName","stDesc","stQty","stAlert","stBuyPrice","stSupplier"].forEach(function(id){
-    var el=g(id); if(el) el.value="";
-  });
-
-  saveDB();
-  renderStock();
-  updateStockDatalist();
-  g("addStockForm").style.display = "none";
-  alert("Stock item saved: " + stId);
-}
+// saveStockItem defined in head script
 window.saveStockItem = saveStockItem;
 
 function filterStock(cat) {
