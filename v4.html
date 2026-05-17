@@ -5,9 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Sri Sai">
-<meta name="theme-color" content="#1a2940">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1e40af">
+<meta name="application-name" content="Sri Sai Home Needs">
+<script>
+(function(){
+  var manifest = {
+    "name": "Sri Sai Home Needs",
+    "short_name": "Sri Sai",
+    "description": "Furniture Shop Management",
+    "start_url": "./v4.html",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#1e40af",
+    "theme_color": "#1e40af",
+    "icons": [{
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%231e40af'/><text y='65' x='50' text-anchor='middle' font-size='48' font-family='Georgia,serif' font-weight='bold' fill='white'>SS</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }]
+  };
+  var blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = url;
+  document.head.appendChild(link);
+})();
+</script>
 <title>Sri Sai Home Needs</title>
 <style>
 :root{--bg:#f0f4f8;--card:#fff;--hdr:#1e40af;--green:#16a34a;--green-bg:#f0fdf4;--blue:#2563eb;--blue-bg:#eff6ff;--red:#dc2626;--red-bg:#fef2f2;--purple:#7c3aed;--purple-bg:#f5f3ff;--orange:#ea580c;--orange-bg:#fff7ed;--teal:#0d9488;--teal-bg:#f0fdfa;--amber:#d97706;--amber-bg:#fffbeb;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);--r:14px;--r-sm:10px;}
@@ -695,19 +723,67 @@ function onExpCatChange(){
     <div style="font-size:10px;opacity:.8;margin-bottom:2px;">TOTAL PURCHASE VALUE</div>
     <div style="font-size:20px;font-weight:900;">&#8377;<span id="stPurchaseVal">0</span></div>
   </div>
-  <div class="menu-grid" style="margin-bottom:12px;">
-    <button class="menu-card" onclick="filterStock('ALL')" id="cat_ALL" style="padding:10px 6px;border-color:#2563eb;background:#eff6ff;"><div class="mc-icon">&#128230;</div><div class="mc-label" style="font-size:10px;">All</div><div id="catCount_ALL" class="mc-sub">0</div></button>
-    <button class="menu-card" onclick="filterStock('SOF')" id="cat_SOF" style="padding:10px 6px;"><div class="mc-icon">&#128715;</div><div class="mc-label" style="font-size:10px;">Sofa & Seating</div><div id="catCount_SOF" class="mc-sub">0</div></button>
-    <button class="menu-card" onclick="filterStock('BED')" id="cat_BED" style="padding:10px 6px;"><div class="mc-icon">&#128719;</div><div class="mc-label" style="font-size:10px;">Beds</div><div id="catCount_BED" class="mc-sub">0</div></button>
-    <button class="menu-card" onclick="filterStock('MAT')" id="cat_MAT" style="padding:10px 6px;"><div class="mc-icon">&#128564;</div><div class="mc-label" style="font-size:10px;">Mattresses</div><div id="catCount_MAT" class="mc-sub">0</div></button>
-    <button class="menu-card" onclick="filterStock('TBL')" id="cat_TBL" style="padding:10px 6px;"><div class="mc-icon">&#129681;</div><div class="mc-label" style="font-size:10px;">Tables</div><div id="catCount_TBL" class="mc-sub">0</div></button>
-    <button class="menu-card" onclick="filterStock('STR')" id="cat_STR" style="padding:10px 6px;"><div class="mc-icon">&#128452;</div><div class="mc-label" style="font-size:10px;">Storage</div><div id="catCount_STR" class="mc-sub">0</div></button>
-    <button class="menu-card" onclick="filterStock('DRS')" id="cat_DRS" style="padding:10px 6px;"><div class="mc-icon">&#129694;</div><div class="mc-label" style="font-size:10px;">Dressing Table</div><div id="catCount_DRS" class="mc-sub">0</div></button>
-    <button class="menu-card" onclick="filterStock('TVU')" id="cat_TVU" style="padding:10px 6px;"><div class="mc-icon">&#128250;</div><div class="mc-label" style="font-size:10px;">TV Units</div><div id="catCount_TVU" class="mc-sub">0</div></button>
-    <button class="menu-card" onclick="filterStock('OFC')" id="cat_OFC" style="padding:10px 6px;"><div class="mc-icon">&#128188;</div><div class="mc-label" style="font-size:10px;">Office & Chairs</div><div id="catCount_OFC" class="mc-sub">0</div></button>
-    <button class="menu-card" onclick="filterStock('KID')" id="cat_KID" style="padding:10px 6px;"><div class="mc-icon">&#129528;</div><div class="mc-label" style="font-size:10px;">Kids Furniture</div><div id="catCount_KID" class="mc-sub">0</div></button>
-    <button class="menu-card" onclick="filterStock('FLD')" id="cat_FLD" style="padding:10px 6px;"><div class="mc-icon">&#129681;</div><div class="mc-label" style="font-size:10px;">Folding Items</div><div id="catCount_FLD" class="mc-sub">0</div></button>
-    <button class="menu-card" onclick="filterStock('OTH')" id="cat_OTH" style="padding:10px 6px;"><div class="mc-icon">&#129397;</div><div class="mc-label" style="font-size:10px;">Other</div><div id="catCount_OTH" class="mc-sub">0</div></button>
+  <div style="margin-bottom:12px;">
+    <button id="cat_ALL" onclick="filterStock('ALL')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;background:#eff6ff;border-color:#2563eb;text-align:left;transition:all .15s;">
+      <span style="font-size:22px;width:30px;text-align:center;">&#128230;</span>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">All Items</span>
+      <span id="catCount_ALL" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
+    </button>
+    <button id="cat_SOF" onclick="filterStock('SOF')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
+      <span style="font-size:22px;width:30px;text-align:center;">&#128715;</span>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Sofa & Seating</span>
+      <span id="catCount_SOF" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
+    </button>
+    <button id="cat_BED" onclick="filterStock('BED')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
+      <span style="font-size:22px;width:30px;text-align:center;">&#128719;</span>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Beds</span>
+      <span id="catCount_BED" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
+    </button>
+    <button id="cat_MAT" onclick="filterStock('MAT')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
+      <span style="font-size:22px;width:30px;text-align:center;">&#128716;</span>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Mattresses</span>
+      <span id="catCount_MAT" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
+    </button>
+    <button id="cat_TBL" onclick="filterStock('TBL')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
+      <span style="font-size:22px;width:30px;text-align:center;">&#127869;</span>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Tables</span>
+      <span id="catCount_TBL" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
+    </button>
+    <button id="cat_STR" onclick="filterStock('STR')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
+      <span style="font-size:22px;width:30px;text-align:center;">&#128452;</span>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Storage</span>
+      <span id="catCount_STR" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
+    </button>
+    <button id="cat_DRS" onclick="filterStock('DRS')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
+      <span style="font-size:22px;width:30px;text-align:center;">&#129694;</span>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Dressing Table</span>
+      <span id="catCount_DRS" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
+    </button>
+    <button id="cat_TVU" onclick="filterStock('TVU')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
+      <span style="font-size:22px;width:30px;text-align:center;">&#128250;</span>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">TV Units</span>
+      <span id="catCount_TVU" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
+    </button>
+    <button id="cat_OFC" onclick="filterStock('OFC')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
+      <span style="font-size:22px;width:30px;text-align:center;">&#128421;</span>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Office & Chairs</span>
+      <span id="catCount_OFC" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
+    </button>
+    <button id="cat_KID" onclick="filterStock('KID')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
+      <span style="font-size:22px;width:30px;text-align:center;">&#129528;</span>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Kids Furniture</span>
+      <span id="catCount_KID" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
+    </button>
+    <button id="cat_FLD" onclick="filterStock('FLD')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
+      <span style="font-size:22px;width:30px;text-align:center;">&#129681;</span>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Folding Items</span>
+      <span id="catCount_FLD" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
+    </button>
+    <button id="cat_OTH" onclick="filterStock('OTH')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
+      <span style="font-size:22px;width:30px;text-align:center;">&#128230;</span>
+      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Other</span>
+      <span id="catCount_OTH" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
+    </button>
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchStock" placeholder="Search by name or ID..." oninput="renderStock()"></div>
   <button onclick="showAddStock()" style="width:100%;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px;touch-action:manipulation;">&#43; Add New Stock Item</button>
@@ -719,12 +795,12 @@ function onExpCatChange(){
           <option value="">Select category...</option>
           <option value="SOF">&#128715; Sofa & Seating</option>
           <option value="BED">&#128719; Beds</option>
-          <option value="MAT">&#128564; Mattresses</option>
-          <option value="TBL">&#129681; Tables</option>
+          <option value="MAT">&#128716; Mattresses</option>
+          <option value="TBL">&#127869; Tables</option>
           <option value="STR">&#128452; Storage</option>
           <option value="DRS">&#129694; Dressing Table</option>
           <option value="TVU">&#128250; TV Units</option>
-          <option value="OFC">&#128188; Office & Chairs</option>
+          <option value="OFC">&#128421; Office & Chairs</option>
           <option value="KID">&#129528; Kids Furniture</option>
           <option value="FLD">&#129681; Folding Items</option>
           <option value="OTH">&#129397; Other</option>
@@ -1173,7 +1249,7 @@ function waOrder(i){
   window.open("https://wa.me/"+p+"?text="+encodeURIComponent(msg),"_blank");
 }
 
-function waPayment(i){const x=db.payments[i];if(!x.phone){alert("No phone number for this payment.");return;}const extra=prompt("Add custom message (optional):","")||"";const msg="*Sri Sai Home Needs - Payment Reminder*\n\nDear "+x.n+",\n\nThis is a reminder that *Rs."+x.a.toFixed(2)+"* is due on *"+x.d+"*."+(x.bill?"\n\nReference: "+x.bill:"")+(extra?"\n\n"+extra:"")+"\n\nPlease pay at your earliest. Thank you!\n\nFind us: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6\nSri Sai Home Needs, Chandanagar";const p=x.phone.replace(/[^0-9]/g,"");window.open("https://wa.me/"+(p.length===10?"91"+p:p)+"?text="+encodeURIComponent(msg),"_blank");}
+function waPayment(i){const x=db.payments[i];if(!x.phone){alert("No phone number for this payment.");return;}const extra=prompt("Add custom message (optional):","")||"";const msg="*Sri Sai Home Needs - Payment Reminder*\n\nDear "+x.n+",\n\nThis is a reminder that *Rs."+x.a.toFixed(2)+"* is due on *"+x.d+"*."+(x.bill?"\n\nReference: "+x.bill:"")+(extra?"\n\n"+extra:"")+"\n\nPlease pay at your earliest. Thank you!\n\nFind us: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6";const p=x.phone.replace(/[^0-9]/g,"");window.open("https://wa.me/"+(p.length===10?"91"+p:p)+"?text="+encodeURIComponent(msg),"_blank");}
 
 function editSN(i){const s=db.sales[i],n=prompt("Edit Note:",s.note||"");if(n!==null){s.note=n;saveDB();render();}}
 function editLN(i){
@@ -1261,7 +1337,7 @@ g("btnWA").addEventListener("click",()=>{
     +"*Item:* "+(s.item||"---")+"\n\n"
     +"*Total:* Rs."+s.amt.toFixed(2)+"\n*Advance Paid:* Rs."+(s.adv||0).toFixed(2)+"\n"
     +(d>0?"*Balance Due:* Rs."+d.toFixed(2)+(s.dueDate?" (by "+s.dueDate+")":"")+"\n":"*Status:* PAID IN FULL\n")
-    +"\nThank you!\n\nFind us: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6\nSri Sai Home Needs, Chandanagar";
+    +"\nThank you!\n\nFind us: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6";
   let ph=s.phone.replace(/[^0-9]/g,"");
   if(ph.length===10)ph="91"+ph;
   else if(ph.length===11&&ph.startsWith("0"))ph="91"+ph.slice(1);
@@ -1516,7 +1592,7 @@ function waSaleMsg(i) {
   if(d > 0) msg += "*Balance Due:* Rs." + d.toFixed(2) + (s.dueDate ? " (by " + s.dueDate + ")" : "") + "\n";
   else msg += "*Status:* Fully Paid\n";
   if(s.bill) msg += "*Bill No:* " + s.bill + "\n";
-  msg += "\nWe look forward to serving you again!\n\nOur Store: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6\nSri Sai Home Needs";
+  msg += "\nWe look forward to serving you again!\n\nOur Store: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6";
   var p = s.phone.replace(/[^0-9]/g,"");
   if(p.length === 10) p = "91" + p;
   window.open("https://wa.me/" + p + "?text=" + encodeURIComponent(msg), "_blank");
@@ -2075,6 +2151,7 @@ function renderStock() {
   cats.forEach(function(c){
     var cnt = all.filter(function(s){return s.cat===c;}).length;
     var el2 = g("catCount_"+c); if(el2) el2.textContent = cnt;
+    // Show/hide empty categories (optional - keep all visible)
   });
   var filtered = _stockFilter==="ALL" ? all : all.filter(function(s){return s.cat===_stockFilter;});
   if(q) filtered = filtered.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0||s.id.toLowerCase().indexOf(q)>=0;});
@@ -2122,8 +2199,19 @@ window.renderStock = renderStock;
 
 function filterStock(cat) {
   _stockFilter=cat;
-  document.querySelectorAll("[id^='cat_']").forEach(function(b){b.style.borderColor="";b.style.background="";});
-  var ab=g("cat_"+cat);if(ab){ab.style.borderColor="#2563eb";ab.style.background="#eff6ff";}
+  document.querySelectorAll("[id^='cat_']").forEach(function(b){
+    b.style.borderColor="";
+    b.style.background="#fff";
+    var span=b.querySelector("span:last-child");
+    if(span){span.style.background="#f1f5f9";span.style.color="#64748b";}
+  });
+  var ab=g("cat_"+cat);
+  if(ab){
+    ab.style.borderColor="#2563eb";
+    ab.style.background="#eff6ff";
+    var span=ab.querySelector("span:last-child");
+    if(span){span.style.background="#2563eb";span.style.color="#fff";}
+  }
   renderStock();
 }
 window.filterStock = filterStock;
@@ -2432,7 +2520,7 @@ function sendSupplierWA(){
   if(lastBill)msg+="Last Bill: Rs."+lastBill.amt.toFixed(0)+(lastBill.ref?" ("+lastBill.ref+")":"")+"\n";
   if(lastPay)msg+="Last Payment: Rs."+lastPay.amt.toFixed(0)+"\n";
   msg+="*Balance Due: Rs."+sup.balance.toFixed(0)+"*\n\n";
-  msg+="Our Store: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6\nSri Sai Home Needs, Chandanagar";
+  msg+="Our Store: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6";
   var p=sup.phone.replace(/[^0-9]/g,"");if(p.length===10)p="91"+p;
   window.open("https://wa.me/"+p+"?text="+encodeURIComponent(msg),"_blank");
 }
