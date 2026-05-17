@@ -493,16 +493,16 @@ function onExpCatChange(){
       </div>
     </div>
     <div class="fg"><label>Priority</label>
-      <select id="lPriority"><option value="Hot">Hot</option><option value="Warm" selected>Warm</option><option value="Cold">Cold</option></select>
+      <select id="lPriority"><option value="Hot">&#128293; Serious Buyer</option><option value="Warm" selected>&#128336; Follow-up Needed</option><option value="Cold">&#129398; Casual Inquiry</option></select>
     </div>
     <div class="fg"><label>Note</label><textarea id="lNote" placeholder="Any remarks..."></textarea></div>
     <button class="btn btn-save" id="btnAL">Save Lead</button>
   </div>
   <div class="filter-pills">
     <button class="pill on" data-lf="all">All</button>
-    <button class="pill" data-lf="Hot">Hot</button>
-    <button class="pill" data-lf="Warm">Warm</button>
-    <button class="pill" data-lf="Cold">Cold</button>
+    <button class="pill" data-lf="Hot">&#128293; Serious</button>
+    <button class="pill" data-lf="Warm">&#128336; Follow-up</button>
+    <button class="pill" data-lf="Cold">&#129398; Casual</button>
     <button class="pill" data-lf="due">Due Today</button>
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchLeads" placeholder="Search leads..."></div>
@@ -1079,6 +1079,7 @@ function dbadge(d) {
   return"";
 }
 function pcolor(p) { return p==="Hot"?"#e74c3c":p==="Warm"?"#d4ac0d":"#2471a3"; }
+function priLabel(p) { return p==="Hot"?"🔥 Serious Buyer":p==="Warm"?"🕐 Follow-up Needed":p==="Cold"?"🧊 Casual Inquiry":p||""; }
 function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
 function filt(arr, sid) {
@@ -1403,7 +1404,7 @@ ${x.phone?`<button class="btn btn-wa" style="padding:4px 7px;font-size:11px;" on
   lArr.forEach(x=>{
     const ri=db.leads.indexOf(x);
     lH+=`<div class="rec lead-r">
-<div class="rec-name" style="border-left:3px solid ${pcolor(x.priority||"Warm")};padding-left:5px;">${esc(x.n)}${dbadge(x.d)}${x.priority?`<span class="badge" style="background:#f4f6f7;color:${pcolor(x.priority)};">${x.priority}</span>`:""}</div>
+<div class="rec-name" style="border-left:3px solid ${pcolor(x.priority||"Warm")};padding-left:5px;">${esc(x.n)}${dbadge(x.d)}${x.priority?`<span class="badge" style="background:#f4f6f7;color:${pcolor(x.priority)};">${priLabel(x.priority)}</span>`:""}</div>
 <div class="rec-sub">Follow-up: ${x.d}${x.phone?" | "+esc(x.phone):""}${x.item?"<br>"+esc(x.item):""}${x.budget?" | Budget: Rs."+x.budget:""}</div>
 ${x.source?`<div class="rec-sub">Source: ${esc(x.source)}</div>`:""}
 ${x.note?`<div class="note-chip">${esc(x.note)}</div>`:""}
@@ -1621,7 +1622,7 @@ function renderIntel() {
   hot.forEach(function(l) {
     var days = Math.floor((new Date(TODAY)-new Date(l.d))/864e5);
     var ri = db.leads.indexOf(l);
-    var lbl = l.priority==="Hot"?"H":l.priority==="Warm"?"W":"C";
+    var lbl = l.priority==="Hot"?"S":l.priority==="Warm"?"F":"C";
     hH += "<div class=\"intel-row\">" +
       "<div class=\"intel-score\" style=\"background:#fef2f2;color:#dc2626;\">" + lbl + "</div>" +
       "<div class=\"intel-info\">" +
