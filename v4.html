@@ -718,18 +718,18 @@ function onExpCatChange(){
 
   <div style="margin-bottom:10px;">
     <select id="stockCatSelect" onchange="filterStockDropdown(this.value)" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;background:#fff;color:var(--text);font-weight:600;">
-      <option value="ALL">&#128230; All Items — <span id="catCount_ALL">0</span></option>
-      <option value="SOF">&#128715; Sofa &amp; Seating</option>
-      <option value="BED">&#128719; Beds</option>
-      <option value="MAT">&#128716; Mattresses</option>
-      <option value="TBL">&#127869; Tables</option>
-      <option value="STR">&#128452; Storage</option>
-      <option value="DRS">&#129694; Dressing Table</option>
-      <option value="TVU">&#128250; TV Units</option>
-      <option value="OFC">&#128421; Office &amp; Chairs</option>
-      <option value="KID">&#129528; Kids Furniture</option>
-      <option value="FLD">&#129681; Folding Items</option>
-      <option value="OTH">&#128230; Other</option>
+      <option value="ALL">All Items</option>
+      <option value="SOF">Sofa &amp; Seating</option>
+      <option value="BED">Beds</option>
+      <option value="MAT">Mattresses</option>
+      <option value="TBL">Tables</option>
+      <option value="STR">Storage</option>
+      <option value="DRS">Dressing Table</option>
+      <option value="TVU">TV Units</option>
+      <option value="OFC">Office &amp; Chairs</option>
+      <option value="KID">Kids Furniture</option>
+      <option value="FLD">Folding Items</option>
+      <option value="OTH">Other</option>
     </select>
     <div id="stockCatInfo" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;font-size:12px;font-weight:600;">
       <span style="color:#16a34a;">In Stock: <b id="stInStock">0</b></span>
@@ -2088,13 +2088,13 @@ function renderStock() {
     if(sel){
       for(var i=0;i<sel.options.length;i++){
         if(sel.options[i].value===c){
-          sel.options[i].text = (catIcons[c]||"") + " " + (catLabels[c]||c) + (cnt>0?" ("+cnt+")":"");
+          sel.options[i].text = (catLabels[c]||c) + (cnt>0?" ("+cnt+")":"");
           break;
         }
       }
     }
   });
-  if(sel) sel.options[0].text = "&#128230; All Items" + (allCnt>0?" ("+allCnt+")":"");
+  if(sel) sel.options[0].text = "All Items" + (allCnt>0?" ("+allCnt+")":"");
   var filtered = _stockFilter==="ALL" ? all : all.filter(function(s){return s.cat===_stockFilter;});
   if(q) filtered = filtered.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0||s.id.toLowerCase().indexOf(q)>=0;});
   var inStock=0,low=0,out=0,totalPurchase=0;
