@@ -50,8 +50,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-seri
 .pin-btn.zero{grid-column:2;}
 #pinErr{color:#fca5a5;font-size:12px;margin-top:12px;min-height:18px;font-weight:600;text-align:center;}
 #roleTag{display:none;}
-header{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;padding:10px 16px;position:sticky;top:0;z-index:60;box-shadow:0 2px 12px rgba(30,64,175,.3);}
-header h2{font-size:15px;font-weight:800;}
+header{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;padding:8px 14px;position:sticky;top:0;z-index:60;box-shadow:0 2px 12px rgba(30,64,175,.3);}
+header h2{font-size:14px;font-weight:800;}
 header p{font-size:11px;opacity:.7;margin-top:1px;}
 #clockBar{font-size:10px;opacity:.55;margin-top:2px;}
 #savedBar{font-size:10px;margin-top:2px;color:#bfdbfe;}
@@ -60,52 +60,52 @@ header p{font-size:11px;opacity:.7;margin-top:1px;}
 .sdot.syncing{background:#fbbf24;animation:pulse 1s infinite;}
 .sdot.error{background:#f87171;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-.wrap{padding:14px;padding-bottom:90px;max-width:600px;margin:0 auto;}
+.wrap{padding:10px;padding-bottom:90px;max-width:600px;margin:0 auto;}
 .section{display:none;}.section.active{display:block;}
-.card{background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);}
+.card{background:var(--card);border-radius:var(--r);padding:12px;margin-bottom:10px;box-shadow:var(--shadow);}
 .card-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;}
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.tile{border-radius:var(--r);padding:14px 12px;color:#fff;position:relative;overflow:hidden;}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.tile{border-radius:var(--r);padding:11px 10px;color:#fff;position:relative;overflow:hidden;}
 .tile::after{content:"";position:absolute;right:-8px;top:-8px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.1);}
 .ti{font-size:20px;display:block;margin-bottom:5px;}
-.tv{font-size:20px;font-weight:900;line-height:1;display:block;}
+.tv{font-size:18px;font-weight:900;line-height:1;display:block;}
 .tl{font-size:10px;opacity:.85;margin-top:4px;font-weight:500;display:block;}
 .t1{background:linear-gradient(135deg,#15803d,#16a34a);}.t2{background:linear-gradient(135deg,#b45309,#d97706);}.t3{background:linear-gradient(135deg,#1d4ed8,#2563eb);}.t4{background:linear-gradient(135deg,#6d28d9,#7c3aed);}.t5{background:linear-gradient(135deg,#b91c1c,#dc2626);}.t6{background:linear-gradient(135deg,#0f766e,#0d9488);}.t7{background:linear-gradient(135deg,#c2410c,#ea580c);}.t8{background:linear-gradient(135deg,#334155,#475569);}
 .profit-pill{border-radius:var(--r);padding:12px 16px;font-size:13px;font-weight:700;text-align:center;margin-bottom:12px;box-shadow:var(--shadow);}
 .menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.menu-card{background:#fff;border-radius:var(--r);padding:14px 8px;border:1.5px solid var(--border);cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:all .15s;box-shadow:var(--shadow);}
+.menu-card{background:#fff;border-radius:var(--r);padding:12px 6px;border:1.5px solid var(--border);cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;touch-action:manipulation;transition:all .15s;box-shadow:var(--shadow);}
 .menu-card:active{transform:scale(.95);}
-.mc-icon{font-size:26px;line-height:1;}
-.mc-label{font-size:12px;font-weight:800;color:var(--text);text-align:center;}
+.mc-icon{font-size:24px;line-height:1;}
+.mc-label{font-size:11px;font-weight:800;color:var(--text);text-align:center;}
 .mc-sub{font-size:10px;color:var(--muted);text-align:center;}
-.sec-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 0;margin-bottom:12px;border-bottom:1px solid var(--border);}
+.sec-nav{display:flex;align-items:center;justify-content:space-between;padding:7px 0;margin-bottom:10px;border-bottom:1px solid var(--border);}
 .sec-back{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);background:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;box-shadow:var(--shadow);font-family:inherit;}
 .sec-nav-title{font-size:15px;font-weight:800;}
-.fg{margin-bottom:12px;}
+.fg{margin-bottom:8px;}
 .fg label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px;}
-input,select,textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:16px;font-family:inherit;color:var(--text);background:#fff;touch-action:manipulation;-webkit-appearance:none;transition:border-color .15s;}
+input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:15px;font-family:inherit;color:var(--text);background:#fff;touch-action:manipulation;-webkit-appearance:none;transition:border-color .15s;}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);}
 textarea{resize:vertical;min-height:60px;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .btn{padding:11px 16px;border:none;border-radius:var(--r-sm);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;user-select:none;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:opacity .15s;}
 .btn:active{opacity:.8;}
-.btn-save{background:linear-gradient(135deg,#0d9488,#0f766e);width:100%;padding:14px;font-size:15px;margin-top:6px;}
+.btn-save{background:linear-gradient(135deg,#0d9488,#0f766e);width:100%;padding:12px;font-size:14px;margin-top:4px;}
 .btn-blue{background:#2563eb;}.btn-del{background:#dc2626;}.btn-done{background:#16a34a;}.btn-call{background:#ea580c;}.btn-wa{background:#15803d;}.btn-teal{background:#0d9488;}
 .btn-exp{background:linear-gradient(135deg,#1e40af,#2563eb);width:100%;padding:13px;font-size:13px;margin-top:6px;}
 .btn-clr{background:#dc2626;width:100%;padding:11px;font-size:13px;margin-top:8px;}
-.btn-full{width:100%;padding:13px;font-size:14px;}.btn-sm{padding:7px 12px;font-size:12px;border-radius:6px;}
-.row-btn{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.btn-full{width:100%;padding:13px;font-size:14px;}.btn-sm{padding:6px 10px;font-size:11px;border-radius:6px;}
+.row-btn{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
 .sw{margin-bottom:10px;position:relative;}.sw input{padding-left:38px;background:#f8fafc;}.sw .si{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
-.filter-pills{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-.pill{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:inherit;color:var(--muted);touch-action:manipulation;transition:all .15s;}
+.filter-pills{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
+.pill{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:600;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:inherit;color:var(--muted);touch-action:manipulation;transition:all .15s;}
 .pill.on{background:#2563eb;color:#fff;border-color:#2563eb;}
-.sum-row{background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:var(--r-sm);padding:10px 14px;margin-bottom:12px;font-size:12px;color:#1d4ed8;font-weight:600;display:flex;gap:14px;flex-wrap:wrap;}
-.rec{background:var(--card);border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:var(--shadow);border-left:4px solid var(--border);}
+.sum-row{background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:var(--r-sm);padding:8px 12px;margin-bottom:10px;font-size:11px;color:#1d4ed8;font-weight:600;display:flex;gap:10px;flex-wrap:wrap;}
+.rec{background:var(--card);border-radius:var(--r);padding:11px;margin-bottom:8px;box-shadow:var(--shadow);border-left:4px solid var(--border);}
 .rec.lead-r{border-left-color:#2563eb;}.rec.order-r{border-left-color:#7c3aed;}.rec.pay-r{border-left-color:#dc2626;}.rec.exp-r{border-left-color:#ea580c;}.rec.closed-r{border-left-color:#94a3b8;opacity:.8;}.rec.inprog-r{border-left-color:#d97706;}
-.rec-name{font-weight:700;font-size:15px;color:var(--text);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.rec-sub{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.65;}
+.rec-name{font-weight:700;font-size:14px;color:var(--text);display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.rec-sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5;}
 .note-chip{display:inline-block;background:#f1f5f9;border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:11px;color:var(--muted);margin-top:5px;}
-.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;}
 .b-closed{background:var(--green-bg);color:#16a34a;}.b-pending{background:var(--red-bg);color:#dc2626;}.b-partial{background:var(--blue-bg);color:#2563eb;}.b-overdue{background:var(--red-bg);color:#dc2626;}.b-today{background:var(--amber-bg);color:#d97706;}
 .pay-bar-wrap{background:#e2e8f0;border-radius:20px;height:7px;overflow:hidden;margin:8px 0 4px;}
 .pay-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#16a34a,#22c55e);}
@@ -154,7 +154,7 @@ textarea{resize:vertical;min-height:60px;}
 @media(max-width:480px){.tile{padding:12px 10px;}.tv{font-size:18px;}.ti{font-size:18px;}.menu-card{padding:12px 6px;}.mc-icon{font-size:22px;}.mc-label{font-size:11px;}.btn{padding:9px 12px;font-size:12px;}.row2{grid-template-columns:1fr 1fr;}.pin-btn{padding:15px;font-size:22px;}}
 html{-webkit-overflow-scrolling:touch;}
 
-.stock-card{background:#fff;border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:var(--shadow);border-left:4px solid var(--border);}
+.stock-card{background:#fff;border-radius:var(--r);padding:11px;margin-bottom:8px;box-shadow:var(--shadow);border-left:4px solid var(--border);}
 .stock-card.in-stock{border-left-color:#16a34a;}
 .stock-card.low-stock{border-left-color:#d97706;}
 .stock-card.out-stock{border-left-color:#dc2626;}
@@ -235,7 +235,6 @@ function showTabNew(id){
   window.scrollTo({top:0,behavior:"smooth"});
   if(id==="campaigns"){if(window.renderFestivals)window.renderFestivals();if(window.updateCampMsg)window.updateCampMsg();if(window.renderCampHistory)window.renderCampHistory();}
   if(id==="directory"&&window.renderDir)window.renderDir();
-  if(window.renderIntel&&id==="intel")window.renderIntel();
   if(id==="stock"&&window.renderStock)window.renderStock();
   if(id==="suppliers"){if(window.renderSuppliers)window.renderSuppliers();if(window.updateSupplierSelect)window.updateSupplierSelect();}
   if(window._appRender)window._appRender();
@@ -379,12 +378,12 @@ function onExpCatChange(){
 
 <!-- HOME -->
 <div id="home" class="section active">
-  <button onclick="showTabNew('overview')" style="width:100%;background:linear-gradient(135deg,#eff6ff,#fff);border:1.5px solid #bfdbfe;border-radius:var(--r);padding:14px 18px;margin-bottom:12px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;touch-action:manipulation;">
-    <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:28px;">&#128200;</span>
-    <div style="text-align:left;"><div style="font-size:14px;font-weight:800;color:#1e293b;">Business Overview</div><div style="font-size:10px;color:#64748b;">Sales &middot; Leads &middot; Profit</div></div></div>
-    <div style="text-align:right;"><div id="homeProfit" style="font-size:14px;font-weight:800;color:#16a34a;">&#8377;0</div><div style="font-size:10px;color:#64748b;">Net Profit</div></div>
+  <button onclick="showTabNew('overview')" style="width:100%;background:linear-gradient(135deg,#1e40af,#2563eb);border:none;border-radius:var(--r);padding:12px 16px;margin-bottom:10px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;touch-action:manipulation;box-shadow:0 2px 8px rgba(30,64,175,.25);">
+    <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:24px;">&#128200;</span>
+    <div style="text-align:left;"><div style="font-size:14px;font-weight:800;color:#fff;">Business Overview</div><div style="font-size:10px;color:rgba(255,255,255,.7);">Sales &middot; Leads &middot; Profit</div></div></div>
+    <div style="text-align:right;"><div id="homeProfit" style="font-size:15px;font-weight:900;color:#86efac;">&#8377;0</div><div style="font-size:10px;color:rgba(255,255,255,.6);">Net Profit</div></div>
   </button>
-  <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">&#9889; Quick Actions</div>
+  <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">&#9889; Quick Actions</div>
   <div class="menu-grid" style="margin-bottom:16px;">
     <button class="menu-card" onclick="showTabNew('sales')"><div class="mc-icon">&#128176;</div><div class="mc-label">Sales</div><div class="mc-sub">Add / View</div></button>
     <button class="menu-card" onclick="showTabNew('leads')"><div class="mc-icon">&#128203;</div><div class="mc-label">Leads</div><div class="mc-sub">Enquiries</div></button>
@@ -393,7 +392,6 @@ function onExpCatChange(){
     <button class="menu-card" onclick="showTabNew('expenses')"><div class="mc-icon">&#129534;</div><div class="mc-label">Expenses</div><div class="mc-sub">Costs</div></button>
     <button class="menu-card" onclick="showTabNew('suppliers')"><div class="mc-icon">&#127968;</div><div class="mc-label">Suppliers</div><div class="mc-sub">Vendors</div></button>
     <button class="menu-card" onclick="showTabNew('stock')" style="position:relative;"><div class="mc-icon">&#128230;</div><div class="mc-label">Stock</div><div class="mc-sub">Inventory</div><div id="stockAlertBadge" style="display:none;position:absolute;top:6px;right:6px;background:#dc2626;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;align-items:center;justify-content:center;"></div></button>
-    <button class="menu-card" onclick="showTabNew('intel')"><div class="mc-icon">&#129504;</div><div class="mc-label">Smart</div><div class="mc-sub">AI Tips</div></button>
     <button class="menu-card" onclick="showTabNew('directory')"><div class="mc-icon">&#128101;</div><div class="mc-label">Contacts</div><div class="mc-sub">Directory</div></button>
     <button class="menu-card" onclick="showTabNew('reports')"><div class="mc-icon">&#128202;</div><div class="mc-label">Reports</div><div class="mc-sub">More</div></button>
   </div>
@@ -716,74 +714,30 @@ function onExpCatChange(){
     <div class="sec-nav-title">&#128230; Stock / Inventory</div>
     <div style="width:44px;"></div>
   </div>
-  <div class="sum-row" style="background:#f0fdf4;border-color:#bbf7d0;color:#16a34a;">
-    Items: <b id="stTotal">0</b> &nbsp;|&nbsp; In Stock: <b id="stInStock">0</b> &nbsp;|&nbsp; Low: <b id="stLow" style="color:#d97706;">0</b> &nbsp;|&nbsp; Out: <b id="stOut" style="color:#dc2626;">0</b>
-  </div>
-  <div style="background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;border-radius:var(--r);padding:12px 16px;margin-bottom:12px;text-align:center;">
-    <div style="font-size:10px;opacity:.8;margin-bottom:2px;">TOTAL PURCHASE VALUE</div>
-    <div style="font-size:20px;font-weight:900;">&#8377;<span id="stPurchaseVal">0</span></div>
-  </div>
-  <div style="margin-bottom:12px;">
-    <button id="cat_ALL" onclick="filterStock('ALL')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;background:#eff6ff;border-color:#2563eb;text-align:left;transition:all .15s;">
-      <span style="font-size:22px;width:30px;text-align:center;">&#128230;</span>
-      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">All Items</span>
-      <span id="catCount_ALL" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
-    </button>
-    <button id="cat_SOF" onclick="filterStock('SOF')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
-      <span style="font-size:22px;width:30px;text-align:center;">&#128715;</span>
-      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Sofa & Seating</span>
-      <span id="catCount_SOF" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
-    </button>
-    <button id="cat_BED" onclick="filterStock('BED')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
-      <span style="font-size:22px;width:30px;text-align:center;">&#128719;</span>
-      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Beds</span>
-      <span id="catCount_BED" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
-    </button>
-    <button id="cat_MAT" onclick="filterStock('MAT')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
-      <span style="font-size:22px;width:30px;text-align:center;">&#128716;</span>
-      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Mattresses</span>
-      <span id="catCount_MAT" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
-    </button>
-    <button id="cat_TBL" onclick="filterStock('TBL')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
-      <span style="font-size:22px;width:30px;text-align:center;">&#127869;</span>
-      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Tables</span>
-      <span id="catCount_TBL" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
-    </button>
-    <button id="cat_STR" onclick="filterStock('STR')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
-      <span style="font-size:22px;width:30px;text-align:center;">&#128452;</span>
-      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Storage</span>
-      <span id="catCount_STR" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
-    </button>
-    <button id="cat_DRS" onclick="filterStock('DRS')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
-      <span style="font-size:22px;width:30px;text-align:center;">&#129694;</span>
-      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Dressing Table</span>
-      <span id="catCount_DRS" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
-    </button>
-    <button id="cat_TVU" onclick="filterStock('TVU')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
-      <span style="font-size:22px;width:30px;text-align:center;">&#128250;</span>
-      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">TV Units</span>
-      <span id="catCount_TVU" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
-    </button>
-    <button id="cat_OFC" onclick="filterStock('OFC')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
-      <span style="font-size:22px;width:30px;text-align:center;">&#128421;</span>
-      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Office & Chairs</span>
-      <span id="catCount_OFC" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
-    </button>
-    <button id="cat_KID" onclick="filterStock('KID')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
-      <span style="font-size:22px;width:30px;text-align:center;">&#129528;</span>
-      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Kids Furniture</span>
-      <span id="catCount_KID" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
-    </button>
-    <button id="cat_FLD" onclick="filterStock('FLD')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
-      <span style="font-size:22px;width:30px;text-align:center;">&#129681;</span>
-      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Folding Items</span>
-      <span id="catCount_FLD" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
-    </button>
-    <button id="cat_OTH" onclick="filterStock('OTH')" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fff;border:1.5px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;font-family:inherit;touch-action:manipulation;text-align:left;transition:all .15s;">
-      <span style="font-size:22px;width:30px;text-align:center;">&#128230;</span>
-      <span style="flex:1;font-size:14px;font-weight:600;color:var(--text);">Other</span>
-      <span id="catCount_OTH" style="background:#f1f5f9;color:#64748b;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;">0</span>
-    </button>
+
+
+  <div style="margin-bottom:10px;">
+    <select id="stockCatSelect" onchange="filterStockDropdown(this.value)" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;background:#fff;color:var(--text);font-weight:600;">
+      <option value="ALL">&#128230; All Items — <span id="catCount_ALL">0</span></option>
+      <option value="SOF">&#128715; Sofa &amp; Seating</option>
+      <option value="BED">&#128719; Beds</option>
+      <option value="MAT">&#128716; Mattresses</option>
+      <option value="TBL">&#127869; Tables</option>
+      <option value="STR">&#128452; Storage</option>
+      <option value="DRS">&#129694; Dressing Table</option>
+      <option value="TVU">&#128250; TV Units</option>
+      <option value="OFC">&#128421; Office &amp; Chairs</option>
+      <option value="KID">&#129528; Kids Furniture</option>
+      <option value="FLD">&#129681; Folding Items</option>
+      <option value="OTH">&#128230; Other</option>
+    </select>
+    <div id="stockCatInfo" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;font-size:12px;font-weight:600;">
+      <span style="color:#16a34a;">In Stock: <b id="stInStock">0</b></span>
+      <span style="color:#d97706;">Low: <b id="stLow">0</b></span>
+      <span style="color:#dc2626;">Out: <b id="stOut">0</b></span>
+      <span style="color:var(--muted);">Total: <b id="stTotal">0</b></span>
+      <span style="color:#1e40af;">Value: &#8377;<b id="stPurchaseVal">0</b></span>
+    </div>
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchStock" placeholder="Search by name or ID..." oninput="renderStock()"></div>
   <button onclick="showAddStock()" style="width:100%;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px;touch-action:manipulation;">&#43; Add New Stock Item</button>
@@ -899,31 +853,6 @@ function onExpCatChange(){
   <button onclick="exportData()" style="width:100%;padding:13px;background:#1e40af;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;">&#128229; Export Full Report</button>
 </div>
 
-
-<!-- INTEL -->
-<div id="intel" class="section">
-  <div class="sec-nav">
-    <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
-    <div class="sec-nav-title">&#129504; Smart Intelligence</div>
-    <div style="width:44px;"></div>
-  </div>
-  <div class="card" style="border-left:4px solid #dc2626;">
-    <div class="card-title" style="color:#dc2626;">&#128293; Hot Opportunities</div>
-    <div id="intelHot"></div>
-  </div>
-  <div class="card" style="border-left:4px solid #d97706;">
-    <div class="card-title" style="color:#d97706;">&#8987; Overdue Follow-ups</div>
-    <div id="intelOverdue"></div>
-  </div>
-  <div class="card" style="border-left:4px solid #2563eb;">
-    <div class="card-title" style="color:#2563eb;">&#128257; Re-engage Customers</div>
-    <div id="intelReengage"></div>
-  </div>
-  <div class="card" style="border-left:4px solid #16a34a;">
-    <div class="card-title" style="color:#16a34a;">&#128200; Conversion Funnel</div>
-    <div id="intelFunnel"></div>
-  </div>
-</div>
 
 <!-- DIRECTORY -->
 <div id="directory" class="section">
@@ -2149,11 +2078,23 @@ function renderStock() {
   var cats = ["SOF","BED","MAT","TBL","STR","DRS","TVU","OFC","KID","FLD","OTH"];
   var allCnt = all.length;
   var el = g("catCount_ALL"); if(el) el.textContent = allCnt;
+  // Update dropdown option labels with counts
+  var sel = g("stockCatSelect");
+  var catLabels = {"SOF":"Sofa & Seating","BED":"Beds","MAT":"Mattresses","TBL":"Tables","STR":"Storage","DRS":"Dressing Table","TVU":"TV Units","OFC":"Office & Chairs","KID":"Kids Furniture","FLD":"Folding Items","OTH":"Other"};
+  var catIcons = {"SOF":"&#128715;","BED":"&#128719;","MAT":"&#128716;","TBL":"&#127869;","STR":"&#128452;","DRS":"&#129694;","TVU":"&#128250;","OFC":"&#128421;","KID":"&#129528;","FLD":"&#129681;","OTH":"&#128230;"};
   cats.forEach(function(c){
     var cnt = all.filter(function(s){return s.cat===c;}).length;
     var el2 = g("catCount_"+c); if(el2) el2.textContent = cnt;
-    // Show/hide empty categories (optional - keep all visible)
+    if(sel){
+      for(var i=0;i<sel.options.length;i++){
+        if(sel.options[i].value===c){
+          sel.options[i].text = (catIcons[c]||"") + " " + (catLabels[c]||c) + (cnt>0?" ("+cnt+")":"");
+          break;
+        }
+      }
+    }
   });
+  if(sel) sel.options[0].text = "&#128230; All Items" + (allCnt>0?" ("+allCnt+")":"");
   var filtered = _stockFilter==="ALL" ? all : all.filter(function(s){return s.cat===_stockFilter;});
   if(q) filtered = filtered.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0||s.id.toLowerCase().indexOf(q)>=0;});
   var inStock=0,low=0,out=0,totalPurchase=0;
@@ -2199,22 +2140,16 @@ function renderStock() {
 window.renderStock = renderStock;
 
 function filterStock(cat) {
-  _stockFilter=cat;
-  document.querySelectorAll("[id^='cat_']").forEach(function(b){
-    b.style.borderColor="";
-    b.style.background="#fff";
-    var span=b.querySelector("span:last-child");
-    if(span){span.style.background="#f1f5f9";span.style.color="#64748b";}
-  });
-  var ab=g("cat_"+cat);
-  if(ab){
-    ab.style.borderColor="#2563eb";
-    ab.style.background="#eff6ff";
-    var span=ab.querySelector("span:last-child");
-    if(span){span.style.background="#2563eb";span.style.color="#fff";}
-  }
+  _stockFilter = cat || "ALL";
+  var sel = g("stockCatSelect");
+  if(sel) sel.value = _stockFilter;
   renderStock();
 }
+function filterStockDropdown(cat) {
+  _stockFilter = cat || "ALL";
+  renderStock();
+}
+window.filterStockDropdown = filterStockDropdown;
 window.filterStock = filterStock;
 
 function addMoreStock(ri) {
