@@ -205,9 +205,9 @@ function showTabNew(id){
   var bb=document.getElementById("backBtn");
   if(bb)bb.style.display=id==="home"?"none":"flex";
   window.scrollTo({top:0,behavior:"smooth"});
-  if(window.renderIntel&&id==="intel")window.renderIntel();
   if(id==="campaigns"){if(window.renderFestivals)window.renderFestivals();if(window.updateCampMsg)window.updateCampMsg();if(window.renderCampHistory)window.renderCampHistory();}
   if(id==="directory"&&window.renderDir)window.renderDir();
+  if(window.renderIntel&&id==="intel")window.renderIntel();
   if(id==="stock"&&window.renderStock)window.renderStock();
   if(id==="suppliers"){if(window.renderSuppliers)window.renderSuppliers();if(window.updateSupplierSelect)window.updateSupplierSelect();}
   if(window._appRender)window._appRender();
@@ -365,6 +365,7 @@ function onExpCatChange(){
     <button class="menu-card" onclick="showTabNew('expenses')"><div class="mc-icon">&#129534;</div><div class="mc-label">Expenses</div><div class="mc-sub">Costs</div></button>
     <button class="menu-card" onclick="showTabNew('suppliers')"><div class="mc-icon">&#127968;</div><div class="mc-label">Suppliers</div><div class="mc-sub">Vendors</div></button>
     <button class="menu-card" onclick="showTabNew('stock')" style="position:relative;"><div class="mc-icon">&#128230;</div><div class="mc-label">Stock</div><div class="mc-sub">Inventory</div><div id="stockAlertBadge" style="display:none;position:absolute;top:6px;right:6px;background:#dc2626;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;align-items:center;justify-content:center;"></div></button>
+    <button class="menu-card" onclick="showTabNew('intel')"><div class="mc-icon">&#129504;</div><div class="mc-label">Smart</div><div class="mc-sub">AI Tips</div></button>
     <button class="menu-card" onclick="showTabNew('directory')"><div class="mc-icon">&#128101;</div><div class="mc-label">Contacts</div><div class="mc-sub">Directory</div></button>
     <button class="menu-card" onclick="showTabNew('reports')"><div class="mc-icon">&#128202;</div><div class="mc-label">Reports</div><div class="mc-sub">More</div></button>
   </div>
@@ -822,13 +823,30 @@ function onExpCatChange(){
   <button onclick="exportData()" style="width:100%;padding:13px;background:#1e40af;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;">&#128229; Export Full Report</button>
 </div>
 
+
 <!-- INTEL -->
 <div id="intel" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#129504; Smart Intelligence</div><div style="width:44px;"></div></div>
-  <div class="card" style="border-left:4px solid #dc2626;"><div class="card-title" style="color:#dc2626;">&#128293; Hot Opportunities</div><div id="intelHot"></div></div>
-  <div class="card" style="border-left:4px solid #d97706;"><div class="card-title" style="color:#d97706;">&#8987; Overdue Follow-ups</div><div id="intelOverdue"></div></div>
-  <div class="card" style="border-left:4px solid #2563eb;"><div class="card-title" style="color:#2563eb;">&#128257; Re-engage Customers</div><div id="intelReengage"></div></div>
-  <div class="card" style="border-left:4px solid #16a34a;"><div class="card-title" style="color:#16a34a;">&#128200; Conversion Funnel</div><div id="intelFunnel"></div></div>
+  <div class="sec-nav">
+    <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
+    <div class="sec-nav-title">&#129504; Smart Intelligence</div>
+    <div style="width:44px;"></div>
+  </div>
+  <div class="card" style="border-left:4px solid #dc2626;">
+    <div class="card-title" style="color:#dc2626;">&#128293; Hot Opportunities</div>
+    <div id="intelHot"></div>
+  </div>
+  <div class="card" style="border-left:4px solid #d97706;">
+    <div class="card-title" style="color:#d97706;">&#8987; Overdue Follow-ups</div>
+    <div id="intelOverdue"></div>
+  </div>
+  <div class="card" style="border-left:4px solid #2563eb;">
+    <div class="card-title" style="color:#2563eb;">&#128257; Re-engage Customers</div>
+    <div id="intelReengage"></div>
+  </div>
+  <div class="card" style="border-left:4px solid #16a34a;">
+    <div class="card-title" style="color:#16a34a;">&#128200; Conversion Funnel</div>
+    <div id="intelFunnel"></div>
+  </div>
 </div>
 
 <!-- DIRECTORY -->
