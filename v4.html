@@ -269,21 +269,26 @@ function saveStockItem(){
   alert("Stock item saved: "+stId);
 }
 
-function togglePayRecurring(){
-  var sel=document.getElementById("pRecurring");
-  var row=document.getElementById("pEndDateRow");
-  if(row)row.style.display=sel&&sel.value?"block":"none";
-}
 function onPayCatChange(){
   var cat=document.getElementById("pCategory")?document.getElementById("pCategory").value:"";
   var extra=document.getElementById("pExtraFields");
   if(!extra)return;
   var html="";
-  if(cat==="salary")html='<div class="fg"><label>Staff Member Name</label><input id="pStaffName" placeholder="e.g. Ravi Kumar"></div>';
-  else if(cat==="lic")html='<div class="row2"><div class="fg"><label>Policy Number</label><input id="pPolicyNo" placeholder="Policy number"></div><div class="fg"><label>Insurer</label><input id="pInsurer" placeholder="LIC / Company name"></div></div>';
-  else if(cat==="chit")html='<div class="row2"><div class="fg"><label>Chit Group Name</label><input id="pChitGroup" placeholder="Group name"></div><div class="fg"><label>Total Months</label><input id="pChitMonths" type="number" placeholder="20"></div></div>';
-  else if(cat==="loan")html='<div class="row2"><div class="fg"><label>Lender Name</label><input id="pLender" placeholder="Bank / Person"></div><div class="fg"><label>Remaining EMIs</label><input id="pEmiLeft" type="number" placeholder="24"></div></div>';
+  if(cat==="salary")html='<div class="fg"><label>Staff Member Name</label><input id="pStaffName" placeholder="Staff name"></div>';
+  else if(cat==="lic")html='<div class="row2"><div class="fg"><label>Policy Number</label><input id="pPolicyNo" placeholder="Policy no"></div><div class="fg"><label>Insurer</label><input id="pInsurer" placeholder="LIC / Company"></div></div>';
+  else if(cat==="chit")html='<div class="row2"><div class="fg"><label>Chit Group</label><input id="pChitGroup" placeholder="Group name"></div><div class="fg"><label>Total Months</label><input id="pChitMonths" type="number" placeholder="20"></div></div>';
+  else if(cat==="loan")html='<div class="row2"><div class="fg"><label>Lender</label><input id="pLender" placeholder="Bank / Person"></div><div class="fg"><label>Remaining EMIs</label><input id="pEmiLeft" type="number" placeholder="24"></div></div>';
   extra.innerHTML=html;
+}
+function onPayRecurringChange(){
+  var sel=document.getElementById("pRecurring");
+  var row=document.getElementById("pEndDateRow");
+  if(row)row.style.display=sel&&sel.value?"block":"none";
+}
+function onExpCatChange(){
+  var cat=document.getElementById("eCategory")?document.getElementById("eCategory").value:"";
+  var mf=document.getElementById("eMaintenanceFields");
+  if(mf)mf.style.display=cat==="maintenance"?"block":"none";
 }
 </script>
 </head>
@@ -291,8 +296,22 @@ function onPayCatChange(){
 <!-- PIN SCREEN -->
 <div id="pinScreen">
   <div style="text-align:center;margin-bottom:28px;">
-    <div style="font-size:42px;margin-bottom:8px;">&#127968;</div>
-    <div style="color:#fff;font-size:22px;font-weight:900;">Sri Sai Home Needs</div>
+    <svg width="110" height="110" viewBox="0 0 180 180" style="display:block;margin:0 auto 12px;">
+      <defs>
+        <linearGradient id="sGrad" x1="0" y1="0" x2="0.4" y2="1">
+          <stop offset="0%" stop-color="#93c5fd"/>
+          <stop offset="45%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#bfdbfe"/>
+        </linearGradient>
+      </defs>
+      <circle cx="90" cy="90" r="86" fill="#0d1b3e"/>
+      <circle cx="90" cy="90" r="80" fill="none" stroke="#1e3a6e" stroke-width="1.5"/>
+      <!-- S1 white gradient -->
+      <path d="M48 62 C48 50 58 44 70 44 L102 44 C116 44 122 54 122 64 C122 76 110 82 96 82 L64 82 C50 82 44 91 44 103 C44 116 52 124 66 124 L100 124 C114 124 120 132 120 142" fill="none" stroke="url(#sGrad)" stroke-width="10" stroke-linecap="round"/>
+      <!-- S2 gold offset -->
+      <path d="M62 70 C62 58 72 52 84 52 L116 52 C130 52 136 62 136 72 C136 84 124 90 110 90 L78 90 C64 90 58 99 58 111 C58 124 66 132 80 132 L114 132 C128 132 134 140 134 150" fill="none" stroke="#f59e0b" stroke-width="5.5" stroke-linecap="round" opacity="0.85"/>
+    </svg>
+    <div style="color:#fff;font-size:22px;font-weight:900;letter-spacing:.5px;">Sri Sai Home Needs</div>
     <div style="color:rgba(255,255,255,.7);font-size:13px;margin-top:4px;">Furniture Shop, Chandanagar</div>
     <div style="color:rgba(255,255,255,.55);font-size:11px;margin-top:8px;">Enter your PIN to continue</div>
   </div>
@@ -346,7 +365,6 @@ function onPayCatChange(){
     <button class="menu-card" onclick="showTabNew('expenses')"><div class="mc-icon">&#129534;</div><div class="mc-label">Expenses</div><div class="mc-sub">Costs</div></button>
     <button class="menu-card" onclick="showTabNew('intel')"><div class="mc-icon">&#129504;</div><div class="mc-label">Smart</div><div class="mc-sub">AI Tips</div></button>
 <button class="menu-card" onclick="showTabNew('directory')"><div class="mc-icon">&#128101;</div><div class="mc-label">Contacts</div><div class="mc-sub">Directory</div></button>
-    <button class="menu-card" onclick="showTabNew('suppliers')"><div class="mc-icon">&#127968;</div><div class="mc-label">Suppliers</div><div class="mc-sub">Vendors</div></button>
     <button class="menu-card" onclick="showTabNew('stock')" style="position:relative;"><div class="mc-icon">&#128230;</div><div class="mc-label">Stock</div><div class="mc-sub">Inventory</div><div id="stockAlertBadge" style="display:none;position:absolute;top:6px;right:6px;background:#dc2626;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;align-items:center;justify-content:center;"></div></button>
     <button class="menu-card" onclick="showTabNew('reports')"><div class="mc-icon">&#128202;</div><div class="mc-label">Reports</div><div class="mc-sub">More</div></button>
   </div>
@@ -520,28 +538,26 @@ function onPayCatChange(){
           <option value="salary">&#128184; Staff Salary</option>
           <option value="loan">&#127984; Loan / EMI</option>
           <option value="chit">&#129309; Chit Fund</option>
-          <option value="maintenance">&#128295; Maintenance</option>
           <option value="fuel">&#9981; Fuel</option>
           <option value="vehicle">&#128296; Vehicle Repair</option>
           <option value="household">&#127968; Household</option>
-          <option value="supplier">&#128230; Supplier</option>
+          <option value="supplier">&#128230; Supplier Payment</option>
           <option value="other">&#128221; Other</option>
         </select>
       </div>
       <div class="fg"><label>Name / Description *</label><input id="pName" placeholder="Customer / Bill name"></div>
     </div>
     <div class="row2">
-      <div class="fg"><label>Phone</label><input id="pPhone" type="tel" placeholder="Mobile number"></div>
+      <div class="fg"><label>Phone</label><input id="pPhone" type="tel" placeholder="Mobile"></div>
       <div class="fg"><label>Total Amount (&#8377;) *</label><input id="pAmt" type="number" placeholder="0"></div>
     </div>
     <div class="row2">
       <div class="fg"><label>Due Date *</label><input id="pDate" type="date"></div>
-      <div class="fg"><label>Bill / Ref No.</label><input id="pBill" placeholder="Reference"></div>
+      <div class="fg"><label>Ref / Bill No.</label><input id="pBill" placeholder="Reference"></div>
     </div>
-    <!-- Recurring fields -->
     <div class="fg"><label>Recurring?</label>
-      <select id="pRecurring" onchange="togglePayRecurring()">
-        <option value="">No - One time</option>
+      <select id="pRecurring" onchange="onPayRecurringChange()">
+        <option value="">No - One time only</option>
         <option value="weekly">Weekly</option>
         <option value="monthly">Monthly</option>
         <option value="quarterly">Quarterly (3 months)</option>
@@ -550,10 +566,9 @@ function onPayCatChange(){
       </select>
     </div>
     <div id="pEndDateRow" style="display:none;" class="fg">
-      <label>End Date (optional - leave blank if ongoing)</label>
+      <label>End Date (leave blank if ongoing)</label>
       <input id="pEndDate" type="date">
     </div>
-    <!-- Extra fields shown by category -->
     <div id="pExtraFields"></div>
     <div class="fg"><label>Note</label><textarea id="pNote" placeholder="Any remarks..."></textarea></div>
     <button class="btn btn-save" id="btnAP">Save Payment</button>
@@ -573,14 +588,13 @@ function onPayCatChange(){
   <div class="card">
     <div class="card-title">Add Expense</div>
     <div class="fg"><label>Category *</label>
-      <select id="eCategory">
+      <select id="eCategory" onchange="onExpCatChange()">
         <option value="general">&#128230; General</option>
         <option value="maintenance">&#128295; Shop Maintenance / Repair</option>
         <option value="fuel">&#9981; Fuel</option>
         <option value="vehicle">&#128296; Vehicle Repair</option>
         <option value="household">&#127968; Household</option>
         <option value="supplies">&#128218; Shop Supplies</option>
-        <option value="marketing">&#128227; Marketing</option>
         <option value="other">&#128221; Other</option>
       </select>
     </div>
@@ -595,7 +609,6 @@ function onPayCatChange(){
       <div class="fg"><label>Amount (&#8377;) *</label><input id="eAmt" type="number" placeholder="0"></div>
       <div class="fg"><label>Date *</label><input id="eDate" type="date"></div>
     </div>
-    <div class="fg" id="eExpDateRow"><label>Expense Date</label><input id="eExpDate" type="date"></div>
     <button class="btn btn-save" id="btnAE">Save Expense</button>Save Expense</button>
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchExp" placeholder="Search expenses..."></div>
@@ -815,36 +828,26 @@ function onPayCatChange(){
     <div class="sec-nav-title">&#127968; Suppliers / Vendors</div>
     <div style="width:44px;"></div>
   </div>
-
-  <!-- Stats -->
   <div class="sum-row" style="background:#fff7ed;border-color:#fed7aa;color:#ea580c;">
-    Suppliers: <b id="supTotal">0</b> &nbsp;|&nbsp;
-    Total Owed: <b id="supTotalOwed">&#8377;0</b> &nbsp;|&nbsp;
-    Overdue: <b id="supOverdue" style="color:#dc2626;">0</b>
+    Suppliers: <b id="supTotal">0</b> &nbsp;|&nbsp; Total Owed: <b id="supTotalOwed">&#8377;0</b> &nbsp;|&nbsp; Overdue: <b id="supOverdue" style="color:#dc2626;">0</b>
   </div>
-
-  <!-- Add Supplier -->
   <div class="card">
-    <div class="card-title">&#43; Add / Select Supplier</div>
+    <div class="card-title">&#43; Add Supplier</div>
     <div class="row2">
-      <div class="fg" style="margin-bottom:8px;"><label>Supplier Name *</label><input id="supName" placeholder="e.g. Nilkamal Furniture"></div>
+      <div class="fg" style="margin-bottom:8px;"><label>Supplier Name *</label><input id="supName" placeholder="e.g. Nilkamal"></div>
       <div class="fg" style="margin-bottom:8px;"><label>Phone</label><input id="supPhone" type="tel" placeholder="Mobile"></div>
     </div>
     <button onclick="addSupplier()" style="width:100%;padding:12px;background:#ea580c;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#43; Add Supplier</button>
   </div>
-
-  <!-- Add Bill / Payment -->
   <div class="card" style="border:1.5px solid #fed7aa;">
-    <div class="card-title" style="color:#ea580c;">&#128230; Add Bill or Payment</div>
+    <div class="card-title" style="color:#ea580c;">&#128230; Record Bill / Payment</div>
     <div class="fg"><label>Select Supplier *</label>
-      <select id="supSelect">
-        <option value="">Select supplier...</option>
-      </select>
+      <select id="supSelect"><option value="">Select supplier...</option></select>
     </div>
     <div class="row2">
       <div class="fg"><label>Type</label>
         <select id="supTxnType">
-          <option value="bill">&#128203; New Bill (amount owed)</option>
+          <option value="bill">&#128203; New Bill (owed)</option>
           <option value="payment">&#128184; Payment Made</option>
         </select>
       </div>
@@ -854,21 +857,15 @@ function onPayCatChange(){
       <div class="fg"><label>Date *</label><input id="supDate" type="date"></div>
       <div class="fg"><label>Invoice / Ref No.</label><input id="supRef" placeholder="Invoice number"></div>
     </div>
-    <div class="fg"><label>Due Date (for bills)</label><input id="supDueDate" type="date"></div>
     <div class="fg"><label>Note</label><input id="supNote" placeholder="Description"></div>
     <div style="display:flex;gap:8px;">
       <button onclick="addSupplierTxn()" style="flex:1;padding:13px;background:#ea580c;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Save</button>
       <button onclick="sendSupplierWA()" style="flex:1;padding:13px;background:#15803d;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#128245; WA Balance</button>
     </div>
   </div>
-
-  <!-- Search -->
-  <div class="sw"><span class="si">&#128269;</span><input id="searchSup" placeholder="Search suppliers..." oninput="renderSuppliers()"></div>
-
-  <!-- Supplier List -->
+  <div class="sw"><span class="si">&#128269;</span><input id="searchSup" placeholder="Search suppliers..." oninput="if(window.renderSuppliers)window.renderSuppliers()"></div>
   <div id="supplierList"></div>
 </div>
-
 <!-- EDIT OVERLAY -->
 <div id="editOv">
   <div id="editBox">
@@ -1481,6 +1478,8 @@ function renderSync() {
   }
 }
 window._appRender = renderSync;
+window.saveDB = saveDB;
+window._getDb = function(){ return db; };
 window.saveDB = saveDB;
 window._getDb = function(){ return db; };
 
@@ -2274,98 +2273,25 @@ window.markDone = function(type,ri){
 // showTabNew in head handles stock tab
 
 
+// ================================================================
+// HEAD FUNCTIONS - called from HTML onclick
+// ================================================================
+// (these go in head script, not module)
 
 // ================================================================
-// HEAD FUNCTIONS NEEDED - expose to window
+// NEW FEATURE JS - all module-safe, no reassignments
 // ================================================================
-window._getDb = window._getDb || function(){ return null; };
 
-// ================================================================
-// PAYMENT HELPERS
-// ================================================================
-function onPayCatChange_module(){
-  var cat=g("pCategory")?g("pCategory").value:"";
-  var extra=g("pExtraFields");
-  if(!extra)return;
-  var html="";
-  if(cat==="salary"){
-    html='<div class="fg"><label>Staff Member Name</label><input id="pStaffName" placeholder="e.g. Ravi Kumar"></div>';
-  } else if(cat==="lic"){
-    html='<div class="row2"><div class="fg"><label>Policy Number</label><input id="pPolicyNo" placeholder="Policy number"></div><div class="fg"><label>Insurer</label><input id="pInsurer" placeholder="LIC / Company name"></div></div>';
-  } else if(cat==="chit"){
-    html='<div class="row2"><div class="fg"><label>Chit Group Name</label><input id="pChitGroup" placeholder="Group name"></div><div class="fg"><label>Total Months</label><input id="pChitMonths" type="number" placeholder="20"></div></div>';
-  } else if(cat==="loan"){
-    html='<div class="row2"><div class="fg"><label>Lender Name</label><input id="pLender" placeholder="Bank / Person"></div><div class="fg"><label>Remaining EMIs</label><input id="pEmiLeft" type="number" placeholder="24"></div></div>';
-  }
-  extra.innerHTML=html;
-}
-window.onPayCatChange=onPayCatChange;
+// ── Payment helpers ──────────────────────────────────────────────
+function freqLabel(f){return f==="weekly"?"Weekly":f==="monthly"?"Monthly":f==="quarterly"?"Quarterly":f==="halfyearly"?"Half Yearly":f==="yearly"?"Yearly":"One-time";}
+function catLabel(c){var m={"customer":"Customer","rent":"Shop Rent","electricity":"Electricity","tax":"Tax/GST","itr":"ITR Filing","licence":"Licence","lic":"LIC/Insurance","salary":"Salary","loan":"Loan/EMI","chit":"Chit Fund","fuel":"Fuel","vehicle":"Vehicle","household":"Household","supplier":"Supplier","other":"Other"};return m[c]||c||"Payment";}
+function getNextDueDate(dateStr,freq){var d=new Date(dateStr);if(freq==="weekly")d.setDate(d.getDate()+7);else if(freq==="monthly")d.setMonth(d.getMonth()+1);else if(freq==="quarterly")d.setMonth(d.getMonth()+3);else if(freq==="halfyearly")d.setMonth(d.getMonth()+6);else if(freq==="yearly")d.setFullYear(d.getFullYear()+1);return d.toISOString().split("T")[0];}
 
-function getNextDueDate(dateStr,freq){
-  var d=new Date(dateStr);
-  if(freq==="weekly")d.setDate(d.getDate()+7);
-  else if(freq==="monthly")d.setMonth(d.getMonth()+1);
-  else if(freq==="quarterly")d.setMonth(d.getMonth()+3);
-  else if(freq==="halfyearly")d.setMonth(d.getMonth()+6);
-  else if(freq==="yearly")d.setFullYear(d.getFullYear()+1);
-  return d.toISOString().split("T")[0];
-}
-
-function freqLabel(f){
-  return f==="weekly"?"Weekly":f==="monthly"?"Monthly":f==="quarterly"?"Quarterly":f==="halfyearly"?"Half Yearly":f==="yearly"?"Yearly":"One-time";
-}
-
-function catLabel(c){
-  var m={"customer":"Customer Due","rent":"Shop Rent","electricity":"Electricity","tax":"Tax/GST","itr":"ITR Filing","licence":"Licence","lic":"LIC/Insurance","salary":"Staff Salary","loan":"Loan/EMI","chit":"Chit Fund","maintenance":"Maintenance","fuel":"Fuel","vehicle":"Vehicle Repair","household":"Household","supplier":"Supplier","other":"Other"};
-  return m[c]||c||"Payment";
-}
-
-// ================================================================
-// ENHANCED PAYMENT - add with partial pay support
-// ================================================================
-var _origBtnAPEl = g("btnAP");
-if(_origBtnAPEl){
-  _origBtnAPEl.onclick = function(){
-    var name=g("pName")?g("pName").value.trim():"";
-    var amt=parseFloat(g("pAmt")?g("pAmt").value:0)||0;
-    var date=g("pDate")?g("pDate").value:"";
-    if(!name||!amt||!date){alert("Name, Amount and Due Date required.");return;}
-    var cat=g("pCategory")?g("pCategory").value:"customer";
-    var rec=g("pRecurring")?g("pRecurring").value:"";
-    var endDate=g("pEndDate")?g("pEndDate").value:"";
-    // Extra fields
-    var extra={};
-    if(g("pStaffName"))extra.staffName=g("pStaffName").value.trim();
-    if(g("pPolicyNo"))extra.policyNo=g("pPolicyNo").value.trim();
-    if(g("pInsurer"))extra.insurer=g("pInsurer").value.trim();
-    if(g("pChitGroup"))extra.chitGroup=g("pChitGroup").value.trim();
-    if(g("pChitMonths"))extra.chitMonths=parseInt(g("pChitMonths").value)||0;
-    if(g("pLender"))extra.lender=g("pLender").value.trim();
-    if(g("pEmiLeft"))extra.emiLeft=parseInt(g("pEmiLeft").value)||0;
-    db.payments.push({
-      n:name, phone:g("pPhone")?g("pPhone").value.trim():"",
-      amt:amt, paidAmt:0, d:date,
-      bill:g("pBill")?g("pBill").value.trim():"",
-      note:g("pNote")?g("pNote").value.trim():"",
-      done:false, category:cat, recurring:rec,
-      endDate:endDate, extra:extra
-    });
-    ["pName","pPhone","pAmt","pDate","pBill","pNote","pEndDate"].forEach(function(id){var el=g(id);if(el)el.value="";});
-    var pr=g("pRecurring");if(pr)pr.value="";
-    var pc=g("pCategory");if(pc)pc.value="customer";
-    var ef=g("pExtraFields");if(ef)ef.innerHTML="";
-    var er=g("pEndDateRow");if(er)er.style.display="none";
-    saveDB();render();
-    alert("Payment saved!"+(rec?" | Recurring: "+freqLabel(rec):""));
-  };
-}
-
-// Partial payment collection
+// ── Partial payment collection ───────────────────────────────────
 function collectPartialPay(ri){
   var p=db.payments[ri];if(!p)return;
   var balance=(p.amt||0)-(p.paidAmt||0);
-  var amt=prompt("Balance: Rs."+balance.toFixed(0)+"
-Enter amount paying now:","");
+  var amt=prompt("Balance: Rs."+balance.toFixed(0)+"\nEnter amount paying now:","");
   if(amt===null)return;
   amt=parseFloat(amt)||0;
   if(amt<=0){alert("Enter valid amount.");return;}
@@ -2373,171 +2299,120 @@ Enter amount paying now:","");
   p.paidAmt+=amt;
   if(!p.history)p.history=[];
   p.history.push({amt:amt,date:new Date().toISOString().split("T")[0]});
-  var newBalance=p.amt-p.paidAmt;
-  if(newBalance<=0){
+  var newBal=(p.amt||0)-p.paidAmt;
+  if(newBal<=0){
     p.done=true;
-    // Auto-create next if recurring
     if(p.recurring){
       var nextDate=getNextDueDate(p.d,p.recurring);
       var endReached=p.endDate&&nextDate>p.endDate;
       if(!endReached){
-        db.payments.push({
-          n:p.n,phone:p.phone||"",amt:p.amt,paidAmt:0,
-          d:nextDate,bill:p.bill||"",note:p.note||"",
-          done:false,category:p.category||"",
-          recurring:p.recurring,endDate:p.endDate||"",extra:p.extra||{}
-        });
-        alert("Fully paid! Next due auto-created: "+nextDate);
-      } else {
-        alert("Fully paid! Recurring series completed.");
-      }
-    } else {
-      alert("Fully paid! Payment completed.");
-    }
+        db.payments.push({n:p.n,phone:p.phone||"",amt:p.amt,paidAmt:0,d:nextDate,bill:p.bill||"",note:p.note||"",done:false,category:p.category||"customer",recurring:p.recurring,endDate:p.endDate||"",extra:p.extra||{}});
+        alert("Fully paid!\nNext due auto-created: "+nextDate);
+      } else { alert("Fully paid! Series completed."); }
+    } else { alert("Fully paid!"); }
   } else {
-    alert("Partial payment recorded.
-Paid: Rs."+p.paidAmt.toFixed(0)+" | Balance: Rs."+newBalance.toFixed(0));
+    alert("Partial recorded.\nPaid: Rs."+p.paidAmt.toFixed(0)+" | Balance: Rs."+newBal.toFixed(0));
   }
   saveDB();render();
 }
 window.collectPartialPay=collectPartialPay;
 
-// ================================================================
-// ENHANCED RENDER - show recurring + partial pay in payments
-// ================================================================
-function renderEnhancedPayments(){
+// ── Enhanced payment render - REPLACES payList rendering ─────────
+function renderPaymentsEnhanced(){
   var pl=g("payList");if(!pl)return;
   var q=(g("searchPay")?g("searchPay").value||"":"").toLowerCase();
-  var all=(db.payments||[]).filter(function(p){
-    if(q)return p.n.toLowerCase().indexOf(q)>=0;
-    return true;
-  });
   var TODAY=new Date().toISOString().split("T")[0];
+  var all=(db.payments||[]).filter(function(p){return !q||p.n.toLowerCase().indexOf(q)>=0;});
   if(all.length===0){pl.innerHTML='<div class="empty"><div class="ei">&#128184;</div>No payments yet</div>';return;}
-
   pl.innerHTML=all.map(function(p,ri){
     var paidAmt=p.paidAmt||0;
-    var balance=(p.amt||0)-paidAmt;
-    var pct=p.amt>0?Math.round(paidAmt/p.amt*100):0;
-    var isOverdue=!p.done&&p.d<TODAY;
-    var isDone=p.done||balance<=0;
-    var catLbl=catLabel(p.category||"customer");
-    var recLbl=p.recurring?freqLabel(p.recurring):"";
-
-    return '<div class="rec pay-r'+(isDone?" closed-r":"")+(isOverdue?" border-red":"")+'">'+
+    var bal=(p.amt||0)-paidAmt;
+    var pct=p.amt>0?Math.min(100,Math.round(paidAmt/p.amt*100)):0;
+    var isDone=p.done||(p.amt>0&&bal<=0);
+    var isOverdue=!isDone&&p.d<TODAY;
+    return '<div class="rec pay-r'+(isDone?" closed-r":"")+'">'+
       '<div class="rec-name">'+esc(p.n)+
         (isDone?'<span class="badge b-closed">&#10003; Paid</span>':isOverdue?'<span class="badge b-overdue">Overdue</span>':'<span class="badge b-pending">Pending</span>')+
-        '<span style="background:#f1f5f9;color:#64748b;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;">'+catLbl+'</span>'+
-        (recLbl?'<span style="background:#eff6ff;color:#2563eb;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;">&#128257; '+recLbl+'</span>':'')+
+        '<span style="background:#f1f5f9;color:#64748b;border-radius:20px;font-size:10px;padding:2px 7px;font-weight:600;">'+catLabel(p.category||"customer")+'</span>'+
+        (p.recurring?'<span style="background:#eff6ff;color:#2563eb;border-radius:20px;font-size:10px;padding:2px 7px;font-weight:600;">&#128257; '+freqLabel(p.recurring)+'</span>':'')+
       '</div>'+
-      '<div class="rec-sub">Due: '+p.d+(p.bill?' | Ref: '+esc(p.bill):'')+
+      '<div class="rec-sub">Due: '+p.d+(p.phone?' | '+esc(p.phone):'')+(p.bill?' | Ref: '+esc(p.bill):'')+
         (p.extra&&p.extra.staffName?' | Staff: '+esc(p.extra.staffName):'')+
         (p.extra&&p.extra.chitGroup?' | Chit: '+esc(p.extra.chitGroup):'')+
         (p.extra&&p.extra.policyNo?' | Policy: '+esc(p.extra.policyNo):'')+
       '</div>'+
-      // Progress bar
-      '<div style="margin:8px 0 4px;">' +
+      '<div style="margin:8px 0 4px;">'+
         '<div style="display:flex;justify-content:space-between;font-size:11px;font-weight:600;margin-bottom:4px;">'+
           '<span style="color:#16a34a;">Paid: &#8377;'+paidAmt.toFixed(0)+'</span>'+
-          '<span style="color:#d97706;">Balance: &#8377;'+balance.toFixed(0)+'</span>'+
+          '<span style="color:#d97706;">Balance: &#8377;'+Math.max(0,bal).toFixed(0)+'</span>'+
           '<span style="color:var(--muted);">Total: &#8377;'+(p.amt||0).toFixed(0)+'</span>'+
         '</div>'+
         '<div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:'+pct+'%;background:'+(isDone?"#16a34a":"#2563eb")+';"></div></div>'+
-        '<div style="font-size:10px;color:var(--muted);text-align:right;">'+pct+'% paid</div>'+
+        '<div style="font-size:10px;color:var(--muted);text-align:right;">'+pct+'% paid'+(isDone?' ✅ Complete':'')+' </div>'+
       '</div>'+
-      // Actions
-      (!isDone?
-        '<div class="row-btn">'+
-          '<button class="btn btn-done btn-sm" onclick="collectPartialPay('+ri+')">&#128184; Pay</button>'+
-          (p.phone?'<button class="btn btn-wa btn-sm" onclick="waPayment('+ri+')">&#128245; WA</button>':"")+
-          '<button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="openEdit('payments','+ri+')">Edit</button>'+
-          '<button class="btn btn-del btn-sm" onclick="delItem('payments','+ri+')">&#128465;</button>'+
-        '</div>'
-      :
-        '<div class="row-btn">'+
-          '<button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="delItem('payments','+ri+')">&#128465;</button>'+
-        '</div>'
-      )+
+      (!isDone?'<div class="row-btn"><button class="btn btn-done btn-sm" onclick="collectPartialPay('+ri+')">&#128184; Pay</button>'+(p.phone?'<button class="btn btn-wa btn-sm" onclick="waPayment('+ri+')">&#128245; WA</button>':"")+' <button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="openEdit(\'payments\','+ri+')">Edit</button><button class="btn btn-del btn-sm" onclick="delItem(\'payments\','+ri+')">&#128465;</button></div>':
+       '<div class="row-btn"><button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="openEdit(\'payments\','+ri+')">Edit</button><button class="btn btn-del btn-sm" onclick="delItem(\'payments\','+ri+')">&#128465;</button></div>')+
     '</div>';
   }).join("");
 }
-window.renderEnhancedPayments=renderEnhancedPayments;
+window.renderPaymentsEnhanced=renderPaymentsEnhanced;
 
-// ================================================================
-// SUPPLIERS
-// ================================================================
+// ── Suppliers ────────────────────────────────────────────────────
 function addSupplier(){
   var name=g("supName")?g("supName").value.trim():"";
   if(!name){alert("Supplier name required.");return;}
-  if((db.suppliers||[]).find(function(s){return s.name.toLowerCase()===name.toLowerCase();})){
-    alert("Supplier already exists!");return;
-  }
   if(!db.suppliers)db.suppliers=[];
+  if(db.suppliers.find(function(s){return s.name.toLowerCase()===name.toLowerCase();})){alert("Already exists!");return;}
   db.suppliers.push({name:name,phone:g("supPhone")?g("supPhone").value.trim():"",txns:[],balance:0});
-  g("supName").value="";if(g("supPhone"))g("supPhone").value="";
+  if(g("supName"))g("supName").value="";if(g("supPhone"))g("supPhone").value="";
   saveDB();renderSuppliers();updateSupplierSelect();
-  alert("Supplier added: "+name);
 }
 window.addSupplier=addSupplier;
 
 function updateSupplierSelect(){
   var sel=g("supSelect");if(!sel)return;
-  var suppliers=db.suppliers||[];
   sel.innerHTML='<option value="">Select supplier...</option>'+
-    suppliers.map(function(s,i){
-      return '<option value="'+i+'">'+esc(s.name)+(s.balance>0?" (Bal: Rs."+s.balance.toFixed(0)+")":"")+'</option>';
-    }).join("");
+    (db.suppliers||[]).map(function(s,i){return '<option value="'+i+'">'+esc(s.name)+(s.balance>0?" (Bal: Rs."+s.balance.toFixed(0)+")":"")+'</option>';}).join("");
 }
 window.updateSupplierSelect=updateSupplierSelect;
 
 function addSupplierTxn(){
   var si=g("supSelect")?parseInt(g("supSelect").value):-1;
-  if(isNaN(si)||si<0){alert("Please select a supplier.");return;}
+  if(isNaN(si)||si<0){alert("Select a supplier.");return;}
   var amt=parseFloat(g("supAmt")?g("supAmt").value:0)||0;
   var date=g("supDate")?g("supDate").value:"";
   var type=g("supTxnType")?g("supTxnType").value:"bill";
   if(!amt||!date){alert("Amount and Date required.");return;}
-  var sup=db.suppliers[si];if(!sup)return;
+  var sup=(db.suppliers||[])[si];if(!sup)return;
   if(!sup.txns)sup.txns=[];
-  var txn={type:type,amt:amt,date:date,ref:g("supRef")?g("supRef").value.trim():"",dueDate:g("supDueDate")?g("supDueDate").value:"",note:g("supNote")?g("supNote").value.trim():""};
-  sup.txns.push(txn);
-  // Update balance: bill increases, payment decreases
+  sup.txns.push({type:type,amt:amt,date:date,ref:g("supRef")?g("supRef").value.trim():"",note:g("supNote")?g("supNote").value.trim():""});
   sup.balance=(sup.balance||0)+(type==="bill"?amt:-amt);
   if(sup.balance<0)sup.balance=0;
-  ["supAmt","supRef","supDueDate","supNote"].forEach(function(id){var el=g(id);if(el)el.value="";});
+  ["supAmt","supRef","supNote"].forEach(function(id){var el=g(id);if(el)el.value="";});
   saveDB();renderSuppliers();updateSupplierSelect();
-  alert((type==="bill"?"Bill added":"Payment recorded")+"!
-Current Balance: Rs."+sup.balance.toFixed(0));
+  alert((type==="bill"?"Bill added":"Payment recorded")+"!\nBalance: Rs."+sup.balance.toFixed(0));
 }
 window.addSupplierTxn=addSupplierTxn;
 
 function sendSupplierWA(){
   var si=g("supSelect")?parseInt(g("supSelect").value):-1;
-  if(isNaN(si)||si<0){alert("Please select a supplier first.");return;}
-  var sup=db.suppliers[si];if(!sup)return;
-  if(!sup.phone){alert("No phone number for this supplier.");return;}
-  var lastTxn=sup.txns&&sup.txns.length>0?sup.txns[sup.txns.length-1]:null;
-  var lastBills=sup.txns?sup.txns.filter(function(t){return t.type==="bill";}):[]; 
-  var lastPays=sup.txns?sup.txns.filter(function(t){return t.type==="payment";}):[]; 
-  var lastBill=lastBills.length>0?lastBills[lastBills.length-1]:null;
-  var lastPay=lastPays.length>0?lastPays[lastPays.length-1]:null;
-  var msg="*Sri Sai Home Needs - Furniture Shop, Chandanagar*
-
-";
-  msg+="Supplier: *"+sup.name+"*
-";
-  msg+="Date: "+new Date().toLocaleDateString("en-IN")+"
-
-";
-  if(lastBill)msg+="Last Bill: Rs."+lastBill.amt.toFixed(0)+(lastBill.ref?" ("+lastBill.ref+")":"")+"
-";
-  if(lastPay)msg+="Last Payment: Rs."+lastPay.amt.toFixed(0)+"
-";
-  msg+="*Balance Due: Rs."+sup.balance.toFixed(0)+"*
-
-";
-  msg+="Our Store: "+"https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6"+"
-Sri Sai Home Needs, Chandanagar";
+  if(isNaN(si)||si<0){alert("Select a supplier first.");return;}
+  var sup=(db.suppliers||[])[si];if(!sup||!sup.phone){alert("No phone for this supplier.");return;}
+  var bills=sup.txns?sup.txns.filter(function(t){return t.type==="bill";}):[]; 
+  var pays=sup.txns?sup.txns.filter(function(t){return t.type==="payment";}):[]; 
+  var lastBill=bills.length>0?bills[bills.length-1]:null;
+  var lastPay=pays.length>0?pays[pays.length-1]:null;
+  var totalBilled=bills.reduce(function(a,t){return a+t.amt;},0);
+  var totalPaid=pays.reduce(function(a,t){return a+t.amt;},0);
+  var msg="*Sri Sai Home Needs - Furniture Shop, Chandanagar*\n\n";
+  msg+="Supplier: *"+sup.name+"*\n";
+  msg+="Date: "+new Date().toLocaleDateString("en-IN")+"\n\n";
+  msg+="Total Billed: Rs."+totalBilled.toFixed(0)+"\n";
+  msg+="Total Paid: Rs."+totalPaid.toFixed(0)+"\n";
+  if(lastBill)msg+="Last Bill: Rs."+lastBill.amt.toFixed(0)+(lastBill.ref?" ("+lastBill.ref+")":"")+"\n";
+  if(lastPay)msg+="Last Payment: Rs."+lastPay.amt.toFixed(0)+"\n";
+  msg+="*Balance Due: Rs."+sup.balance.toFixed(0)+"*\n\n";
+  msg+="Our Store: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6\nSri Sai Home Needs, Chandanagar";
   var p=sup.phone.replace(/[^0-9]/g,"");if(p.length===10)p="91"+p;
   window.open("https://wa.me/"+p+"?text="+encodeURIComponent(msg),"_blank");
 }
@@ -2545,118 +2420,71 @@ window.sendSupplierWA=sendSupplierWA;
 
 function renderSuppliers(){
   var sl=g("supplierList");if(!sl)return;
-  var suppliers=db.suppliers||[];
   var q=(g("searchSup")?g("searchSup").value||"":"").toLowerCase();
-  var filtered=q?suppliers.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0;}):suppliers;
-  
-  // Update stats
-  var totalOwed=suppliers.reduce(function(s,x){return s+(x.balance||0);},0);
-  var overdue=suppliers.filter(function(s){
-    return (s.balance||0)>0 && s.txns && s.txns.some(function(t){
-      return t.type==="bill"&&t.dueDate&&t.dueDate<new Date().toISOString().split("T")[0];
-    });
-  }).length;
-  if(g("supTotal"))g("supTotal").textContent=suppliers.length;
+  var all=db.suppliers||[];
+  var filtered=q?all.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0;}):all;
+  var totalOwed=all.reduce(function(s,x){return s+(x.balance||0);},0);
+  if(g("supTotal"))g("supTotal").textContent=all.length;
   if(g("supTotalOwed"))g("supTotalOwed").textContent="Rs."+totalOwed.toFixed(0);
-  if(g("supOverdue"))g("supOverdue").textContent=overdue;
-
-  if(filtered.length===0){
-    sl.innerHTML='<div class="empty"><div class="ei">&#127968;</div><p>No suppliers yet. Add one above.</p></div>';
-    return;
-  }
-
+  if(g("supOverdue"))g("supOverdue").textContent=all.filter(function(s){return (s.balance||0)>0;}).length;
+  if(filtered.length===0){sl.innerHTML='<div class="empty"><div class="ei">&#127968;</div><p>No suppliers yet. Add one above.</p></div>';return;}
   sl.innerHTML=filtered.map(function(s,ri){
-    var totalBilled=s.txns?s.txns.filter(function(t){return t.type==="bill";}).reduce(function(a,t){return a+t.amt;},0):0;
-    var totalPaid=s.txns?s.txns.filter(function(t){return t.type==="payment";}).reduce(function(a,t){return a+t.amt;},0):0;
-    var balance=s.balance||0;
-    var pct=totalBilled>0?Math.round(totalPaid/totalBilled*100):0;
-    var recentTxns=s.txns?s.txns.slice(-3).reverse():[];
-
+    var totalBilled=(s.txns||[]).filter(function(t){return t.type==="bill";}).reduce(function(a,t){return a+t.amt;},0);
+    var totalPaid=(s.txns||[]).filter(function(t){return t.type==="payment";}).reduce(function(a,t){return a+t.amt;},0);
+    var bal=s.balance||0;
+    var pct=totalBilled>0?Math.min(100,Math.round(totalPaid/totalBilled*100)):0;
+    var recent=(s.txns||[]).slice(-3).reverse();
     return '<div class="rec" style="border-left-color:#ea580c;">'+
-      '<div class="rec-name">'+esc(s.name)+(s.phone?'<span style="font-size:12px;color:#64748b;font-weight:400;"> | '+esc(s.phone)+'</span>':'')+
-        (balance>0?'<span class="badge b-pending">Bal: Rs.'+balance.toFixed(0)+'</span>':'<span class="badge b-closed">&#10003; Clear</span>')+
+      '<div class="rec-name">'+esc(s.name)+(s.phone?' <span style="font-size:12px;color:#64748b;font-weight:400;">'+esc(s.phone)+'</span>':'')+
+        (bal>0?'<span class="badge b-pending">Bal: Rs.'+bal.toFixed(0)+'</span>':'<span class="badge b-closed">&#10003; Clear</span>')+
       '</div>'+
       '<div style="display:flex;gap:12px;font-size:12px;margin:6px 0;flex-wrap:wrap;">'+
         '<span style="color:#dc2626;font-weight:600;">Billed: Rs.'+totalBilled.toFixed(0)+'</span>'+
         '<span style="color:#16a34a;font-weight:600;">Paid: Rs.'+totalPaid.toFixed(0)+'</span>'+
-        '<span style="color:#d97706;font-weight:700;">Balance: Rs.'+balance.toFixed(0)+'</span>'+
+        '<span style="color:#d97706;font-weight:700;">Balance: Rs.'+bal.toFixed(0)+'</span>'+
       '</div>'+
       '<div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:'+pct+'%;"></div></div>'+
-      (recentTxns.length>0?
-        '<div style="font-size:11px;color:var(--muted);margin-top:6px;">'+
-          recentTxns.map(function(t){return t.date+': '+(t.type==="bill"?"Bill":"Paid")+' Rs.'+t.amt.toFixed(0)+(t.ref?' ('+t.ref+')':'');}).join(' | ')+
-        '</div>':"")+
-      '<div class="row-btn">'+
-        (s.phone?'<button class="btn btn-wa btn-sm" onclick="sendSupWADirect('+ri+')">&#128245; WA</button>':"")+
-        '<button class="btn btn-sm btn-del" onclick="deleteSupplier('+ri+')">&#128465;</button>'+
-      '</div>'+
+      (recent.length>0?'<div style="font-size:11px;color:var(--muted);margin-top:5px;">'+recent.map(function(t){return t.date+': '+(t.type==="bill"?"Bill":"Paid")+' Rs.'+t.amt.toFixed(0)+(t.ref?' ('+t.ref+')':'');}).join(' | ')+'</div>':'')+
+      '<div class="row-btn"><button class="btn btn-wa btn-sm" onclick="supWADirect('+ri+')">&#128245; WA</button>'+
+        '<button class="btn btn-del btn-sm" onclick="deleteSupplier('+ri+')">&#128465;</button></div>'+
     '</div>';
   }).join("");
 }
 window.renderSuppliers=renderSuppliers;
 
-function sendSupWADirect(ri){
-  var sup=(db.suppliers||[])[ri];if(!sup||!sup.phone)return;
-  var s={name:sup.name,phone:sup.phone,balance:sup.balance||0,txns:sup.txns||[]};
-  var si_el=g("supSelect");
-  // temporarily set select to this supplier and call sendSupplierWA
-  if(si_el)si_el.value=String(ri);
+function supWADirect(ri){
+  var sel=g("supSelect");if(sel)sel.value=String(ri);
   sendSupplierWA();
 }
-window.sendSupWADirect=sendSupWADirect;
+window.supWADirect=supWADirect;
 
 function deleteSupplier(ri){
   if(!window._isAdmin){alert("Admin only.");return;}
-  var sup=(db.suppliers||[])[ri];if(!sup)return;
-  if(!confirm("Delete supplier: "+sup.name+"?
-All transaction history will be lost."))return;
+  var s=(db.suppliers||[])[ri];if(!s)return;
+  if(!confirm("Delete "+s.name+"?"))return;
   db.suppliers.splice(ri,1);
   saveDB();renderSuppliers();updateSupplierSelect();
 }
 window.deleteSupplier=deleteSupplier;
 
-// ================================================================
-// MAINTENANCE IN EXPENSES - toggle vendor/service fields
-// ================================================================
-(function(){
-  var catEl=g("eCategory");
-  if(catEl){
-    catEl.addEventListener("change",function(){
-      var mf=g("eMaintenanceFields");
-      if(mf)mf.style.display=catEl.value==="maintenance"?"block":"none";
-    });
-  }
-  // Set today as default expense date
-  var ed=g("eExpDate");if(ed&&!ed.value)ed.value=new Date().toISOString().split("T")[0];
-})();
-
-// ================================================================
-// PATCH RENDER TO SHOW ENHANCED PAYMENTS + SUPPLIERS
-// ================================================================
-var _origAppRender2 = window._appRender;
-window._appRender = function(){
-  if(_origAppRender2)_origAppRender2();
-  renderEnhancedPayments();
-  renderSuppliers();
-  updateSupplierSelect();
-  // Check recurring reminders
-  checkPaymentReminders();
-};
-
+// ── Payment reminders on home ────────────────────────────────────
 function checkPaymentReminders(){
   var TODAY=new Date().toISOString().split("T")[0];
   var soon=(db.payments||[]).filter(function(p){
     if(p.done)return false;
+    var bal=(p.amt||0)-(p.paidAmt||0);
+    if(bal<=0)return false;
     var days=Math.ceil((new Date(p.d)-new Date(TODAY))/864e5);
-    return days<=3&&days>=-30;
+    return days<=3;
   });
+  if(!soon.length)return;
   var op=g("overduePay");
-  if(op&&soon.length>0){
+  if(op){
     var html=soon.map(function(p){
       var days=Math.ceil((new Date(p.d)-new Date(TODAY))/864e5);
       var bal=(p.amt||0)-(p.paidAmt||0);
-      var txt=days<0?"Overdue "+Math.abs(days)+"d":days===0?"Due Today":"Due in "+days+"d";
-      return '<div class="fu-item">'+(p.recurring?"&#128257; ":"&#128184; ")+'<b>'+esc(p.n)+'</b> - '+catLabel(p.category||"customer")+' Rs.'+bal.toFixed(0)+' <b style="color:#dc2626;">'+txt+'</b></div>';
+      var txt=days<0?"Overdue "+Math.abs(days)+"d":days===0?"Today":"in "+days+"d";
+      return '<div class="fu-item">&#128184; <b>'+esc(p.n)+'</b> - '+catLabel(p.category||"customer")+' Rs.'+bal.toFixed(0)+' <b style="color:#dc2626;">'+txt+'</b></div>';
     }).join("");
     op.innerHTML=html+op.innerHTML;
     var op2=g("overduePay2");if(op2)op2.innerHTML=op.innerHTML;
@@ -2664,7 +2492,17 @@ function checkPaymentReminders(){
 }
 window.checkPaymentReminders=checkPaymentReminders;
 
-// showTabNew in head handles all tabs
+// ── Wire to existing render via _appRender extension ─────────────
+(function(){
+  var _prev=window._appRender;
+  window._appRender=function(){
+    if(_prev)_prev();
+    renderPaymentsEnhanced();
+    renderSuppliers();
+    updateSupplierSelect();
+    checkPaymentReminders();
+  };
+})();
 
 </script>
 </body>
