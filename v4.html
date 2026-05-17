@@ -382,7 +382,7 @@ function onExpCatChange(){
   <button onclick="showTabNew('overview')" style="width:100%;background:linear-gradient(135deg,#1e40af,#2563eb);border:none;border-radius:var(--r);padding:12px 16px;margin-bottom:10px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;touch-action:manipulation;box-shadow:0 2px 8px rgba(30,64,175,.25);">
     <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:24px;">&#128200;</span>
     <div style="text-align:left;"><div style="font-size:14px;font-weight:800;color:#fff;">Business Overview</div><div style="font-size:10px;color:rgba(255,255,255,.7);">Sales &middot; Leads &middot; Profit</div></div></div>
-    <div style="text-align:right;"><div id="homeProfit" style="font-size:15px;font-weight:900;color:#86efac;">&#8377;0</div><div style="font-size:10px;color:rgba(255,255,255,.6);">Net Profit</div></div>
+    <div style="text-align:right;"><div id="homeProfit" style="font-size:15px;font-weight:900;color:#fef08a;">&#8377;0</div><div style="font-size:10px;color:rgba(255,255,255,.6);">Net Profit</div></div>
   </button>
   <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">&#9889; Quick Actions</div>
   <div class="menu-grid" style="margin-bottom:16px;">
@@ -712,12 +712,12 @@ function onExpCatChange(){
 <div id="stock" class="section">
   <div class="sec-nav">
     <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
-    <div class="sec-nav-title">&#128230; Stock / Inventory</div>
+    <div class="sec-nav-title">&#128230; Stock Details</div>
     <div style="width:44px;"></div>
   </div>
 
 
-  <!-- Inventory Overview Button -->
+  <!-- Stock Overview Button -->
   <button onclick="showTabNew('stockoverview')" style="width:100%;background:linear-gradient(135deg,#15803d,#16a34a);border:none;border-radius:var(--r);padding:12px 16px;margin-bottom:10px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;touch-action:manipulation;box-shadow:0 2px 8px rgba(21,128,61,.25);">
     <div style="display:flex;align-items:center;gap:10px;">
       <span style="font-size:24px;">&#128230;</span>
@@ -912,7 +912,7 @@ function onExpCatChange(){
 <div id="stockoverview" class="section">
   <div class="sec-nav">
     <button class="sec-back" onclick="showTabNew('stock')">&#8592;</button>
-    <div class="sec-nav-title">&#128230; Inventory Overview</div>
+    <div class="sec-nav-title">&#128230; Stock Overview</div>
     <div style="width:44px;"></div>
   </div>
 
@@ -926,61 +926,61 @@ function onExpCatChange(){
   </div>
 
   <!-- Category tiles - smaller 3-col grid -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;">
-    <button class="menu-card t1" onclick="goToStockCat('SOF')" style="padding:10px 4px;border:none;">
-      <div style="font-size:22px;">&#128715;</div>
-      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Sofa & Seating</div>
-      <div id="ovCatCount_SOF" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;">
+    <button onclick="goToStockCat('SOF')" style="background:#15803d;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128715;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Sofa</div>
+      <div id="ovCatCount_SOF" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
     </button>
-    <button class="menu-card t3" onclick="goToStockCat('BED')" style="padding:10px 4px;border:none;">
-      <div style="font-size:22px;">&#128719;</div>
+    <button onclick="goToStockCat('BED')" style="background:#1d4ed8;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128719;</div>
       <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Beds</div>
-      <div id="ovCatCount_BED" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+      <div id="ovCatCount_BED" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
     </button>
-    <button class="menu-card t6" onclick="goToStockCat('MAT')" style="padding:10px 4px;border:none;">
-      <div style="font-size:22px;">&#128716;</div>
-      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Mattresses</div>
-      <div id="ovCatCount_MAT" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    <button onclick="goToStockCat('MAT')" style="background:#0f766e;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128716;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Mattress</div>
+      <div id="ovCatCount_MAT" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
     </button>
-    <button class="menu-card t2" onclick="goToStockCat('TBL')" style="padding:10px 4px;border:none;">
-      <div style="font-size:22px;">&#127869;</div>
+    <button onclick="goToStockCat('TBL')" style="background:#b45309;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#127869;</div>
       <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Tables</div>
-      <div id="ovCatCount_TBL" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+      <div id="ovCatCount_TBL" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
     </button>
-    <button class="menu-card t4" onclick="goToStockCat('STR')" style="padding:10px 4px;border:none;">
-      <div style="font-size:22px;">&#128452;</div>
+    <button onclick="goToStockCat('STR')" style="background:#7c3aed;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128452;</div>
       <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Storage</div>
-      <div id="ovCatCount_STR" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+      <div id="ovCatCount_STR" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
     </button>
-    <button class="menu-card t7" onclick="goToStockCat('DRS')" style="padding:10px 4px;border:none;">
-      <div style="font-size:22px;">&#129694;</div>
-      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Dressing Table</div>
-      <div id="ovCatCount_DRS" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    <button onclick="goToStockCat('DRS')" style="background:#c2410c;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#129694;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Dressing</div>
+      <div id="ovCatCount_DRS" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
     </button>
-    <button class="menu-card t3" onclick="goToStockCat('TVU')" style="padding:10px 4px;border:none;">
-      <div style="font-size:22px;">&#128250;</div>
+    <button onclick="goToStockCat('TVU')" style="background:#0369a1;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128250;</div>
       <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">TV Units</div>
-      <div id="ovCatCount_TVU" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+      <div id="ovCatCount_TVU" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
     </button>
-    <button class="menu-card t8" onclick="goToStockCat('OFC')" style="padding:10px 4px;border:none;">
-      <div style="font-size:22px;">&#128421;</div>
-      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Office & Chairs</div>
-      <div id="ovCatCount_OFC" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    <button onclick="goToStockCat('OFC')" style="background:#334155;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128421;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Office</div>
+      <div id="ovCatCount_OFC" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
     </button>
-    <button class="menu-card t4" onclick="goToStockCat('KID')" style="padding:10px 4px;border:none;">
-      <div style="font-size:22px;">&#129528;</div>
-      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Kids Furniture</div>
-      <div id="ovCatCount_KID" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    <button onclick="goToStockCat('KID')" style="background:#be185d;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#129528;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Kids</div>
+      <div id="ovCatCount_KID" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
     </button>
-    <button class="menu-card t6" onclick="goToStockCat('FLD')" style="padding:10px 4px;border:none;">
-      <div style="font-size:22px;">&#129681;</div>
-      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Folding Items</div>
-      <div id="ovCatCount_FLD" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    <button onclick="goToStockCat('FLD')" style="background:#065f46;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#129681;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Folding</div>
+      <div id="ovCatCount_FLD" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
     </button>
-    <button class="menu-card t8" onclick="goToStockCat('OTH')" style="padding:10px 4px;border:none;">
-      <div style="font-size:22px;">&#128230;</div>
+    <button onclick="goToStockCat('OTH')" style="background:#64748b;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128230;</div>
       <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Other</div>
-      <div id="ovCatCount_OTH" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+      <div id="ovCatCount_OTH" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
     </button>
   </div>
 
@@ -1597,7 +1597,7 @@ function renderSync() {
   if(hp && pp) {
     var t = pp.textContent.replace("Net Profit: ","").replace("Net Profit:","").trim();
     hp.textContent = t;
-    hp.style.color = t.indexOf("-") === 0 ? "#dc2626" : "#16a34a";
+    hp.style.color = t.indexOf("-") === 0 ? "#fca5a5" : "#fef08a";
   }
 }
 window._appRender = renderSync;
