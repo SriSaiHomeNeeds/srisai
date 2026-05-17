@@ -50,8 +50,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-seri
 .pin-btn.zero{grid-column:2;}
 #pinErr{color:#fca5a5;font-size:12px;margin-top:12px;min-height:18px;font-weight:600;text-align:center;}
 #roleTag{display:none;}
-header{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;padding:10px 16px;position:sticky;top:0;z-index:60;box-shadow:0 2px 12px rgba(30,64,175,.3);}
-header h2{font-size:15px;font-weight:800;}
+header{background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;padding:8px 14px;position:sticky;top:0;z-index:60;box-shadow:0 2px 12px rgba(30,64,175,.3);}
+header h2{font-size:14px;font-weight:800;}
 header p{font-size:11px;opacity:.7;margin-top:1px;}
 #clockBar{font-size:10px;opacity:.55;margin-top:2px;}
 #savedBar{font-size:10px;margin-top:2px;color:#bfdbfe;}
@@ -60,52 +60,52 @@ header p{font-size:11px;opacity:.7;margin-top:1px;}
 .sdot.syncing{background:#fbbf24;animation:pulse 1s infinite;}
 .sdot.error{background:#f87171;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-.wrap{padding:14px;padding-bottom:90px;max-width:600px;margin:0 auto;}
+.wrap{padding:10px;padding-bottom:90px;max-width:600px;margin:0 auto;}
 .section{display:none;}.section.active{display:block;}
-.card{background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);}
+.card{background:var(--card);border-radius:var(--r);padding:12px;margin-bottom:10px;box-shadow:var(--shadow);}
 .card-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;}
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
-.tile{border-radius:var(--r);padding:14px 12px;color:#fff;position:relative;overflow:hidden;}
+.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.tile{border-radius:var(--r);padding:11px 10px;color:#fff;position:relative;overflow:hidden;}
 .tile::after{content:"";position:absolute;right:-8px;top:-8px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.1);}
 .ti{font-size:20px;display:block;margin-bottom:5px;}
-.tv{font-size:20px;font-weight:900;line-height:1;display:block;}
+.tv{font-size:18px;font-weight:900;line-height:1;display:block;}
 .tl{font-size:10px;opacity:.85;margin-top:4px;font-weight:500;display:block;}
 .t1{background:linear-gradient(135deg,#15803d,#16a34a);}.t2{background:linear-gradient(135deg,#b45309,#d97706);}.t3{background:linear-gradient(135deg,#1d4ed8,#2563eb);}.t4{background:linear-gradient(135deg,#6d28d9,#7c3aed);}.t5{background:linear-gradient(135deg,#b91c1c,#dc2626);}.t6{background:linear-gradient(135deg,#0f766e,#0d9488);}.t7{background:linear-gradient(135deg,#c2410c,#ea580c);}.t8{background:linear-gradient(135deg,#334155,#475569);}
 .profit-pill{border-radius:var(--r);padding:12px 16px;font-size:13px;font-weight:700;text-align:center;margin-bottom:12px;box-shadow:var(--shadow);}
 .menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.menu-card{background:#fff;border-radius:var(--r);padding:14px 8px;border:1.5px solid var(--border);cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:all .15s;box-shadow:var(--shadow);}
+.menu-card{background:#fff;border-radius:var(--r);padding:12px 6px;border:1.5px solid var(--border);cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;touch-action:manipulation;transition:all .15s;box-shadow:var(--shadow);}
 .menu-card:active{transform:scale(.95);}
-.mc-icon{font-size:26px;line-height:1;}
-.mc-label{font-size:12px;font-weight:800;color:var(--text);text-align:center;}
+.mc-icon{font-size:24px;line-height:1;}
+.mc-label{font-size:11px;font-weight:800;color:var(--text);text-align:center;}
 .mc-sub{font-size:10px;color:var(--muted);text-align:center;}
-.sec-nav{display:flex;align-items:center;justify-content:space-between;padding:10px 0;margin-bottom:12px;border-bottom:1px solid var(--border);}
+.sec-nav{display:flex;align-items:center;justify-content:space-between;padding:7px 0;margin-bottom:10px;border-bottom:1px solid var(--border);}
 .sec-back{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);background:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;box-shadow:var(--shadow);font-family:inherit;}
 .sec-nav-title{font-size:15px;font-weight:800;}
-.fg{margin-bottom:12px;}
+.fg{margin-bottom:8px;}
 .fg label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px;}
-input,select,textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:16px;font-family:inherit;color:var(--text);background:#fff;touch-action:manipulation;-webkit-appearance:none;transition:border-color .15s;}
+input,select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:15px;font-family:inherit;color:var(--text);background:#fff;touch-action:manipulation;-webkit-appearance:none;transition:border-color .15s;}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);}
 textarea{resize:vertical;min-height:60px;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .btn{padding:11px 16px;border:none;border-radius:var(--r-sm);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;user-select:none;display:inline-flex;align-items:center;justify-content:center;gap:5px;transition:opacity .15s;}
 .btn:active{opacity:.8;}
-.btn-save{background:linear-gradient(135deg,#0d9488,#0f766e);width:100%;padding:14px;font-size:15px;margin-top:6px;}
+.btn-save{background:linear-gradient(135deg,#0d9488,#0f766e);width:100%;padding:12px;font-size:14px;margin-top:4px;}
 .btn-blue{background:#2563eb;}.btn-del{background:#dc2626;}.btn-done{background:#16a34a;}.btn-call{background:#ea580c;}.btn-wa{background:#15803d;}.btn-teal{background:#0d9488;}
 .btn-exp{background:linear-gradient(135deg,#1e40af,#2563eb);width:100%;padding:13px;font-size:13px;margin-top:6px;}
 .btn-clr{background:#dc2626;width:100%;padding:11px;font-size:13px;margin-top:8px;}
-.btn-full{width:100%;padding:13px;font-size:14px;}.btn-sm{padding:7px 12px;font-size:12px;border-radius:6px;}
-.row-btn{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+.btn-full{width:100%;padding:13px;font-size:14px;}.btn-sm{padding:6px 10px;font-size:11px;border-radius:6px;}
+.row-btn{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
 .sw{margin-bottom:10px;position:relative;}.sw input{padding-left:38px;background:#f8fafc;}.sw .si{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
-.filter-pills{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-.pill{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:inherit;color:var(--muted);touch-action:manipulation;transition:all .15s;}
+.filter-pills{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
+.pill{padding:5px 11px;border-radius:20px;font-size:11px;font-weight:600;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:inherit;color:var(--muted);touch-action:manipulation;transition:all .15s;}
 .pill.on{background:#2563eb;color:#fff;border-color:#2563eb;}
-.sum-row{background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:var(--r-sm);padding:10px 14px;margin-bottom:12px;font-size:12px;color:#1d4ed8;font-weight:600;display:flex;gap:14px;flex-wrap:wrap;}
-.rec{background:var(--card);border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:var(--shadow);border-left:4px solid var(--border);}
+.sum-row{background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:var(--r-sm);padding:8px 12px;margin-bottom:10px;font-size:11px;color:#1d4ed8;font-weight:600;display:flex;gap:14px;flex-wrap:wrap;}
+.rec{background:var(--card);border-radius:var(--r);padding:11px;margin-bottom:8px;box-shadow:var(--shadow);border-left:4px solid var(--border);}
 .rec.lead-r{border-left-color:#2563eb;}.rec.order-r{border-left-color:#7c3aed;}.rec.pay-r{border-left-color:#dc2626;}.rec.exp-r{border-left-color:#ea580c;}.rec.closed-r{border-left-color:#94a3b8;opacity:.8;}.rec.inprog-r{border-left-color:#d97706;}
-.rec-name{font-weight:700;font-size:15px;color:var(--text);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
-.rec-sub{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.65;}
+.rec-name{font-weight:700;font-size:14px;color:var(--text);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.rec-sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5;}
 .note-chip{display:inline-block;background:#f1f5f9;border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:11px;color:var(--muted);margin-top:5px;}
-.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;}
 .b-closed{background:var(--green-bg);color:#16a34a;}.b-pending{background:var(--red-bg);color:#dc2626;}.b-partial{background:var(--blue-bg);color:#2563eb;}.b-overdue{background:var(--red-bg);color:#dc2626;}.b-today{background:var(--amber-bg);color:#d97706;}
 .pay-bar-wrap{background:#e2e8f0;border-radius:20px;height:7px;overflow:hidden;margin:8px 0 4px;}
 .pay-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#16a34a,#22c55e);}
@@ -163,6 +163,17 @@ html{-webkit-overflow-scrolling:touch;}
 .stock-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
 .sb-in{background:#f0fdf4;color:#16a34a;}.sb-low{background:#fffbeb;color:#d97706;}.sb-out{background:#fef2f2;color:#dc2626;}
 .stock-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+
+
+.stock-card{background:#fff;border-radius:var(--r);padding:11px;margin-bottom:8px;box-shadow:var(--shadow);border-left:4px solid var(--border);}
+.stock-card.in-stock{border-left-color:#16a34a;}
+.stock-card.low-stock{border-left-color:#d97706;}
+.stock-card.out-stock{border-left-color:#dc2626;}
+.stock-id{font-family:monospace;font-size:11px;font-weight:700;color:#2563eb;background:#eff6ff;padding:2px 8px;border-radius:6px;display:inline-block;margin-bottom:4px;}
+.stock-name{font-weight:800;font-size:14px;color:var(--text);margin-bottom:2px;}
+.stock-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+.sb-in{background:#f0fdf4;color:#16a34a;}.sb-low{background:#fffbeb;color:#d97706;}.sb-out{background:#fef2f2;color:#dc2626;}
+.stock-actions{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
 
 </style>
 <script>
@@ -233,10 +244,11 @@ function showTabNew(id){
   var bb=document.getElementById("backBtn");
   if(bb)bb.style.display=id==="home"?"none":"flex";
   window.scrollTo({top:0,behavior:"smooth"});
-  if(window.renderIntel&&id==="intel")window.renderIntel();
   if(id==="campaigns"){if(window.renderFestivals)window.renderFestivals();if(window.updateCampMsg)window.updateCampMsg();if(window.renderCampHistory)window.renderCampHistory();}
   if(id==="directory"&&window.renderDir)window.renderDir();
   if(id==="stock"&&window.renderStock)window.renderStock();
+  if(id==="stockoverview"&&window.renderStockOverview)window.renderStockOverview();
+  if(id==="suppliers"){if(window.renderSuppliers)window.renderSuppliers();if(window.updateSupplierSelect)window.updateSupplierSelect();}
   if(window._appRender)window._appRender();
 }
 
@@ -291,9 +303,31 @@ function saveStockItem(){
     var el=document.getElementById(id);if(el)el.value="";
   });
   if(window.saveDB)window.saveDB();
-  if(window.renderStock)window.renderStock();
+  if(window.renderStock)window.renderStock();if(window.renderStockOverview)window.renderStockOverview();
   document.getElementById("addStockForm").style.display="none";
   alert("Stock item saved: "+stId);
+}
+
+function onPayCatChange(){
+  var cat=document.getElementById("pCategory")?document.getElementById("pCategory").value:"";
+  var extra=document.getElementById("pExtraFields");
+  if(!extra)return;
+  var html="";
+  if(cat==="salary")html='<div class="fg"><label>Staff Member Name</label><input id="pStaffName" placeholder="Staff name"></div>';
+  else if(cat==="lic")html='<div class="row2"><div class="fg"><label>Policy Number</label><input id="pPolicyNo" placeholder="Policy no"></div><div class="fg"><label>Insurer</label><input id="pInsurer" placeholder="LIC / Company"></div></div>';
+  else if(cat==="chit")html='<div class="row2"><div class="fg"><label>Chit Group</label><input id="pChitGroup" placeholder="Group name"></div><div class="fg"><label>Total Months</label><input id="pChitMonths" type="number" placeholder="20"></div></div>';
+  else if(cat==="loan")html='<div class="row2"><div class="fg"><label>Lender</label><input id="pLender" placeholder="Bank / Person"></div><div class="fg"><label>Remaining EMIs</label><input id="pEmiLeft" type="number" placeholder="24"></div></div>';
+  extra.innerHTML=html;
+}
+function onPayRecurringChange(){
+  var sel=document.getElementById("pRecurring");
+  var row=document.getElementById("pEndDateRow");
+  if(row)row.style.display=sel&&sel.value?"block":"none";
+}
+function onExpCatChange(){
+  var cat=document.getElementById("eCategory")?document.getElementById("eCategory").value:"";
+  var mf=document.getElementById("eMaintenanceFields");
+  if(mf)mf.style.display=cat==="maintenance"?"block":"none";
 }
 </script>
 </head>
@@ -301,8 +335,20 @@ function saveStockItem(){
 <!-- PIN SCREEN -->
 <div id="pinScreen">
   <div style="text-align:center;margin-bottom:28px;">
-    <div style="font-size:42px;margin-bottom:8px;">&#127968;</div>
-    <div style="color:#fff;font-size:22px;font-weight:900;">Sri Sai Home Needs</div>
+    <svg width="110" height="110" viewBox="0 0 180 180" style="display:block;margin:0 auto 12px;">
+      <defs>
+        <linearGradient id="sGrad" x1="0" y1="0" x2="0.4" y2="1">
+          <stop offset="0%" stop-color="#93c5fd"/>
+          <stop offset="45%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#bfdbfe"/>
+        </linearGradient>
+      </defs>
+      <circle cx="90" cy="90" r="86" fill="#0d1b3e"/>
+      <circle cx="90" cy="90" r="80" fill="none" stroke="#1e3a6e" stroke-width="1.5"/>
+      <path d="M48 62 C48 50 58 44 70 44 L102 44 C116 44 122 54 122 64 C122 76 110 82 96 82 L64 82 C50 82 44 91 44 103 C44 116 52 124 66 124 L100 124 C114 124 120 132 120 142" fill="none" stroke="url(#sGrad)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M62 70 C62 58 72 52 84 52 L116 52 C130 52 136 62 136 72 C136 84 124 90 110 90 L78 90 C64 90 58 99 58 111 C58 124 66 132 80 132 L114 132 C128 132 134 140 134 150" fill="none" stroke="#f59e0b" stroke-width="5.5" stroke-linecap="round" opacity="0.85"/>
+    </svg>
+    <div style="color:#fff;font-size:22px;font-weight:900;letter-spacing:.5px;">Sri Sai Home Needs</div>
     <div style="color:rgba(255,255,255,.7);font-size:13px;margin-top:4px;">Furniture Shop, Chandanagar</div>
     <div style="color:rgba(255,255,255,.55);font-size:11px;margin-top:8px;">Enter your PIN to continue</div>
   </div>
@@ -342,24 +388,24 @@ function saveStockItem(){
 
 <!-- HOME -->
 <div id="home" class="section active">
-  <button onclick="showTabNew('overview')" style="width:100%;background:linear-gradient(135deg,#eff6ff,#fff);border:1.5px solid #bfdbfe;border-radius:var(--r);padding:14px 18px;margin-bottom:12px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;touch-action:manipulation;">
-    <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:28px;">&#128200;</span>
-    <div style="text-align:left;"><div style="font-size:14px;font-weight:800;color:#1e293b;">Business Overview</div><div style="font-size:10px;color:#64748b;">Sales &middot; Leads &middot; Profit</div></div></div>
-    <div style="text-align:right;"><div id="homeProfit" style="font-size:14px;font-weight:800;color:#16a34a;">&#8377;0</div><div style="font-size:10px;color:#64748b;">Net Profit</div></div>
+  <button onclick="showTabNew('overview')" style="width:100%;background:linear-gradient(135deg,#1e40af,#2563eb);border:none;border-radius:var(--r);padding:12px 16px;margin-bottom:10px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;touch-action:manipulation;box-shadow:0 2px 8px rgba(30,64,175,.25);">
+    <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:24px;">&#128200;</span>
+    <div style="text-align:left;"><div style="font-size:14px;font-weight:800;color:#fff;">Business Overview</div><div style="font-size:10px;color:rgba(255,255,255,.7);">Sales &middot; Leads &middot; Profit</div></div></div>
+    <div style="text-align:right;"><div id="homeProfit" style="font-size:15px;font-weight:900;color:#fef08a;">&#8377;0</div><div style="font-size:10px;color:rgba(255,255,255,.6);">Net Profit</div></div>
   </button>
-  <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;">&#9889; Quick Actions</div>
+  <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;">&#9889; Quick Actions</div>
   <div class="menu-grid" style="margin-bottom:16px;">
     <button class="menu-card" onclick="showTabNew('sales')"><div class="mc-icon">&#128176;</div><div class="mc-label">Sales</div><div class="mc-sub">Add / View</div></button>
     <button class="menu-card" onclick="showTabNew('leads')"><div class="mc-icon">&#128203;</div><div class="mc-label">Leads</div><div class="mc-sub">Enquiries</div></button>
     <button class="menu-card" onclick="showTabNew('orders')"><div class="mc-icon">&#128230;</div><div class="mc-label">Delivery</div><div class="mc-sub">Orders</div></button>
     <button class="menu-card" onclick="showTabNew('payments')"><div class="mc-icon">&#128184;</div><div class="mc-label">Payments</div><div class="mc-sub">Dues</div></button>
     <button class="menu-card" onclick="showTabNew('expenses')"><div class="mc-icon">&#129534;</div><div class="mc-label">Expenses</div><div class="mc-sub">Costs</div></button>
-    <button class="menu-card" onclick="showTabNew('intel')"><div class="mc-icon">&#129504;</div><div class="mc-label">Smart</div><div class="mc-sub">AI Tips</div></button>
-    <button class="menu-card" onclick="showTabNew('campaigns')"><div class="mc-icon">&#127881;</div><div class="mc-label">Campaign</div><div class="mc-sub">Festival</div></button>
-    <button class="menu-card" onclick="showTabNew('directory')"><div class="mc-icon">&#128101;</div><div class="mc-label">Contacts</div><div class="mc-sub">Directory</div></button>
+    <button class="menu-card" onclick="showTabNew('suppliers')"><div class="mc-icon">&#127968;</div><div class="mc-label">Suppliers</div><div class="mc-sub">Vendors</div></button>
     <button class="menu-card" onclick="showTabNew('stock')" style="position:relative;"><div class="mc-icon">&#128230;</div><div class="mc-label">Stock</div><div class="mc-sub">Inventory</div><div id="stockAlertBadge" style="display:none;position:absolute;top:6px;right:6px;background:#dc2626;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;align-items:center;justify-content:center;"></div></button>
+    <button class="menu-card" onclick="showTabNew('directory')"><div class="mc-icon">&#128101;</div><div class="mc-label">Contacts</div><div class="mc-sub">Directory</div></button>
     <button class="menu-card" onclick="showTabNew('reports')"><div class="mc-icon">&#128202;</div><div class="mc-label">Reports</div><div class="mc-sub">More</div></button>
   </div>
+
   <div class="card"><div class="card-title">&#128276; Today Follow-ups</div><div id="todayFU"></div></div>
   <div class="card"><div class="card-title">&#9888;&#65039; Overdue Payments</div><div id="overduePay"></div></div>
   <span id="quickSummary" style="display:none;"></span>
@@ -455,16 +501,16 @@ function saveStockItem(){
       </div>
     </div>
     <div class="fg"><label>Priority</label>
-      <select id="lPriority"><option value="Hot">Hot</option><option value="Warm" selected>Warm</option><option value="Cold">Cold</option></select>
+      <select id="lPriority"><option value="Hot">&#128293; Serious Buyer</option><option value="Warm" selected>&#128336; Follow-up Needed</option><option value="Cold">&#129398; Casual Inquiry</option></select>
     </div>
     <div class="fg"><label>Note</label><textarea id="lNote" placeholder="Any remarks..."></textarea></div>
     <button class="btn btn-save" id="btnAL">Save Lead</button>
   </div>
   <div class="filter-pills">
     <button class="pill on" data-lf="all">All</button>
-    <button class="pill" data-lf="Hot">Hot</button>
-    <button class="pill" data-lf="Warm">Warm</button>
-    <button class="pill" data-lf="Cold">Cold</button>
+    <button class="pill" data-lf="Hot">&#128293; Serious</button>
+    <button class="pill" data-lf="Warm">&#128336; Follow-up</button>
+    <button class="pill" data-lf="Cold">&#129398; Casual</button>
     <button class="pill" data-lf="due">Due Today</button>
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchLeads" placeholder="Search leads..."></div>
@@ -517,17 +563,53 @@ function saveStockItem(){
   </div>
   <div class="card">
     <div class="card-title">Add Standalone Payment Due</div>
-    <div class="fg"><label>Customer Name *</label><input id="pName" placeholder="Customer name"></div>
     <div class="row2">
-      <div class="fg"><label>Phone</label><input id="pPhone" type="tel" placeholder="Mobile number"></div>
-      <div class="fg"><label>Amount Due (&#8377;) *</label><input id="pAmt" type="number" placeholder="0"></div>
+      <div class="fg"><label>Category *</label>
+        <select id="pCategory" onchange="onPayCatChange()">
+          <option value="customer">&#128176; Customer Due</option>
+          <option value="rent">&#127978; Shop Rent</option>
+          <option value="electricity">&#9889; Electricity</option>
+          <option value="tax">&#128203; Tax / GST</option>
+          <option value="itr">&#128196; ITR Filing</option>
+          <option value="licence">&#128220; Licence Renewal</option>
+          <option value="lic">&#128737; LIC / Insurance</option>
+          <option value="salary">&#128184; Staff Salary</option>
+          <option value="loan">&#127984; Loan / EMI</option>
+          <option value="chit">&#129309; Chit Fund</option>
+          <option value="fuel">&#9981; Fuel</option>
+          <option value="vehicle">&#128296; Vehicle Repair</option>
+          <option value="household">&#127968; Household</option>
+          <option value="supplier">&#128230; Supplier Payment</option>
+          <option value="other">&#128221; Other</option>
+        </select>
+      </div>
+      <div class="fg"><label>Name / Description *</label><input id="pName" placeholder="Customer / Bill name"></div>
+    </div>
+    <div class="row2">
+      <div class="fg"><label>Phone</label><input id="pPhone" type="tel" placeholder="Mobile"></div>
+      <div class="fg"><label>Total Amount (&#8377;) *</label><input id="pAmt" type="number" placeholder="0"></div>
     </div>
     <div class="row2">
       <div class="fg"><label>Due Date *</label><input id="pDate" type="date"></div>
-      <div class="fg"><label>Bill / Ref No.</label><input id="pBill" placeholder="Reference"></div>
+      <div class="fg"><label>Ref / Bill No.</label><input id="pBill" placeholder="Reference"></div>
     </div>
+    <div class="fg"><label>Recurring?</label>
+      <select id="pRecurring" onchange="onPayRecurringChange()">
+        <option value="">No - One time only</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+        <option value="quarterly">Quarterly (3 months)</option>
+        <option value="halfyearly">Half Yearly (6 months)</option>
+        <option value="yearly">Yearly</option>
+      </select>
+    </div>
+    <div id="pEndDateRow" style="display:none;" class="fg">
+      <label>End Date (leave blank if ongoing)</label>
+      <input id="pEndDate" type="date">
+    </div>
+    <div id="pExtraFields"></div>
     <div class="fg"><label>Note</label><textarea id="pNote" placeholder="Any remarks..."></textarea></div>
-    <button class="btn btn-save" id="btnAP">Save Payment Due</button>
+    <button class="btn btn-save" id="btnAP">Save Pa
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchPay" placeholder="Search payments..."></div>
   <div class="sum-row">Standalone Pending: &#8377;<span id="payPendTot">0</span></div>
@@ -543,18 +625,28 @@ function saveStockItem(){
   </div>
   <div class="card">
     <div class="card-title">Add Expense</div>
-    <div class="row2">
-      <div class="fg"><label>Category</label>
-        <select id="eCat">
-          <option>Transport</option><option>Salary</option><option>Rent</option><option>Electricity</option>
-          <option>Stock Purchase</option><option>Maintenance</option><option>Marketing</option><option>Other</option>
-        </select>
-      </div>
-      <div class="fg"><label>Amount (&#8377;) *</label><input id="eAmt" type="number" placeholder="0"></div>
+    <div class="fg"><label>Category *</label>
+      <select id="eCategory" onchange="onExpCatChange()">
+        <option value="general">&#128230; General</option>
+        <option value="maintenance">&#128295; Shop Maintenance / Repair</option>
+        <option value="fuel">&#9981; Fuel</option>
+        <option value="vehicle">&#128296; Vehicle Repair</option>
+        <option value="household">&#127968; Household</option>
+        <option value="supplies">&#128218; Shop Supplies</option>
+        <option value="other">&#128221; Other</option>
+      </select>
     </div>
-    <div class="fg"><label>Description *</label><input id="eDesc" placeholder="e.g. Auto fare, Staff salary"></div>
-    <div class="fg"><label>Expense Date</label><input id="eExpDate" type="date"></div>
-    <div class="fg"><label>Note</label><textarea id="eNote" placeholder="Optional details..."></textarea></div>
+    <div id="eMaintenanceFields" style="display:none;">
+      <div class="row2">
+        <div class="fg"><label>Vendor / Person</label><input id="eVendor" placeholder="Who did the work"></div>
+        <div class="fg"><label>Next Service Date</label><input id="eNextService" type="date"></div>
+      </div>
+    </div>
+    <div class="fg"><label>Description *</label><input id="eDesc" placeholder="What was this expense for?"></div>
+    <div class="row2">
+      <div class="fg"><label>Amount (&#8377;) *</label><input id="eAmt" type="number" placeholder="0"></div>
+      <div class="fg"><label>Date *</label><input id="eDate" type="date"></div>
+    </div>
     <button class="btn btn-save" id="btnAE">Save Expense</button>
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchExp" placeholder="Search expenses..."></div>
@@ -613,66 +705,6 @@ function saveStockItem(){
   <div class="card"><div class="card-title">&#128276; Today Follow-ups</div><div id="todayFU2"></div></div>
   <div class="card"><div class="card-title">&#9888;&#65039; Overdue Payments</div><div id="overduePay2"></div></div>
   <button onclick="exportData()" style="width:100%;padding:13px;background:#1e40af;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;">&#128229; Export Full Report</button>
-</div>
-
-<!-- INTEL -->
-<div id="intel" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#129504; Smart Intelligence</div><div style="width:44px;"></div></div>
-  <div class="card" style="border-left:4px solid #dc2626;"><div class="card-title" style="color:#dc2626;">&#128293; Hot Opportunities</div><div id="intelHot"></div></div>
-  <div class="card" style="border-left:4px solid #d97706;"><div class="card-title" style="color:#d97706;">&#8987; Overdue Follow-ups</div><div id="intelOverdue"></div></div>
-  <div class="card" style="border-left:4px solid #2563eb;"><div class="card-title" style="color:#2563eb;">&#128257; Re-engage Customers</div><div id="intelReengage"></div></div>
-  <div class="card" style="border-left:4px solid #16a34a;"><div class="card-title" style="color:#16a34a;">&#128200; Conversion Funnel</div><div id="intelFunnel"></div></div>
-</div>
-
-<!-- CAMPAIGNS -->
-<div id="campaigns" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#127881; Festival Campaigns</div><div style="width:44px;"></div></div>
-  <div class="card"><div class="card-title">&#128197; Upcoming Festivals</div><div id="festList"></div></div>
-  <div class="card">
-    <div class="card-title">&#9997;&#65039; Build Campaign</div>
-    <div class="fg"><label>Festival</label><select id="campFest" onchange="updateCampMsg()"><option value="Diwali">Diwali</option><option value="Ugadi">Ugadi</option><option value="Dasara">Dasara</option><option value="Sankranti">Sankranti</option><option value="Eid">Eid</option><option value="Christmas">Christmas</option><option value="NewYear">New Year</option><option value="Holi">Holi</option><option value="Custom">Custom</option></select></div>
-    <div class="fg"><label>Add Custom Line (optional)</label><input id="campOffer" placeholder="e.g. Visit us for Diwali offers!" oninput="updateCampMsg()"></div>
-    <div class="fg"><label>Audience &nbsp;<button onclick="updateCampCount()" style="background:#e0f2fe;color:#0284c7;border:none;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">&#8635; Refresh</button></label>
-      <select id="campAudience" onchange="updateCampCount()"><option value="all_leads">All Active Leads</option><option value="hot_leads">Hot Leads Only</option><option value="high_budget">High Budget (25K+)</option><option value="customers">Past Customers</option><option value="overdue_leads">Overdue Follow-ups</option><option value="everyone">Everyone</option></select></div>
-    <div class="sum-row">Contacts: <b id="campCount">0</b> | Sent: <b id="campSent">0</b> | Remaining: <b id="campRem">0</b></div>
-    <div id="campContactPreview" style="background:#f8fafc;border-radius:8px;padding:10px;margin-bottom:10px;border:1px solid var(--border);font-size:12px;color:#64748b;">Select audience to see contacts</div>
-    <div class="fg"><label>Message Preview</label><textarea id="campMsg" style="min-height:120px;font-size:12px;"></textarea></div>
-    <button onclick="startCampaign()" style="width:100%;padding:14px;margin-bottom:8px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#128640; Start Campaign</button>
-    <button onclick="resetCampaign()" style="width:100%;padding:12px;background:#6b7280;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#8634; Reset</button>
-  </div>
-  <div class="card" id="campSenderCard" style="display:none;border:2px solid #16a34a;">
-    <div class="card-title" style="color:#16a34a;">&#128245; Sending Messages</div>
-    <div id="campProgress" style="margin-bottom:12px;"></div>
-    <div id="campCurrentContact" style="background:#f0fdf4;border-radius:10px;padding:14px;margin-bottom:12px;">
-      <div id="campContactName" style="font-weight:800;font-size:16px;margin-bottom:4px;"></div>
-      <div id="campContactPhone" style="font-size:13px;color:#16a34a;font-weight:600;margin-bottom:10px;"></div>
-      <button onclick="sendCampWA()" style="width:100%;padding:13px;background:#15803d;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#128245; Send WhatsApp</button>
-    </div>
-    <div style="display:flex;gap:8px;">
-      <button onclick="campSkip()" style="flex:1;padding:11px;background:#e5e7eb;color:#374151;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">&#9197; Skip</button>
-      <button onclick="campStop()" style="flex:1;padding:11px;background:#dc2626;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">&#9209; Stop</button>
-    </div>
-    <div id="campDoneBox" style="display:none;text-align:center;padding:20px;">
-      <div style="font-size:48px;margin-bottom:10px;">&#127881;</div>
-      <div style="font-weight:800;font-size:16px;color:#16a34a;">Campaign Complete!</div>
-      <div id="campSummary" style="font-size:13px;color:#6b7280;margin-top:6px;"></div>
-    </div>
-  </div>
-  <div class="card" style="border:2px solid #0d9488;">
-    <div class="card-title" style="color:#0d9488;">&#128225; Broadcast Helper</div>
-    <div style="background:#f0fdfa;border-radius:8px;padding:12px;margin-bottom:12px;font-size:12px;color:#0f766e;line-height:1.7;"><b>Steps:</b><br>1. Copy numbers below<br>2. Open WhatsApp Business &rarr; New Broadcast<br>3. Add contacts &rarr; Paste message &rarr; Attach GIF &rarr; Send!</div>
-    <div style="display:flex;gap:8px;margin-bottom:8px;">
-      <button onclick="prepareBroadcast()" style="flex:1;padding:12px;background:#0d9488;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128225; Prepare List</button>
-      <button onclick="copyBroadcastNums()" style="flex:1;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128203; Copy Numbers</button>
-    </div>
-    <button onclick="copyBroadcastMsg()" style="width:100%;padding:12px;margin-bottom:8px;background:#15803d;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128203; Copy Message</button>
-    <div id="broadcastBox" style="display:none;">
-      <div style="font-size:11px;font-weight:700;color:#64748b;margin-bottom:6px;">Numbers (<span id="broadcastCount">0</span> contacts)</div>
-      <textarea id="broadcastNums" readonly style="width:100%;min-height:80px;font-size:12px;background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:10px;font-family:monospace;color:#0f766e;"></textarea>
-      <div id="broadcastCopyStatus" style="font-size:12px;font-weight:700;color:#16a34a;margin-top:6px;min-height:18px;text-align:center;"></div>
-    </div>
-  </div>
-  <div class="card"><div class="card-title">&#128218; Campaign History</div><div id="campHistory"></div></div>
 </div>
 
 <!-- DIRECTORY -->
@@ -826,6 +858,426 @@ function saveStockItem(){
   <div id="stockList"></div>
 </div>
 
+<!-- STOCK PICKER MODAL -->
+<div id="stockPickerOv" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:800;overflow-y:auto;padding:16px;">
+  <div style="background:#fff;border-radius:14px;width:100%;max-width:500px;margin:0 auto;">
+    <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:15px;font-weight:800;">&#128230; Pick from Stock</div>
+      <button onclick="closeStockPicker()" style="background:none;border:none;font-size:22px;cursor:pointer;">&#10005;</button>
+    </div>
+    <div style="padding:10px 16px;border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap;">
+      <button class="pill on" onclick="pickerFilter('ALL',this)" style="margin-right:6px;">All</button>
+      <button class="pill" onclick="pickerFilter('SOF',this)" style="margin-right:6px;">Sofa & Seating</button>
+      <button class="pill" onclick="pickerFilter('BED',this)" style="margin-right:6px;">Beds</button>
+      <button class="pill" onclick="pickerFilter('MAT',this)" style="margin-right:6px;">Mattresses</button>
+      <button class="pill" onclick="pickerFilter('TBL',this)" style="margin-right:6px;">Tables</button>
+      <button class="pill" onclick="pickerFilter('STR',this)" style="margin-right:6px;">Storage</button>
+      <button class="pill" onclick="pickerFilter('DRS',this)" style="margin-right:6px;">Dressing Table</button>
+      <button class="pill" onclick="pickerFilter('TVU',this)" style="margin-right:6px;">TV Units</button>
+      <button class="pill" onclick="pickerFilter('OFC',this)" style="margin-right:6px;">Office & Chairs</button>
+      <button class="pill" onclick="pickerFilter('KID',this)" style="margin-right:6px;">Kids Furniture</button>
+      <button class="pill" onclick="pickerFilter('FLD',this)" style="margin-right:6px;">Folding Items</button>
+      <button class="pill" onclick="pickerFilter('OTH',this)" style="margin-right:6px;">Other</button>
+    </div></div>
+    <div style="padding:10px 16px;border-bottom:1px solid var(--border);">
+      <input id="pickerSearch" placeholder="Search stock..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;" oninput="renderPickerList()">
+    </div>
+    <div id="pickerList" style="max-height:50vh;overflow-y:auto;padding:10px 16px;"></div>
+    <div style="padding:12px 16px;border-top:1px solid var(--border);">
+      <button onclick="closeStockPicker()" style="width:100%;padding:12px;background:#f1f5f9;color:#374151;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Enter Manually (no stock deduction)</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- STOCK SECTION -->
+<div id="stock" class="section">
+  <div class="sec-nav">
+    <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
+    <div class="sec-nav-title">&#128230; Stock Details</div>
+    <div style="width:44px;"></div>
+  </div>
+
+
+  <!-- Stock Overview Button -->
+  <button onclick="showTabNew('stockoverview')" style="width:100%;background:linear-gradient(135deg,#15803d,#16a34a);border:none;border-radius:var(--r);padding:12px 16px;margin-bottom:10px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;touch-action:manipulation;box-shadow:0 2px 8px rgba(21,128,61,.25);">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:24px;">&#128230;</span>
+      <div style="text-align:left;">
+        <div style="font-size:14px;font-weight:800;color:#fff;">Stock Overview</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.7);">All categories &middot; Stock count</div>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <div id="stTotalTile" style="font-size:15px;font-weight:900;color:#bbf7d0;">0</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.6);">Total Items</div>
+    </div>
+  </button>
+
+  <div style="margin-bottom:10px;">
+    <select id="stockCatSelect" onchange="filterStockDropdown(this.value)" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;background:#fff;color:var(--text);font-weight:600;">
+      <option value="ALL">All Items</option>
+      <option value="SOF">Sofa &amp; Seating</option>
+      <option value="BED">Beds</option>
+      <option value="MAT">Mattresses</option>
+      <option value="TBL">Tables</option>
+      <option value="STR">Storage</option>
+      <option value="DRS">Dressing Table</option>
+      <option value="TVU">TV Units</option>
+      <option value="OFC">Office &amp; Chairs</option>
+      <option value="KID">Kids Furniture</option>
+      <option value="FLD">Folding Items</option>
+      <option value="OTH">Other</option>
+    </select>
+    <div id="stockCatInfo" style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;font-size:12px;font-weight:600;">
+      <span style="color:#16a34a;">In Stock: <b id="stInStock">0</b></span>
+      <span style="color:#d97706;">Low: <b id="stLow">0</b></span>
+      <span style="color:#dc2626;">Out: <b id="stOut">0</b></span>
+      <span style="color:var(--muted);">Total: <b id="stTotal">0</b></span>
+      <span style="color:#1e40af;">Value: &#8377;<b id="stPurchaseVal">0</b></span>
+    </div>
+  </div>
+  <div class="sw"><span class="si">&#128269;</span><input id="searchStock" placeholder="Search by name or ID..." oninput="renderStock()"></div>
+  <button onclick="showAddStock()" style="width:100%;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px;touch-action:manipulation;">&#43; Add New Stock Item</button>
+  <div id="addStockForm" class="card" style="display:none;border:2px solid #16a34a;">
+    <div class="card-title" style="color:#16a34a;">&#43; New Stock Item</div>
+    <div class="row2">
+      <div class="fg" style="margin-bottom:8px;"><label>Category *</label>
+        <select id="stCat" onchange="genStockId()">
+          <option value="">Select category...</option>
+          <option value="SOF">&#128715; Sofa & Seating</option>
+          <option value="BED">&#128719; Beds</option>
+          <option value="MAT">&#128716; Mattresses</option>
+          <option value="TBL">&#127869; Tables</option>
+          <option value="STR">&#128452; Storage</option>
+          <option value="DRS">&#129694; Dressing Table</option>
+          <option value="TVU">&#128250; TV Units</option>
+          <option value="OFC">&#128421; Office & Chairs</option>
+          <option value="KID">&#129528; Kids Furniture</option>
+          <option value="FLD">&#129681; Folding Items</option>
+          <option value="OTH">&#129397; Other</option>
+        </select>
+      </div>
+      <div class="fg" style="margin-bottom:8px;"><label>Product ID (auto)</label>
+        <input id="stId" placeholder="SSHN-SOF-001" readonly style="background:#f0fdf4;font-family:monospace;font-size:13px;font-weight:700;color:#16a34a;">
+      </div>
+    </div>
+    <div class="fg" style="margin-bottom:8px;"><label>Item Name *</label><input id="stName" placeholder="e.g. 3-Seater Fabric Sofa"></div>
+    <div class="fg" style="margin-bottom:8px;"><label>Description</label><input id="stDesc" placeholder="e.g. Brown colour, 6ft wide"></div>
+    <div class="row2">
+      <div class="fg" style="margin-bottom:8px;"><label>Qty in Stock *</label><input id="stQty" type="number" placeholder="0" min="0"></div>
+      <div class="fg" style="margin-bottom:8px;"><label>Low Stock Alert</label><input id="stAlert" type="number" placeholder="2" min="0"></div>
+    </div>
+    <div class="row2">
+      <div class="fg" style="margin-bottom:8px;"><label>Purchase Price (&#8377;)</label><input id="stBuyPrice" type="number" placeholder="0"></div>
+      <div class="fg" style="margin-bottom:8px;"><label>Supplier</label><input id="stSupplier" placeholder="e.g. Nilkamal"></div>
+    </div>
+    <div class="fg" style="margin-bottom:8px;"><label>Purchase Date</label><input id="stDate" type="date"></div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="saveStockItem()" style="flex:2;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Save Stock</button>
+      <button onclick="g('addStockForm').style.display='none'" style="flex:1;padding:13px;background:#e5e7eb;color:#374151;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
+    </div>
+  </div>
+  <div id="stockList"></div>
+</div>
+
+
+<!-- SUPPLIERS -->
+<div id="suppliers" class="section">
+  <div class="sec-nav">
+    <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
+    <div class="sec-nav-title">&#127968; Suppliers / Vendors</div>
+    <div style="width:44px;"></div>
+  </div>
+  <div class="sum-row" style="background:#eff6ff;border-color:#bfdbfe;color:#2563eb;">
+    Suppliers: <b id="supTotal">0</b> &nbsp;|&nbsp; Total Owed: <b id="supTotalOwed">&#8377;0</b> &nbsp;|&nbsp; Overdue: <b id="supOverdue" style="color:#dc2626;">0</b>
+  </div>
+  <div class="card">
+    <div class="card-title">&#43; Add Supplier</div>
+    <div class="row2">
+      <div class="fg" style="margin-bottom:8px;"><label>Supplier Name *</label><input id="supName" placeholder="e.g. Nilkamal"></div>
+      <div class="fg" style="margin-bottom:8px;"><label>Phone</label><input id="supPhone" type="tel" placeholder="Mobile"></div>
+    </div>
+    <button onclick="addSupplier()" style="width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#43; Add Supplier</button>
+  </div>
+  <div class="card" style="border:1.5px solid #bfdbfe;">
+    <div class="card-title" style="color:#2563eb;">&#128230; Record Bill / Payment</div>
+    <div class="fg"><label>Select Supplier *</label>
+      <select id="supSelect"><option value="">Select supplier...</option></select>
+    </div>
+    <div class="row2">
+      <div class="fg"><label>Type</label>
+        <select id="supTxnType">
+          <option value="bill">&#128203; New Bill (owed)</option>
+          <option value="payment">&#128184; Payment Made</option>
+        </select>
+      </div>
+      <div class="fg"><label>Amount (&#8377;) *</label><input id="supAmt" type="number" placeholder="0"></div>
+    </div>
+    <div class="row2">
+      <div class="fg"><label>Date *</label><input id="supDate" type="date"></div>
+      <div class="fg"><label>Invoice / Ref No.</label><input id="supRef" placeholder="Invoice number"></div>
+    </div>
+    <div class="fg"><label>Note</label><input id="supNote" placeholder="Description"></div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="addSupplierTxn()" style="flex:1;padding:13px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Save</button>
+      <button onclick="sendSupplierWA()" style="flex:1;padding:13px;background:#15803d;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#128245; WA Balance</button>
+    </div>
+  </div>
+  <div class="sw"><span class="si">&#128269;</span><input id="searchSup" placeholder="Search suppliers..." oninput="if(window.renderSuppliers)window.renderSuppliers()"></div>
+  <div id="supplierList"></div>
+</div>
+
+</div>
+
+
+<!-- OVERVIEW -->
+<div id="overview" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#128200; Business Overview</div><div style="width:44px;"></div></div>
+  <div id="profitPill2" class="profit-pill">Net Profit: &#8377;0</div>
+  <div class="dash-grid">
+    <div class="tile t2"><span class="ti">&#128197;</span><span class="tv">&#8377;<span id="dTodaySales">0</span></span><span class="tl">Today Sales</span></div>
+    <div class="tile t1"><span class="ti">&#128176;</span><span class="tv">&#8377;<span id="dTotalSales">0</span></span><span class="tl">Total Sales</span></div>
+    <div class="tile t5"><span class="ti">&#8987;</span><span class="tv">&#8377;<span id="dTotalDue">0</span></span><span class="tl">Total Due</span></div>
+    <div class="tile t3"><span class="ti">&#128203;</span><span class="tv" id="dLeads">0</span><span class="tl">Active Leads</span></div>
+    <div class="tile t4"><span class="ti">&#128230;</span><span class="tv" id="dOrders">0</span><span class="tl">Pending Orders</span></div>
+    <div class="tile t6"><span class="ti">&#129534;</span><span class="tv">&#8377;<span id="dExpenses">0</span></span><span class="tl">Expenses</span></div>
+    <div class="tile t7"><span class="ti">&#128722;</span><span class="tv" id="dInprog">0</span><span class="tl">In-Progress</span></div>
+    <div class="tile t8"><span class="ti">&#9989;</span><span class="tv" id="dClosed">0</span><span class="tl">Closed Sales</span></div>
+  </div>
+  <div class="card"><div class="card-title">&#128202; Quick Summary</div><div id="quickSummary2" style="font-size:13px;line-height:2;"></div></div>
+  <div class="card"><div class="card-title">&#128276; Today Follow-ups</div><div id="todayFU2"></div></div>
+  <div class="card"><div class="card-title">&#9888;&#65039; Overdue Payments</div><div id="overduePay2"></div></div>
+  <button onclick="exportData()" style="width:100%;padding:13px;background:#1e40af;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;">&#128229; Export Full Report</button>
+</div>
+
+
+<!-- DIRECTORY -->
+<div id="directory" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#128101; Customer Directory</div><div style="width:44px;"></div></div>
+  <div class="sum-row" style="background:#f0fdfa;border-color:#99f6e4;color:#0d9488;">Total: <b id="dirTotal">0</b> &nbsp;|&nbsp; Customers: <b id="dirCusts">0</b> &nbsp;|&nbsp; Leads: <b id="dirLeads">0</b> &nbsp;|&nbsp; With Phone: <b id="dirWithPhone">0</b></div>
+  <div class="sw"><span class="si">&#128269;</span><input id="searchDir" placeholder="Search by name or phone..." oninput="renderDir()"></div>
+  <div class="filter-pills">
+    <button class="pill on" onclick="setDirFilter('all',this)">All</button>
+    <button class="pill" onclick="setDirFilter('customer',this)">&#128176; Customers</button>
+    <button class="pill" onclick="setDirFilter('lead',this)">&#128203; Leads</button>
+    <button class="pill" onclick="setDirFilter('imported',this)">&#128229; Imported</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+    <button onclick="exportDirVCF()" style="padding:12px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128222; Export VCF</button>
+    <button onclick="exportDirCSV()" style="padding:12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128229; Export CSV</button>
+  </div>
+  <button onclick="document.getElementById('dirCSVFile').click()" style="width:100%;padding:13px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;">&#128229; Import from CSV</button>
+  <input type="file" id="dirCSVFile" accept=".csv,.txt" style="display:none;" onchange="importDirCSV(this)">
+  <div id="dirImportResult" style="font-size:13px;font-weight:600;text-align:center;min-height:20px;margin-bottom:8px;"></div>
+  <div id="dirBulkBar" style="display:none;background:#fef2f2;border:1.5px solid #fecaca;border-radius:10px;padding:10px 14px;margin-bottom:8px;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+    <div style="font-size:13px;font-weight:700;color:#dc2626;"><span id="dirSelCount">0</span> selected</div>
+    <div style="display:flex;gap:6px;">
+      <button onclick="dirSelectAll()" style="padding:7px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Select All</button>
+      <button onclick="dirDeleteSelected()" style="padding:7px 12px;background:#dc2626;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">&#128465; Delete</button>
+      <button onclick="dirClearSelection()" style="padding:7px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:8px;">
+    <div class="card-title">&#43; Add Manually</div>
+    <div class="row2">
+      <div class="fg" style="margin-bottom:0;"><label>Name *</label><input id="dirName" placeholder="Full name"></div>
+      <div class="fg" style="margin-bottom:0;"><label>Phone *</label><input id="dirPhone" type="tel" placeholder="10 digits"></div>
+    </div>
+    <button onclick="addDirContact()" style="width:100%;padding:12px;margin-top:10px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Add Contact</button>
+  </div>
+  <div id="dirList"></div>
+</div>
+
+
+<!-- SUPPLIERS -->
+<div id="suppliers" class="section">
+  <div class="sec-nav">
+    <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
+    <div class="sec-nav-title">&#127968; Suppliers / Vendors</div>
+    <div style="width:44px;"></div>
+  </div>
+  <div class="sum-row" style="background:#eff6ff;border-color:#bfdbfe;color:#2563eb;">
+    Suppliers: <b id="supTotal">0</b> &nbsp;|&nbsp; Total Owed: <b id="supTotalOwed">&#8377;0</b> &nbsp;|&nbsp; Overdue: <b id="supOverdue" style="color:#dc2626;">0</b>
+  </div>
+  <div class="card">
+    <div class="card-title">&#43; Add Supplier</div>
+    <div class="row2">
+      <div class="fg" style="margin-bottom:8px;"><label>Supplier Name *</label><input id="supName" placeholder="e.g. Nilkamal"></div>
+      <div class="fg" style="margin-bottom:8px;"><label>Phone</label><input id="supPhone" type="tel" placeholder="Mobile"></div>
+    </div>
+    <button onclick="addSupplier()" style="width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#43; Add Supplier</button>
+  </div>
+  <div class="card" style="border:1.5px solid #bfdbfe;">
+    <div class="card-title" style="color:#2563eb;">&#128230; Record Bill / Payment</div>
+    <div class="fg"><label>Select Supplier *</label>
+      <select id="supSelect"><option value="">Select supplier...</option></select>
+    </div>
+    <div class="row2">
+      <div class="fg"><label>Type</label>
+        <select id="supTxnType">
+          <option value="bill">&#128203; New Bill (owed)</option>
+          <option value="payment">&#128184; Payment Made</option>
+        </select>
+      </div>
+      <div class="fg"><label>Amount (&#8377;) *</label><input id="supAmt" type="number" placeholder="0"></div>
+    </div>
+    <div class="row2">
+      <div class="fg"><label>Date *</label><input id="supDate" type="date"></div>
+      <div class="fg"><label>Invoice / Ref No.</label><input id="supRef" placeholder="Invoice number"></div>
+    </div>
+    <div class="fg"><label>Note</label><input id="supNote" placeholder="Description"></div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="addSupplierTxn()" style="flex:1;padding:13px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Save</button>
+      <button onclick="sendSupplierWA()" style="flex:1;padding:13px;background:#15803d;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#128245; WA Balance</button>
+    </div>
+  </div>
+  <div class="sw"><span class="si">&#128269;</span><input id="searchSup" placeholder="Search suppliers..." oninput="if(window.renderSuppliers)window.renderSuppliers()"></div>
+  <div id="supplierList"></div>
+</div>
+
+</div>
+
+
+<!-- OVERVIEW -->
+<div id="overview" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#128200; Business Overview</div><div style="width:44px;"></div></div>
+  <div id="profitPill2" class="profit-pill">Net Profit: &#8377;0</div>
+  <div class="dash-grid">
+    <div class="tile t2"><span class="ti">&#128197;</span><span class="tv">&#8377;<span id="dTodaySales">0</span></span><span class="tl">Today Sales</span></div>
+    <div class="tile t1"><span class="ti">&#128176;</span><span class="tv">&#8377;<span id="dTotalSales">0</span></span><span class="tl">Total Sales</span></div>
+    <div class="tile t5"><span class="ti">&#8987;</span><span class="tv">&#8377;<span id="dTotalDue">0</span></span><span class="tl">Total Due</span></div>
+    <div class="tile t3"><span class="ti">&#128203;</span><span class="tv" id="dLeads">0</span><span class="tl">Active Leads</span></div>
+    <div class="tile t4"><span class="ti">&#128230;</span><span class="tv" id="dOrders">0</span><span class="tl">Pending Orders</span></div>
+    <div class="tile t6"><span class="ti">&#129534;</span><span class="tv">&#8377;<span id="dExpenses">0</span></span><span class="tl">Expenses</span></div>
+    <div class="tile t7"><span class="ti">&#128722;</span><span class="tv" id="dInprog">0</span><span class="tl">In-Progress</span></div>
+    <div class="tile t8"><span class="ti">&#9989;</span><span class="tv" id="dClosed">0</span><span class="tl">Closed Sales</span></div>
+  </div>
+  <div class="card"><div class="card-title">&#128202; Quick Summary</div><div id="quickSummary2" style="font-size:13px;line-height:2;"></div></div>
+  <div class="card"><div class="card-title">&#128276; Today Follow-ups</div><div id="todayFU2"></div></div>
+  <div class="card"><div class="card-title">&#9888;&#65039; Overdue Payments</div><div id="overduePay2"></div></div>
+  <button onclick="exportData()" style="width:100%;padding:13px;background:#1e40af;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;">&#128229; Export Full Report</button>
+</div>
+
+
+<!-- DIRECTORY -->
+<div id="directory" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#128101; Customer Directory</div><div style="width:44px;"></div></div>
+  <div class="sum-row" style="background:#f0fdfa;border-color:#99f6e4;color:#0d9488;">Total: <b id="dirTotal">0</b> &nbsp;|&nbsp; Customers: <b id="dirCusts">0</b> &nbsp;|&nbsp; Leads: <b id="dirLeads">0</b> &nbsp;|&nbsp; With Phone: <b id="dirWithPhone">0</b></div>
+  <div class="sw"><span class="si">&#128269;</span><input id="searchDir" placeholder="Search by name or phone..." oninput="renderDir()"></div>
+  <div class="filter-pills">
+    <button class="pill on" onclick="setDirFilter('all',this)">All</button>
+    <button class="pill" onclick="setDirFilter('customer',this)">&#128176; Customers</button>
+    <button class="pill" onclick="setDirFilter('lead',this)">&#128203; Leads</button>
+    <button class="pill" onclick="setDirFilter('imported',this)">&#128229; Imported</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+    <button onclick="exportDirVCF()" style="padding:12px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128222; Export VCF</button>
+    <button onclick="exportDirCSV()" style="padding:12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128229; Export CSV</button>
+  </div>
+  <button onclick="document.getElementById('dirCSVFile').click()" style="width:100%;padding:13px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;">&#128229; Import from CSV</button>
+  <input type="file" id="dirCSVFile" accept=".csv,.txt" style="display:none;" onchange="importDirCSV(this)">
+  <div id="dirImportResult" style="font-size:13px;font-weight:600;text-align:center;min-height:20px;margin-bottom:8px;"></div>
+  <div id="dirBulkBar" style="display:none;background:#fef2f2;border:1.5px solid #fecaca;border-radius:10px;padding:10px 14px;margin-bottom:8px;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+    <div style="font-size:13px;font-weight:700;color:#dc2626;"><span id="dirSelCount">0</span> selected</div>
+    <div style="display:flex;gap:6px;">
+      <button onclick="dirSelectAll()" style="padding:7px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Select All</button>
+      <button onclick="dirDeleteSelected()" style="padding:7px 12px;background:#dc2626;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">&#128465; Delete</button>
+      <button onclick="dirClearSelection()" style="padding:7px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:8px;">
+    <div class="card-title">&#43; Add Manually</div>
+    <div class="row2">
+      <div class="fg" style="margin-bottom:0;"><label>Name *</label><input id="dirName" placeholder="Full name"></div>
+      <div class="fg" style="margin-bottom:0;"><label>Phone *</label><input id="dirPhone" type="tel" placeholder="10 digits"></div>
+    </div>
+    <button onclick="addDirContact()" style="width:100%;padding:12px;margin-top:10px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Add Contact</button>
+  </div>
+  <div id="dirList"></div>
+</div>
+
+
+<!-- STOCK OVERVIEW -->
+<div id="stockoverview" class="section">
+  <div class="sec-nav">
+    <button class="sec-back" onclick="showTabNew('stock')">&#8592;</button>
+    <div class="sec-nav-title">&#128230; Stock Overview</div>
+    <div style="width:44px;"></div>
+  </div>
+
+  <!-- Summary strip -->
+  <div class="sum-row" style="background:#f0fdf4;border-color:#bbf7d0;color:#15803d;">
+    Total: <b id="ovTotal">0</b> &nbsp;|&nbsp;
+    In Stock: <b id="ovInStock">0</b> &nbsp;|&nbsp;
+    Low: <b id="ovLow" style="color:#d97706;">0</b> &nbsp;|&nbsp;
+    Out: <b id="ovOut" style="color:#dc2626;">0</b> &nbsp;|&nbsp;
+    Value: <b>&#8377;<span id="ovValue">0</span></b>
+  </div>
+
+  <!-- Category tiles - smaller 3-col grid -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;">
+    <button onclick="goToStockCat('SOF')" style="background:#1d4ed8;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128715;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Sofa</div>
+      <div id="ovCatCount_SOF" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
+    </button>
+    <button onclick="goToStockCat('BED')" style="background:#7c3aed;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128719;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Beds</div>
+      <div id="ovCatCount_BED" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
+    </button>
+    <button onclick="goToStockCat('MAT')" style="background:#0f766e;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128716;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Mattress</div>
+      <div id="ovCatCount_MAT" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
+    </button>
+    <button onclick="goToStockCat('TBL')" style="background:#b45309;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#127869;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Tables</div>
+      <div id="ovCatCount_TBL" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
+    </button>
+    <button onclick="goToStockCat('STR')" style="background:#15803d;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128452;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Storage</div>
+      <div id="ovCatCount_STR" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
+    </button>
+    <button onclick="goToStockCat('DRS')" style="background:#be185d;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#129694;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Dressing</div>
+      <div id="ovCatCount_DRS" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
+    </button>
+    <button onclick="goToStockCat('TVU')" style="background:#0369a1;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128250;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">TV Units</div>
+      <div id="ovCatCount_TVU" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
+    </button>
+    <button onclick="goToStockCat('OFC')" style="background:#334155;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128421;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Office</div>
+      <div id="ovCatCount_OFC" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
+    </button>
+    <button onclick="goToStockCat('KID')" style="background:#dc2626;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#129528;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Kids</div>
+      <div id="ovCatCount_KID" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
+    </button>
+    <button onclick="goToStockCat('FLD')" style="background:#c2410c;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#129681;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Folding</div>
+      <div id="ovCatCount_FLD" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
+    </button>
+    <button onclick="goToStockCat('OTH')" style="background:#64748b;border:none;border-radius:10px;padding:10px 6px;cursor:pointer;font-family:inherit;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;gap:4px;transition:opacity .15s;" onmousedown="this.style.opacity='.8'" onmouseup="this.style.opacity='1'">
+      <div style="font-size:24px;line-height:1;">&#128230;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Other</div>
+      <div id="ovCatCount_OTH" style="font-size:15px;font-weight:900;color:#fff;line-height:1;">0</div>
+    </button>
+  </div>
+
+  <!-- Low/Out stock alerts -->
+  <div id="ovAlerts"></div>
+</div>
+
 <!-- EDIT OVERLAY -->
 <div id="editOv">
   <div id="editBox">
@@ -880,7 +1332,7 @@ const fbApp = initializeApp(firebaseConfig);
 const fdb   = getFirestore(fbApp);
 const DOC   = doc(fdb, "srisai", "data_no_stock");
 
-let db = { sales:[], leads:[], orders:[], payments:[], expenses:[], stock:[] };
+let db = { sales:[], leads:[], orders:[], payments:[], expenses:[], stock:[], suppliers:[] };
 const TODAY = new Date().toISOString().split("T")[0];
 let billCounter = 100000;
 let curBillIdx  = -1;
@@ -918,6 +1370,7 @@ onSnapshot(DOC, snap => {
     db.payments = p.payments || [];
     db.expenses = p.expenses || [];
     db.stock    = p.stock    || [];
+    db.suppliers = p.suppliers || [];
     if (p.billCounter) billCounter = p.billCounter;
     ss("Synced " + new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}), "");
   } else {
@@ -942,6 +1395,7 @@ function dbadge(d) {
   return"";
 }
 function pcolor(p) { return p==="Hot"?"#e74c3c":p==="Warm"?"#d4ac0d":"#2471a3"; }
+function priLabel(p) { return p==="Hot"?"🔥 Serious Buyer":p==="Warm"?"🕐 Follow-up Needed":p==="Cold"?"🧊 Casual Inquiry":p||""; }
 function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
 function filt(arr, sid) {
@@ -1112,7 +1566,7 @@ function waOrder(i){
   window.open("https://wa.me/"+p+"?text="+encodeURIComponent(msg),"_blank");
 }
 
-function waPayment(i){const x=db.payments[i];if(!x.phone){alert("No phone number for this payment.");return;}const extra=prompt("Add custom message (optional):","")||"";const msg="*Sri Sai Home Needs - Payment Reminder*\n\nDear "+x.n+",\n\nThis is a reminder that *Rs."+x.a.toFixed(2)+"* is due on *"+x.d+"*."+(x.bill?"\n\nReference: "+x.bill:"")+(extra?"\n\n"+extra:"")+"\n\nPlease pay at your earliest. Thank you!\n\nFind us: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6\nSri Sai Home Needs, Chandanagar";const p=x.phone.replace(/[^0-9]/g,"");window.open("https://wa.me/"+(p.length===10?"91"+p:p)+"?text="+encodeURIComponent(msg),"_blank");}
+function waPayment(i){const x=db.payments[i];if(!x.phone){alert("No phone number for this payment.");return;}const extra=prompt("Add custom message (optional):","")||"";const msg="*Sri Sai Home Needs - Payment Reminder*\n\nDear "+x.n+",\n\nThis is a reminder that *Rs."+x.a.toFixed(2)+"* is due on *"+x.d+"*."+(x.bill?"\n\nReference: "+x.bill:"")+(extra?"\n\n"+extra:"")+"\n\nPlease pay at your earliest. Thank you!\n\nFind us: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6";const p=x.phone.replace(/[^0-9]/g,"");window.open("https://wa.me/"+(p.length===10?"91"+p:p)+"?text="+encodeURIComponent(msg),"_blank");}
 
 function editSN(i){const s=db.sales[i],n=prompt("Edit Note:",s.note||"");if(n!==null){s.note=n;saveDB();render();}}
 function editLN(i){
@@ -1200,7 +1654,7 @@ g("btnWA").addEventListener("click",()=>{
     +"*Item:* "+(s.item||"---")+"\n\n"
     +"*Total:* Rs."+s.amt.toFixed(2)+"\n*Advance Paid:* Rs."+(s.adv||0).toFixed(2)+"\n"
     +(d>0?"*Balance Due:* Rs."+d.toFixed(2)+(s.dueDate?" (by "+s.dueDate+")":"")+"\n":"*Status:* PAID IN FULL\n")
-    +"\nThank you!\n\nFind us: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6\nSri Sai Home Needs, Chandanagar";
+    +"\nThank you!\n\nFind us: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6";
   let ph=s.phone.replace(/[^0-9]/g,"");
   if(ph.length===10)ph="91"+ph;
   else if(ph.length===11&&ph.startsWith("0"))ph="91"+ph.slice(1);
@@ -1266,7 +1720,7 @@ ${x.phone?`<button class="btn btn-wa" style="padding:4px 7px;font-size:11px;" on
   lArr.forEach(x=>{
     const ri=db.leads.indexOf(x);
     lH+=`<div class="rec lead-r">
-<div class="rec-name" style="border-left:3px solid ${pcolor(x.priority||"Warm")};padding-left:5px;">${esc(x.n)}${dbadge(x.d)}${x.priority?`<span class="badge" style="background:#f4f6f7;color:${pcolor(x.priority)};">${x.priority}</span>`:""}</div>
+<div class="rec-name" style="border-left:3px solid ${pcolor(x.priority||"Warm")};padding-left:5px;">${esc(x.n)}${dbadge(x.d)}${x.priority?`<span class="badge" style="background:#f4f6f7;color:${pcolor(x.priority)};">${priLabel(x.priority)}</span>`:""}</div>
 <div class="rec-sub">Follow-up: ${x.d}${x.phone?" | "+esc(x.phone):""}${x.item?"<br>"+esc(x.item):""}${x.budget?" | Budget: Rs."+x.budget:""}</div>
 ${x.source?`<div class="rec-sub">Source: ${esc(x.source)}</div>`:""}
 ${x.note?`<div class="note-chip">${esc(x.note)}</div>`:""}
@@ -1344,7 +1798,7 @@ ${x.note?`<div class="note-chip">${esc(x.note)}</div>`:""}
   g("dTotalDue").textContent=tD.toFixed(2);g("dLeads").textContent=pL;g("dOrders").textContent=pO;
   g("dExpenses").textContent=aE.toFixed(2);g("dInprog").textContent=iC;g("dClosed").textContent=cC;
   const pp=g("profitPill");
-  pp.innerHTML=`Net Profit: <b>Rs.${prof.toFixed(2)}</b> ${prof>=0?"(UP)":"(DOWN)"}`;
+  pp.innerHTML=`Net Profit: <b>&#8377;${prof.toFixed(2)}</b>`;
   pp.style.background=prof>=0?"linear-gradient(90deg,#eafaf1,#d5f5e3)":"linear-gradient(90deg,#fdecea,#fadbd8)";
   pp.style.color=prof>=0?"var(--green)":"var(--red)";
   g("quickSummary").innerHTML=`Total Bills: <b>${db.sales.length}</b> | Closed: <b>${cC}</b> | In-Progress: <b>${iC}</b><br>Active Leads: <b>${pL}</b> | Pending Deliveries: <b>${pO}</b><br>Total Due: <b style="color:var(--red)">Rs.${tD.toFixed(2)}</b>`;
@@ -1432,11 +1886,13 @@ function renderSync() {
   var hp = g("homeProfit");
   if(hp && pp) {
     var t = pp.textContent.replace("Net Profit: ","").replace("Net Profit:","").trim();
-    hp.textContent = t;
-    hp.style.color = t.indexOf("-") === 0 ? "#dc2626" : "#16a34a";
+    hp.innerHTML = "&#8377;" + t.replace(/^Rs\.?/,"").replace(/^₹/,"").trim();
+    hp.style.color = t.indexOf("-") === 0 ? "#fca5a5" : "#fef08a";
   }
 }
 window._appRender = renderSync;
+window.saveDB = saveDB;
+window._getDb = function(){ return db; };
 window.saveDB = saveDB;
 window._getDb = function(){ return db; };
 
@@ -1453,7 +1909,7 @@ function waSaleMsg(i) {
   if(d > 0) msg += "*Balance Due:* Rs." + d.toFixed(2) + (s.dueDate ? " (by " + s.dueDate + ")" : "") + "\n";
   else msg += "*Status:* Fully Paid\n";
   if(s.bill) msg += "*Bill No:* " + s.bill + "\n";
-  msg += "\nWe look forward to serving you again!\n\nOur Store: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6\nSri Sai Home Needs";
+  msg += "\nWe look forward to serving you again!\n\nOur Store: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6";
   var p = s.phone.replace(/[^0-9]/g,"");
   if(p.length === 10) p = "91" + p;
   window.open("https://wa.me/" + p + "?text=" + encodeURIComponent(msg), "_blank");
@@ -2228,6 +2684,568 @@ window.markDone = function(type,ri){
 // addSale/addOrder patched via stockId in sale/order objects
 
 // showTabNew in head handles stock tab
+
+
+// ================================================================
+// STOCK MANAGEMENT JS - all in one clean block
+// ================================================================
+var _stockFilter = "ALL";
+var _pickerTarget = "sale";
+var _pickerCatFilter = "ALL";
+var CAT_NAMES = {"SOF":"Sofa & Seating","BED":"Beds","MAT":"Mattresses","TBL":"Tables","STR":"Storage","DRS":"Dressing Table","TVU":"TV Units","OFC":"Office & Chairs","KID":"Kids Furniture","FLD":"Folding Items","OTH":"Other"};
+
+// RENDER STOCK LIST
+function renderStock() {
+  var all = db.stock || [];
+  var q = (g("searchStock")?g("searchStock").value||"":"").toLowerCase().trim();
+  var cats = ["SOF","BED","MAT","TBL","STR","DRS","TVU","OFC","KID","FLD","OTH"];
+  var allCnt = all.length;
+  var el = g("catCount_ALL"); if(el) el.textContent = allCnt;
+  // Update dropdown option labels with counts
+  var sel = g("stockCatSelect");
+  var catLabels = {"SOF":"Sofa & Seating","BED":"Beds","MAT":"Mattresses","TBL":"Tables","STR":"Storage","DRS":"Dressing Table","TVU":"TV Units","OFC":"Office & Chairs","KID":"Kids Furniture","FLD":"Folding Items","OTH":"Other"};
+  var catIcons = {"SOF":"&#128715;","BED":"&#128719;","MAT":"&#128716;","TBL":"&#127869;","STR":"&#128452;","DRS":"&#129694;","TVU":"&#128250;","OFC":"&#128421;","KID":"&#129528;","FLD":"&#129681;","OTH":"&#128230;"};
+  cats.forEach(function(c){
+    var cnt = all.filter(function(s){return s.cat===c;}).length;
+    var el2 = g("catCount_"+c); if(el2) el2.textContent = cnt;
+    if(sel){
+      for(var i=0;i<sel.options.length;i++){
+        if(sel.options[i].value===c){
+          sel.options[i].text = (catLabels[c]||c) + (cnt>0?" ("+cnt+")":"");
+          break;
+        }
+      }
+    }
+  });
+  if(sel) sel.options[0].text = "All Items" + (allCnt>0?" ("+allCnt+")":"");
+  var filtered = _stockFilter==="ALL" ? all : all.filter(function(s){return s.cat===_stockFilter;});
+  if(q) filtered = filtered.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0||s.id.toLowerCase().indexOf(q)>=0;});
+  var inStock=0,low=0,out=0,totalPurchase=0;
+  all.forEach(function(s){
+    totalPurchase+=(s.buyPrice||0)*(s.qty||0);
+    if(s.qty<=0)out++;else if(s.qty<=(s.alert||2))low++;else inStock++;
+  });
+  if(g("stTotal"))g("stTotal").textContent=all.length;
+  if(g("stInStock"))g("stInStock").textContent=inStock;
+  if(g("stLow"))g("stLow").textContent=low;
+  if(g("stOut"))g("stOut").textContent=out;
+  if(g("stPurchaseVal"))g("stPurchaseVal").textContent=totalPurchase.toFixed(0);
+  if(g("stTotalTile"))g("stTotalTile").textContent=all.length;
+  if(g("stInStockTile"))g("stInStockTile").textContent=inStock;
+  if(g("stLowTile"))g("stLowTile").textContent=low;
+  if(g("stOutTile"))g("stOutTile").textContent=out;
+  if(g("stPurchaseValTile"))g("stPurchaseValTile").textContent=totalPurchase.toFixed(0);
+  var badge=g("stockAlertBadge");
+  if(badge){var alerts=low+out;badge.style.display=alerts>0?"flex":"none";badge.textContent=alerts;}
+  var sl=g("stockList");if(!sl)return;
+  if(filtered.length===0){sl.innerHTML='<div class="empty"><div class="ei">&#128230;</div><p>No stock items. Tap "+ Add New Stock Item"</p></div>';return;}
+  sl.innerHTML=filtered.map(function(s){
+    var ri=db.stock.indexOf(s);
+    var reserved=(db.orders||[]).filter(function(o){return !o.done&&o.stockId===s.id;}).length;
+    var avail=s.qty-reserved;
+    var statusCls=s.qty<=0?"out-stock":s.qty<=(s.alert||2)?"low-stock":"in-stock";
+    var badgeCls=s.qty<=0?"sb-out":s.qty<=(s.alert||2)?"sb-low":"sb-in";
+    var badgeTxt=s.qty<=0?"Out of Stock":s.qty<=(s.alert||2)?"Low ("+s.qty+" left)":"In Stock ("+s.qty+")";
+    return '<div class="stock-card '+statusCls+'">'+
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;">'+
+        '<div><div class="stock-id">'+esc(s.id)+'</div>'+
+        '<div class="stock-name">'+esc(s.name)+'</div>'+
+        (s.desc?'<div style="font-size:12px;color:var(--muted);">'+esc(s.desc)+'</div>':'')+
+        '</div><span class="stock-badge '+badgeCls+'">'+badgeTxt+'</span>'+
+      '</div>'+
+      '<div style="font-size:12px;color:var(--muted);margin:6px 0;">'+
+        '&#8377; Buy: '+(s.buyPrice||0).toFixed(0)+
+        (s.supplier?' | '+esc(s.supplier):'')+
+        (reserved>0?' | <b style="color:#d97706;">'+reserved+' reserved</b>':'')+
+      '</div>'+
+      '<div class="stock-actions">'+
+        '<button class="btn btn-sm" style="background:#16a34a;color:#fff;" onclick="addMoreStock('+ri+')">&#43; Qty</button>'+
+        '<button class="btn btn-sm btn-blue" onclick="editStockItem('+ri+')">&#9998; Edit</button>'+
+        '<button class="btn btn-sm btn-del" onclick="deleteStockItem('+ri+')">&#128465;</button>'+
+      '</div></div>';
+  }).join("");
+}
+window.renderStock = renderStock;
+
+function filterStock(cat) {
+  _stockFilter = cat || "ALL";
+  var sel = g("stockCatSelect");
+  if(sel) sel.value = _stockFilter;
+  renderStock();
+}
+function filterStockDropdown(cat) {
+  _stockFilter = cat || "ALL";
+  renderStock();
+}
+window.filterStockDropdown = filterStockDropdown;
+window.filterStock = filterStock;
+
+function addMoreStock(ri) {
+  var s=db.stock[ri];if(!s)return;
+  var n=prompt("Current qty: "+s.qty+"\nAdd how many units?","1");
+  if(!n||isNaN(Number(n))||Number(n)<=0)return;
+  var add=parseInt(n);
+  s.qty+=add;
+  if(!s.history)s.history=[];
+  s.history.push({action:"Added "+add+" units",qty:s.qty,date:new Date().toISOString().split("T")[0]});
+  saveDB();renderStock();
+}
+window.addMoreStock = addMoreStock;
+
+function editStockItem(ri) {
+  var s=db.stock[ri];if(!s)return;
+  var newName=prompt("Item Name:",s.name);if(newName===null)return;
+  var newDesc=prompt("Description:",s.desc||"");
+  var newBuy=prompt("Purchase Price (Rs.):",s.buyPrice||0);
+  var newAlert=prompt("Low Stock Alert Level:",s.alert||2);
+  var newSupp=prompt("Supplier:",s.supplier||"");
+  if(newName)s.name=newName.trim();
+  if(newDesc!==null)s.desc=newDesc.trim();
+  if(newBuy!==null)s.buyPrice=parseFloat(newBuy)||0;
+  if(newAlert!==null)s.alert=parseInt(newAlert)||2;
+  if(newSupp!==null)s.supplier=newSupp.trim();
+  saveDB();renderStock();
+}
+window.editStockItem = editStockItem;
+
+function deleteStockItem(ri) {
+  if(!window._isAdmin){alert("Admin only.");return;}
+  var s=db.stock[ri];if(!s)return;
+  if(!confirm("Delete "+s.name+"?"))return;
+  db.stock.splice(ri,1);
+  saveDB();renderStock();
+}
+window.deleteStockItem = deleteStockItem;
+
+// STOCK PICKER MODAL
+function openStockPicker(target) {
+  _pickerTarget=target||"sale";
+  _pickerCatFilter="ALL";
+  document.querySelectorAll("#stockPickerOv .pill").forEach(function(p){p.classList.remove("on");});
+  var fp=document.querySelector("#stockPickerOv .pill");if(fp)fp.classList.add("on");
+  var ps=g("pickerSearch");if(ps)ps.value="";
+  g("stockPickerOv").style.display="block";
+  renderPickerList();
+}
+window.openStockPicker = openStockPicker;
+
+function closeStockPicker(){g("stockPickerOv").style.display="none";}
+window.closeStockPicker = closeStockPicker;
+
+function pickerFilter(cat,btn){
+  _pickerCatFilter=cat;
+  document.querySelectorAll("#stockPickerOv .pill").forEach(function(p){p.classList.remove("on");});
+  if(btn)btn.classList.add("on");
+  renderPickerList();
+}
+window.pickerFilter = pickerFilter;
+
+function renderPickerList(){
+  var pl=g("pickerList");if(!pl)return;
+  var q=(g("pickerSearch")?g("pickerSearch").value||"":"").toLowerCase().trim();
+  var all=db.stock||[];
+  var filtered=_pickerCatFilter==="ALL"?all:all.filter(function(s){return s.cat===_pickerCatFilter;});
+  if(q)filtered=filtered.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0||s.id.toLowerCase().indexOf(q)>=0;});
+  if(filtered.length===0){
+    pl.innerHTML='<div class="empty" style="padding:20px;"><div class="ei" style="font-size:32px;">&#128230;</div><p>No stock found</p>'+
+      '<button onclick="closeStockPicker();showTabNew(\'stock\')" style="padding:10px 16px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;">&#43; Add Stock First</button></div>';
+    return;
+  }
+  pl.innerHTML=filtered.map(function(s){
+    var reserved=(db.orders||[]).filter(function(o){return !o.done&&o.stockId===s.id;}).length;
+    var avail=s.qty-reserved;
+    var statusColor=avail<=0?"#dc2626":avail<=(s.alert||2)?"#d97706":"#16a34a";
+    var statusTxt=avail<=0?"Out of Stock":avail<=(s.alert||2)?"Low ("+avail+")":"In Stock ("+avail+")";
+    var disable=avail<=0?"opacity:.5;pointer-events:none;":"";
+    return '<div onclick="pickStockItem(\''+s.id+'\')" style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--border);cursor:pointer;'+disable+'">'+
+      '<div style="flex:1;"><div style="font-weight:700;font-size:14px;">'+esc(s.name)+'</div>'+
+      '<div style="font-size:11px;color:#2563eb;font-family:monospace;">'+s.id+'</div>'+
+      (s.desc?'<div style="font-size:11px;color:var(--muted);">'+esc(s.desc)+'</div>':'')+
+      '</div><div style="text-align:right;"><div style="font-size:12px;font-weight:700;color:'+statusColor+';">'+statusTxt+'</div>'+
+      '<div style="font-size:11px;color:var(--muted);">&#8377;'+( s.buyPrice||0).toFixed(0)+'</div></div></div>';
+  }).join("");
+}
+window.renderPickerList = renderPickerList;
+
+function pickStockItem(stockId){
+  var s=(db.stock||[]).find(function(x){return x.id===stockId;});
+  if(!s)return;
+  closeStockPicker();
+  if(_pickerTarget==="sale"){
+    var si=g("sItem");if(si)si.value=s.name;
+    var sid=g("sStockId");if(sid)sid.value=s.id;
+    var amt=g("sAmt");if(amt){amt.value=s.buyPrice||"";amt.focus();amt.select();}
+    var info=g("sStockInfo");
+    if(info){info.style.display="block";info.style.background=s.qty<=(s.alert||2)?"#fffbeb":"#f0fdf4";info.style.color=s.qty<=(s.alert||2)?"#d97706":"#16a34a";
+    info.innerHTML="&#10003; <b>"+esc(s.name)+"</b> | "+s.id+" | Stock: <b>"+s.qty+"</b> | Ref: &#8377;"+(s.buyPrice||0).toFixed(0)+" <span style='font-weight:400;font-size:10px;'>(edit amount above)</span>";}
+  } else {
+    var oi=g("oItem");if(oi)oi.value=s.name;
+    var osid=g("oStockId");if(osid)osid.value=s.id;
+    var oinfo=g("oStockInfo");
+    if(oinfo){var reserved=(db.orders||[]).filter(function(o){return !o.done&&o.stockId===s.id;}).length;
+    oinfo.style.display="block";oinfo.style.background="#f5f3ff";oinfo.style.color="#7c3aed";
+    oinfo.innerHTML="&#128230; <b>"+esc(s.name)+"</b> | "+s.id+" | Available: <b>"+(s.qty-reserved)+"</b>"+(reserved>0?" ("+reserved+" reserved)":"");}
+  }
+}
+window.pickStockItem = pickStockItem;
+
+// SALE STOCK DEDUCTION - wrap original addSale
+var _bAS = g("btnAS");
+if(_bAS) {
+  _bAS.onclick = function() {
+    var sid = g("sStockId")?g("sStockId").value.trim().toUpperCase():"";
+    if(sid) {
+      var stock=(db.stock||[]).find(function(s){return s.id===sid;});
+      if(stock) {
+        if(stock.qty<=0){if(!confirm("OUT OF STOCK: "+stock.name+"\nSave sale anyway?"))return;}
+        else{stock.qty-=1;if(!stock.history)stock.history=[];stock.history.push({action:"Sold 1 (Sale)",qty:stock.qty,date:new Date().toISOString().split("T")[0]});}
+      }
+    }
+    window._pendingStockId=sid;
+    addSale();
+    window._pendingStockId="";
+    var si=g("sStockId");if(si)si.value="";
+    var info=g("sStockInfo");if(info)info.style.display="none";
+    renderStock();
+  };
+}
+
+// ORDER STOCK RESERVE - wrap original addOrder
+var _bAO = g("btnAO");
+if(_bAO) {
+  _bAO.onclick = function() {
+    var osid=g("oStockId")?g("oStockId").value.trim().toUpperCase():"";
+    if(osid){var stock=(db.stock||[]).find(function(s){return s.id===osid;});
+      if(stock&&stock.qty<=0){if(!confirm("OUT OF STOCK: "+stock.name+"\nSave order anyway?"))return;}
+    }
+    window._pendingStockId=osid;
+    addOrder();
+    window._pendingStockId="";
+    var info=g("oStockInfo");if(info)info.style.display="none";
+    var osidEl=g("oStockId");if(osidEl)osidEl.value="";
+  };
+}
+
+// MARK DONE - deduct stock when order delivered
+var _origMarkDone2 = window.markDone;
+window.markDone = function(type,ri){
+  if(type==="orders"){
+    var order=db.orders[ri];
+    if(order&&order.stockId&&!order.done){
+      var stock=(db.stock||[]).find(function(s){return s.id===order.stockId;});
+      if(stock&&stock.qty>0){stock.qty-=1;if(!stock.history)stock.history=[];stock.history.push({action:"Delivered (Order to "+order.n+")",qty:stock.qty,date:new Date().toISOString().split("T")[0]});}
+    }
+  }
+  if(_origMarkDone2)_origMarkDone2(type,ri);
+  renderStock();
+};
+
+// addSale/addOrder patched via stockId in sale/order objects
+
+// showTabNew in head handles stock tab
+
+
+// ================================================================
+// HEAD FUNCTIONS - called from HTML onclick
+// ================================================================
+// (these go in head script, not module)
+
+// ================================================================
+// NEW FEATURE JS - all module-safe, no reassignments
+// ================================================================
+
+// ── Payment helpers ──────────────────────────────────────────────
+function freqLabel(f){return f==="weekly"?"Weekly":f==="monthly"?"Monthly":f==="quarterly"?"Quarterly":f==="halfyearly"?"Half Yearly":f==="yearly"?"Yearly":"One-time";}
+function catLabel(c){var m={"customer":"Customer","rent":"Shop Rent","electricity":"Electricity","tax":"Tax/GST","itr":"ITR Filing","licence":"Licence","lic":"LIC/Insurance","salary":"Salary","loan":"Loan/EMI","chit":"Chit Fund","fuel":"Fuel","vehicle":"Vehicle","household":"Household","supplier":"Supplier","other":"Other"};return m[c]||c||"Payment";}
+function getNextDueDate(dateStr,freq){var d=new Date(dateStr);if(freq==="weekly")d.setDate(d.getDate()+7);else if(freq==="monthly")d.setMonth(d.getMonth()+1);else if(freq==="quarterly")d.setMonth(d.getMonth()+3);else if(freq==="halfyearly")d.setMonth(d.getMonth()+6);else if(freq==="yearly")d.setFullYear(d.getFullYear()+1);return d.toISOString().split("T")[0];}
+
+// ── Partial payment collection ───────────────────────────────────
+function collectPartialPay(ri){
+  var p=db.payments[ri];if(!p)return;
+  var balance=(p.amt||0)-(p.paidAmt||0);
+  var amt=prompt("Balance: Rs."+balance.toFixed(0)+"\nEnter amount paying now:","");
+  if(amt===null)return;
+  amt=parseFloat(amt)||0;
+  if(amt<=0){alert("Enter valid amount.");return;}
+  if(!p.paidAmt)p.paidAmt=0;
+  p.paidAmt+=amt;
+  if(!p.history)p.history=[];
+  p.history.push({amt:amt,date:new Date().toISOString().split("T")[0]});
+  var newBal=(p.amt||0)-p.paidAmt;
+  if(newBal<=0){
+    p.done=true;
+    if(p.recurring){
+      var nextDate=getNextDueDate(p.d,p.recurring);
+      var endReached=p.endDate&&nextDate>p.endDate;
+      if(!endReached){
+        db.payments.push({n:p.n,phone:p.phone||"",amt:p.amt,paidAmt:0,d:nextDate,bill:p.bill||"",note:p.note||"",done:false,category:p.category||"customer",recurring:p.recurring,endDate:p.endDate||"",extra:p.extra||{}});
+        alert("Fully paid!\nNext due auto-created: "+nextDate);
+      } else { alert("Fully paid! Series completed."); }
+    } else { alert("Fully paid!"); }
+  } else {
+    alert("Partial recorded.\nPaid: Rs."+p.paidAmt.toFixed(0)+" | Balance: Rs."+newBal.toFixed(0));
+  }
+  saveDB();render();
+}
+window.collectPartialPay=collectPartialPay;
+
+// ── Enhanced payment render - REPLACES payList rendering ─────────
+function renderPaymentsEnhanced(){
+  var pl=g("payList");if(!pl)return;
+  var q=(g("searchPay")?g("searchPay").value||"":"").toLowerCase();
+  var TODAY=new Date().toISOString().split("T")[0];
+  var all=(db.payments||[]).filter(function(p){return !q||p.n.toLowerCase().indexOf(q)>=0;});
+  if(all.length===0){pl.innerHTML='<div class="empty"><div class="ei">&#128184;</div>No payments yet</div>';return;}
+  pl.innerHTML=all.map(function(p,ri){
+    var paidAmt=p.paidAmt||0;
+    var bal=(p.amt||0)-paidAmt;
+    var pct=p.amt>0?Math.min(100,Math.round(paidAmt/p.amt*100)):0;
+    var isDone=p.done||(p.amt>0&&bal<=0);
+    var isOverdue=!isDone&&p.d<TODAY;
+    return '<div class="rec pay-r'+(isDone?" closed-r":"")+'">'+
+      '<div class="rec-name">'+esc(p.n)+
+        (isDone?'<span class="badge b-closed">&#10003; Paid</span>':isOverdue?'<span class="badge b-overdue">Overdue</span>':'<span class="badge b-pending">Pending</span>')+
+        '<span style="background:#f1f5f9;color:#64748b;border-radius:20px;font-size:10px;padding:2px 7px;font-weight:600;">'+catLabel(p.category||"customer")+'</span>'+
+        (p.recurring?'<span style="background:#eff6ff;color:#2563eb;border-radius:20px;font-size:10px;padding:2px 7px;font-weight:600;">&#128257; '+freqLabel(p.recurring)+'</span>':'')+
+      '</div>'+
+      '<div class="rec-sub">Due: '+p.d+(p.phone?' | '+esc(p.phone):'')+(p.bill?' | Ref: '+esc(p.bill):'')+
+        (p.extra&&p.extra.staffName?' | Staff: '+esc(p.extra.staffName):'')+
+        (p.extra&&p.extra.chitGroup?' | Chit: '+esc(p.extra.chitGroup):'')+
+        (p.extra&&p.extra.policyNo?' | Policy: '+esc(p.extra.policyNo):'')+
+      '</div>'+
+      '<div style="margin:8px 0 4px;">'+
+        '<div style="display:flex;justify-content:space-between;font-size:11px;font-weight:600;margin-bottom:4px;">'+
+          '<span style="color:#16a34a;">Paid: &#8377;'+paidAmt.toFixed(0)+'</span>'+
+          '<span style="color:#d97706;">Balance: &#8377;'+Math.max(0,bal).toFixed(0)+'</span>'+
+          '<span style="color:var(--muted);">Total: &#8377;'+(p.amt||0).toFixed(0)+'</span>'+
+        '</div>'+
+        '<div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:'+pct+'%;background:'+(isDone?"#16a34a":"#2563eb")+';"></div></div>'+
+        '<div style="font-size:10px;color:var(--muted);text-align:right;">'+pct+'% paid'+(isDone?' ✅ Complete':'')+' </div>'+
+      '</div>'+
+      (!isDone?'<div class="row-btn"><button class="btn btn-done btn-sm" onclick="collectPartialPay('+ri+')">&#128184; Pay</button>'+(p.phone?'<button class="btn btn-wa btn-sm" onclick="waPayment('+ri+')">&#128245; WA</button>':"")+' <button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="openEdit(\'payments\','+ri+')">Edit</button><button class="btn btn-del btn-sm" onclick="delItem(\'payments\','+ri+')">&#128465;</button></div>':
+       '<div class="row-btn"><button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="openEdit(\'payments\','+ri+')">Edit</button><button class="btn btn-del btn-sm" onclick="delItem(\'payments\','+ri+')">&#128465;</button></div>')+
+    '</div>';
+  }).join("");
+}
+window.renderPaymentsEnhanced=renderPaymentsEnhanced;
+
+// ── Suppliers ────────────────────────────────────────────────────
+function addSupplier(){
+  var name=g("supName")?g("supName").value.trim():"";
+  if(!name){alert("Supplier name required.");return;}
+  if(!db.suppliers)db.suppliers=[];
+  if(db.suppliers.find(function(s){return s.name.toLowerCase()===name.toLowerCase();})){alert("Already exists!");return;}
+  db.suppliers.push({name:name,phone:g("supPhone")?g("supPhone").value.trim():"",txns:[],balance:0});
+  if(g("supName"))g("supName").value="";if(g("supPhone"))g("supPhone").value="";
+  saveDB();renderSuppliers();updateSupplierSelect();
+}
+window.addSupplier=addSupplier;
+
+function updateSupplierSelect(){
+  var sel=g("supSelect");if(!sel)return;
+  sel.innerHTML='<option value="">Select supplier...</option>'+
+    (db.suppliers||[]).map(function(s,i){return '<option value="'+i+'">'+esc(s.name)+(s.balance>0?" (Bal: Rs."+s.balance.toFixed(0)+")":"")+'</option>';}).join("");
+}
+window.updateSupplierSelect=updateSupplierSelect;
+
+function addSupplierTxn(){
+  var si=g("supSelect")?parseInt(g("supSelect").value):-1;
+  if(isNaN(si)||si<0){alert("Select a supplier.");return;}
+  var amt=parseFloat(g("supAmt")?g("supAmt").value:0)||0;
+  var date=g("supDate")?g("supDate").value:"";
+  var type=g("supTxnType")?g("supTxnType").value:"bill";
+  if(!amt||!date){alert("Amount and Date required.");return;}
+  var sup=(db.suppliers||[])[si];if(!sup)return;
+  if(!sup.txns)sup.txns=[];
+  sup.txns.push({type:type,amt:amt,date:date,ref:g("supRef")?g("supRef").value.trim():"",note:g("supNote")?g("supNote").value.trim():""});
+  sup.balance=(sup.balance||0)+(type==="bill"?amt:-amt);
+  if(sup.balance<0)sup.balance=0;
+  ["supAmt","supRef","supNote"].forEach(function(id){var el=g(id);if(el)el.value="";});
+  saveDB();renderSuppliers();updateSupplierSelect();
+  alert((type==="bill"?"Bill added":"Payment recorded")+"!\nBalance: Rs."+sup.balance.toFixed(0));
+}
+window.addSupplierTxn=addSupplierTxn;
+
+function sendSupplierWA(){
+  var si=g("supSelect")?parseInt(g("supSelect").value):-1;
+  if(isNaN(si)||si<0){alert("Select a supplier first.");return;}
+  var sup=(db.suppliers||[])[si];if(!sup||!sup.phone){alert("No phone for this supplier.");return;}
+  var bills=sup.txns?sup.txns.filter(function(t){return t.type==="bill";}):[]; 
+  var pays=sup.txns?sup.txns.filter(function(t){return t.type==="payment";}):[]; 
+  var lastBill=bills.length>0?bills[bills.length-1]:null;
+  var lastPay=pays.length>0?pays[pays.length-1]:null;
+  var totalBilled=bills.reduce(function(a,t){return a+t.amt;},0);
+  var totalPaid=pays.reduce(function(a,t){return a+t.amt;},0);
+  var msg="*Sri Sai Home Needs - Furniture Shop, Chandanagar*\n\n";
+  msg+="Supplier: *"+sup.name+"*\n";
+  msg+="Date: "+new Date().toLocaleDateString("en-IN")+"\n\n";
+  msg+="Total Billed: Rs."+totalBilled.toFixed(0)+"\n";
+  msg+="Total Paid: Rs."+totalPaid.toFixed(0)+"\n";
+  if(lastBill)msg+="Last Bill: Rs."+lastBill.amt.toFixed(0)+(lastBill.ref?" ("+lastBill.ref+")":"")+"\n";
+  if(lastPay)msg+="Last Payment: Rs."+lastPay.amt.toFixed(0)+"\n";
+  msg+="*Balance Due: Rs."+sup.balance.toFixed(0)+"*\n\n";
+  msg+="Our Store: https://maps.app.goo.gl/5PPPGwWJW8PUs7EN6";
+  var p=sup.phone.replace(/[^0-9]/g,"");if(p.length===10)p="91"+p;
+  window.open("https://wa.me/"+p+"?text="+encodeURIComponent(msg),"_blank");
+}
+window.sendSupplierWA=sendSupplierWA;
+
+function renderSuppliers(){
+  var sl=g("supplierList");if(!sl)return;
+  var q=(g("searchSup")?g("searchSup").value||"":"").toLowerCase();
+  var all=db.suppliers||[];
+  var filtered=q?all.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0;}):all;
+  var totalOwed=all.reduce(function(s,x){return s+(x.balance||0);},0);
+  if(g("supTotal"))g("supTotal").textContent=all.length;
+  if(g("supTotalOwed"))g("supTotalOwed").textContent="Rs."+totalOwed.toFixed(0);
+  if(g("supOverdue"))g("supOverdue").textContent=all.filter(function(s){return (s.balance||0)>0;}).length;
+  if(filtered.length===0){sl.innerHTML='<div class="empty"><div class="ei">&#127968;</div><p>No suppliers yet. Add one above.</p></div>';return;}
+  sl.innerHTML=filtered.map(function(s,ri){
+    var totalBilled=(s.txns||[]).filter(function(t){return t.type==="bill";}).reduce(function(a,t){return a+t.amt;},0);
+    var totalPaid=(s.txns||[]).filter(function(t){return t.type==="payment";}).reduce(function(a,t){return a+t.amt;},0);
+    var bal=s.balance||0;
+    var pct=totalBilled>0?Math.min(100,Math.round(totalPaid/totalBilled*100)):0;
+    var recent=(s.txns||[]).slice(-3).reverse();
+    return '<div class="rec" style="border-left-color:#2563eb;">'+
+      '<div class="rec-name">'+esc(s.name)+(s.phone?' <span style="font-size:12px;color:#64748b;font-weight:400;">'+esc(s.phone)+'</span>':'')+
+        (bal>0?'<span class="badge b-pending">Bal: Rs.'+bal.toFixed(0)+'</span>':'<span class="badge b-closed">&#10003; Clear</span>')+
+      '</div>'+
+      '<div style="display:flex;gap:12px;font-size:12px;margin:6px 0;flex-wrap:wrap;">'+
+        '<span style="color:#dc2626;font-weight:600;">Billed: Rs.'+totalBilled.toFixed(0)+'</span>'+
+        '<span style="color:#16a34a;font-weight:600;">Paid: Rs.'+totalPaid.toFixed(0)+'</span>'+
+        '<span style="color:#d97706;font-weight:700;">Balance: Rs.'+bal.toFixed(0)+'</span>'+
+      '</div>'+
+      '<div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:'+pct+'%;"></div></div>'+
+      (recent.length>0?'<div style="font-size:11px;color:var(--muted);margin-top:5px;">'+recent.map(function(t){return t.date+': '+(t.type==="bill"?"Bill":"Paid")+' Rs.'+t.amt.toFixed(0)+(t.ref?' ('+t.ref+')':'');}).join(' | ')+'</div>':'')+
+      '<div class="row-btn"><button class="btn btn-wa btn-sm" onclick="supWADirect('+ri+')">&#128245; WA</button>'+
+        '<button class="btn btn-del btn-sm" onclick="deleteSupplier('+ri+')">&#128465;</button></div>'+
+    '</div>';
+  }).join("");
+}
+window.renderSuppliers=renderSuppliers;
+
+function supWADirect(ri){
+  var sel=g("supSelect");if(sel)sel.value=String(ri);
+  sendSupplierWA();
+}
+window.supWADirect=supWADirect;
+
+function deleteSupplier(ri){
+  if(!window._isAdmin){alert("Admin only.");return;}
+  var s=(db.suppliers||[])[ri];if(!s)return;
+  if(!confirm("Delete "+s.name+"?"))return;
+  db.suppliers.splice(ri,1);
+  saveDB();renderSuppliers();updateSupplierSelect();
+}
+window.deleteSupplier=deleteSupplier;
+
+// ── Payment reminders on home ────────────────────────────────────
+function checkPaymentReminders(){
+  var TODAY=new Date().toISOString().split("T")[0];
+  var soon=(db.payments||[]).filter(function(p){
+    if(p.done)return false;
+    var bal=(p.amt||0)-(p.paidAmt||0);
+    if(bal<=0)return false;
+    var days=Math.ceil((new Date(p.d)-new Date(TODAY))/864e5);
+    return days<=3;
+  });
+  if(!soon.length)return;
+  var op=g("overduePay");
+  if(op){
+    var html=soon.map(function(p){
+      var days=Math.ceil((new Date(p.d)-new Date(TODAY))/864e5);
+      var bal=(p.amt||0)-(p.paidAmt||0);
+      var txt=days<0?"Overdue "+Math.abs(days)+"d":days===0?"Today":"in "+days+"d";
+      return '<div class="fu-item">&#128184; <b>'+esc(p.n)+'</b> - '+catLabel(p.category||"customer")+' Rs.'+bal.toFixed(0)+' <b style="color:#dc2626;">'+txt+'</b></div>';
+    }).join("");
+    op.innerHTML=html+op.innerHTML;
+    var op2=g("overduePay2");if(op2)op2.innerHTML=op.innerHTML;
+  }
+}
+window.checkPaymentReminders=checkPaymentReminders;
+
+// ── Wire to existing render via _appRender extension ─────────────
+(function(){
+  var _prev=window._appRender;
+  window._appRender=function(){
+    if(_prev)_prev();
+    renderPaymentsEnhanced();
+    renderSuppliers();
+    updateSupplierSelect();
+    checkPaymentReminders();
+  };
+})();
+
+
+// STOCK OVERVIEW SECTION
+function renderStockOverview() {
+  var all = db.stock || [];
+  var inStock=0, low=0, out=0, total=0;
+  all.forEach(function(s){
+    total++;
+    if(s.qty<=0) out++;
+    else if(s.qty<=(s.alert||2)) low++;
+    else inStock++;
+  });
+  var totalPurchase = all.reduce(function(a,s){return a+(s.buyPrice||0)*(s.qty||0);},0);
+
+  // Update summary
+  if(g("ovTotal"))g("ovTotal").textContent=total;
+  if(g("ovInStock"))g("ovInStock").textContent=inStock;
+  if(g("ovLow"))g("ovLow").textContent=low;
+  if(g("ovOut"))g("ovOut").textContent=out;
+  if(g("ovValue"))g("ovValue").textContent=totalPurchase.toFixed(0);
+  if(g("stTotalTile"))g("stTotalTile").textContent=total;
+
+  // Update category tile counts
+  var cats=["SOF","BED","MAT","TBL","STR","DRS","TVU","OFC","KID","FLD","OTH"];
+  cats.forEach(function(c){
+    var cnt=all.filter(function(s){return s.cat===c;}).length;
+    var el=g("ovCatCount_"+c); if(el) el.textContent=cnt;
+    var el2=g("catCount_"+c); if(el2) el2.textContent=cnt;
+  });
+  var allEl=g("catCount_ALL"); if(allEl) allEl.textContent=total;
+
+  // Update dropdown counts
+  var sel=g("stockCatSelect");
+  var catLabels={"SOF":"Sofa & Seating","BED":"Beds","MAT":"Mattresses","TBL":"Tables","STR":"Storage","DRS":"Dressing Table","TVU":"TV Units","OFC":"Office & Chairs","KID":"Kids Furniture","FLD":"Folding Items","OTH":"Other"};
+  if(sel){
+    for(var i=0;i<sel.options.length;i++){
+      var v=sel.options[i].value;
+      if(v==="ALL") sel.options[i].text="All Items"+(total>0?" ("+total+")":"");
+      else if(catLabels[v]){
+        var cnt2=all.filter(function(s){return s.cat===v;}).length;
+        sel.options[i].text=catLabels[v]+(cnt2>0?" ("+cnt2+")":"");
+      }
+    }
+  }
+
+  // Low/out alerts
+  var alerts=all.filter(function(s){return s.qty<=(s.alert||2);});
+  var ovAl=g("ovAlerts");
+  if(ovAl){
+    if(alerts.length===0){ovAl.innerHTML='';return;}
+    ovAl.innerHTML='<div class="card" style="border-left:4px solid #d97706;"><div class="card-title" style="color:#d97706;">&#9888; Low / Out of Stock ('+alerts.length+')</div>'+
+      alerts.map(function(s){
+        var col=s.qty<=0?"#dc2626":"#d97706";
+        var txt=s.qty<=0?"Out of Stock":"Low ("+s.qty+" left)";
+        return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;">'+
+          '<span><b>'+esc(s.name)+'</b><span style="color:#64748b;font-size:11px;"> '+s.id+'</span></span>'+
+          '<span style="color:'+col+';font-weight:700;">'+txt+'</span></div>';
+      }).join("")+'</div>';
+  }
+}
+window.renderStockOverview = renderStockOverview;
+
+// Tap category tile → go to stock section with that category filtered
+function goToStockCat(cat) {
+  _stockFilter = cat;
+  var sel = g("stockCatSelect");
+  if(sel) sel.value = cat;
+  showTabNew("stock");
+  renderStock();
+}
+window.goToStockCat = goToStockCat;
 
 
 </script>
