@@ -365,6 +365,7 @@ function onExpCatChange(){
     <button class="menu-card" onclick="showTabNew('expenses')"><div class="mc-icon">&#129534;</div><div class="mc-label">Expenses</div><div class="mc-sub">Costs</div></button>
     <button class="menu-card" onclick="showTabNew('intel')"><div class="mc-icon">&#129504;</div><div class="mc-label">Smart</div><div class="mc-sub">AI Tips</div></button>
 <button class="menu-card" onclick="showTabNew('directory')"><div class="mc-icon">&#128101;</div><div class="mc-label">Contacts</div><div class="mc-sub">Directory</div></button>
+    <button class="menu-card" onclick="showTabNew('suppliers')"><div class="mc-icon">&#127968;</div><div class="mc-label">Suppliers</div><div class="mc-sub">Vendors</div></button>
     <button class="menu-card" onclick="showTabNew('stock')" style="position:relative;"><div class="mc-icon">&#128230;</div><div class="mc-label">Stock</div><div class="mc-sub">Inventory</div><div id="stockAlertBadge" style="display:none;position:absolute;top:6px;right:6px;background:#dc2626;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;align-items:center;justify-content:center;"></div></button>
     <button class="menu-card" onclick="showTabNew('reports')"><div class="mc-icon">&#128202;</div><div class="mc-label">Reports</div><div class="mc-sub">More</div></button>
   </div>
@@ -646,74 +647,6 @@ function onExpCatChange(){
   </div>
 </div>
 
-</div>
-
-
-<!-- OVERVIEW -->
-<div id="overview" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#128200; Business Overview</div><div style="width:44px;"></div></div>
-  <div id="profitPill2" class="profit-pill">Net Profit: &#8377;0</div>
-  <div class="dash-grid">
-    <div class="tile t2"><span class="ti">&#128197;</span><span class="tv">&#8377;<span id="dTodaySales">0</span></span><span class="tl">Today Sales</span></div>
-    <div class="tile t1"><span class="ti">&#128176;</span><span class="tv">&#8377;<span id="dTotalSales">0</span></span><span class="tl">Total Sales</span></div>
-    <div class="tile t5"><span class="ti">&#8987;</span><span class="tv">&#8377;<span id="dTotalDue">0</span></span><span class="tl">Total Due</span></div>
-    <div class="tile t3"><span class="ti">&#128203;</span><span class="tv" id="dLeads">0</span><span class="tl">Active Leads</span></div>
-    <div class="tile t4"><span class="ti">&#128230;</span><span class="tv" id="dOrders">0</span><span class="tl">Pending Orders</span></div>
-    <div class="tile t6"><span class="ti">&#129534;</span><span class="tv">&#8377;<span id="dExpenses">0</span></span><span class="tl">Expenses</span></div>
-    <div class="tile t7"><span class="ti">&#128722;</span><span class="tv" id="dInprog">0</span><span class="tl">In-Progress</span></div>
-    <div class="tile t8"><span class="ti">&#9989;</span><span class="tv" id="dClosed">0</span><span class="tl">Closed Sales</span></div>
-  </div>
-  <div class="card"><div class="card-title">&#128202; Quick Summary</div><div id="quickSummary2" style="font-size:13px;line-height:2;"></div></div>
-  <div class="card"><div class="card-title">&#128276; Today Follow-ups</div><div id="todayFU2"></div></div>
-  <div class="card"><div class="card-title">&#9888;&#65039; Overdue Payments</div><div id="overduePay2"></div></div>
-  <button onclick="exportData()" style="width:100%;padding:13px;background:#1e40af;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;">&#128229; Export Full Report</button>
-</div>
-
-<!-- INTEL -->
-<div id="intel" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#129504; Smart Intelligence</div><div style="width:44px;"></div></div>
-  <div class="card" style="border-left:4px solid #dc2626;"><div class="card-title" style="color:#dc2626;">&#128293; Hot Opportunities</div><div id="intelHot"></div></div>
-  <div class="card" style="border-left:4px solid #d97706;"><div class="card-title" style="color:#d97706;">&#8987; Overdue Follow-ups</div><div id="intelOverdue"></div></div>
-  <div class="card" style="border-left:4px solid #2563eb;"><div class="card-title" style="color:#2563eb;">&#128257; Re-engage Customers</div><div id="intelReengage"></div></div>
-  <div class="card" style="border-left:4px solid #16a34a;"><div class="card-title" style="color:#16a34a;">&#128200; Conversion Funnel</div><div id="intelFunnel"></div></div>
-</div>
-
-<!-- DIRECTORY -->
-<div id="directory" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#128101; Customer Directory</div><div style="width:44px;"></div></div>
-  <div class="sum-row" style="background:#f0fdfa;border-color:#99f6e4;color:#0d9488;">Total: <b id="dirTotal">0</b> &nbsp;|&nbsp; Customers: <b id="dirCusts">0</b> &nbsp;|&nbsp; Leads: <b id="dirLeads">0</b> &nbsp;|&nbsp; With Phone: <b id="dirWithPhone">0</b></div>
-  <div class="sw"><span class="si">&#128269;</span><input id="searchDir" placeholder="Search by name or phone..." oninput="renderDir()"></div>
-  <div class="filter-pills">
-    <button class="pill on" onclick="setDirFilter('all',this)">All</button>
-    <button class="pill" onclick="setDirFilter('customer',this)">&#128176; Customers</button>
-    <button class="pill" onclick="setDirFilter('lead',this)">&#128203; Leads</button>
-    <button class="pill" onclick="setDirFilter('imported',this)">&#128229; Imported</button>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-    <button onclick="exportDirVCF()" style="padding:12px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128222; Export VCF</button>
-    <button onclick="exportDirCSV()" style="padding:12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128229; Export CSV</button>
-  </div>
-  <button onclick="document.getElementById('dirCSVFile').click()" style="width:100%;padding:13px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;">&#128229; Import from CSV</button>
-  <input type="file" id="dirCSVFile" accept=".csv,.txt" style="display:none;" onchange="importDirCSV(this)">
-  <div id="dirImportResult" style="font-size:13px;font-weight:600;text-align:center;min-height:20px;margin-bottom:8px;"></div>
-  <div id="dirBulkBar" style="display:none;background:#fef2f2;border:1.5px solid #fecaca;border-radius:10px;padding:10px 14px;margin-bottom:8px;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
-    <div style="font-size:13px;font-weight:700;color:#dc2626;"><span id="dirSelCount">0</span> selected</div>
-    <div style="display:flex;gap:6px;">
-      <button onclick="dirSelectAll()" style="padding:7px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Select All</button>
-      <button onclick="dirDeleteSelected()" style="padding:7px 12px;background:#dc2626;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">&#128465; Delete</button>
-      <button onclick="dirClearSelection()" style="padding:7px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
-    </div>
-  </div>
-  <div class="card" style="margin-bottom:8px;">
-    <div class="card-title">&#43; Add Manually</div>
-    <div class="row2">
-      <div class="fg" style="margin-bottom:0;"><label>Name *</label><input id="dirName" placeholder="Full name"></div>
-      <div class="fg" style="margin-bottom:0;"><label>Phone *</label><input id="dirPhone" type="tel" placeholder="10 digits"></div>
-    </div>
-    <button onclick="addDirContact()" style="width:100%;padding:12px;margin-top:10px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Add Contact</button>
-  </div>
-  <div id="dirList"></div>
-</div>
 
 <!-- STOCK PICKER MODAL -->
 <div id="stockPickerOv" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:800;overflow-y:auto;padding:16px;">
@@ -865,6 +798,76 @@ function onExpCatChange(){
   <div class="sw"><span class="si">&#128269;</span><input id="searchSup" placeholder="Search suppliers..." oninput="if(window.renderSuppliers)window.renderSuppliers()"></div>
   <div id="supplierList"></div>
 </div>
+
+</div>
+
+
+<!-- OVERVIEW -->
+<div id="overview" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#128200; Business Overview</div><div style="width:44px;"></div></div>
+  <div id="profitPill2" class="profit-pill">Net Profit: &#8377;0</div>
+  <div class="dash-grid">
+    <div class="tile t2"><span class="ti">&#128197;</span><span class="tv">&#8377;<span id="dTodaySales">0</span></span><span class="tl">Today Sales</span></div>
+    <div class="tile t1"><span class="ti">&#128176;</span><span class="tv">&#8377;<span id="dTotalSales">0</span></span><span class="tl">Total Sales</span></div>
+    <div class="tile t5"><span class="ti">&#8987;</span><span class="tv">&#8377;<span id="dTotalDue">0</span></span><span class="tl">Total Due</span></div>
+    <div class="tile t3"><span class="ti">&#128203;</span><span class="tv" id="dLeads">0</span><span class="tl">Active Leads</span></div>
+    <div class="tile t4"><span class="ti">&#128230;</span><span class="tv" id="dOrders">0</span><span class="tl">Pending Orders</span></div>
+    <div class="tile t6"><span class="ti">&#129534;</span><span class="tv">&#8377;<span id="dExpenses">0</span></span><span class="tl">Expenses</span></div>
+    <div class="tile t7"><span class="ti">&#128722;</span><span class="tv" id="dInprog">0</span><span class="tl">In-Progress</span></div>
+    <div class="tile t8"><span class="ti">&#9989;</span><span class="tv" id="dClosed">0</span><span class="tl">Closed Sales</span></div>
+  </div>
+  <div class="card"><div class="card-title">&#128202; Quick Summary</div><div id="quickSummary2" style="font-size:13px;line-height:2;"></div></div>
+  <div class="card"><div class="card-title">&#128276; Today Follow-ups</div><div id="todayFU2"></div></div>
+  <div class="card"><div class="card-title">&#9888;&#65039; Overdue Payments</div><div id="overduePay2"></div></div>
+  <button onclick="exportData()" style="width:100%;padding:13px;background:#1e40af;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;">&#128229; Export Full Report</button>
+</div>
+
+<!-- INTEL -->
+<div id="intel" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#129504; Smart Intelligence</div><div style="width:44px;"></div></div>
+  <div class="card" style="border-left:4px solid #dc2626;"><div class="card-title" style="color:#dc2626;">&#128293; Hot Opportunities</div><div id="intelHot"></div></div>
+  <div class="card" style="border-left:4px solid #d97706;"><div class="card-title" style="color:#d97706;">&#8987; Overdue Follow-ups</div><div id="intelOverdue"></div></div>
+  <div class="card" style="border-left:4px solid #2563eb;"><div class="card-title" style="color:#2563eb;">&#128257; Re-engage Customers</div><div id="intelReengage"></div></div>
+  <div class="card" style="border-left:4px solid #16a34a;"><div class="card-title" style="color:#16a34a;">&#128200; Conversion Funnel</div><div id="intelFunnel"></div></div>
+</div>
+
+<!-- DIRECTORY -->
+<div id="directory" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#128101; Customer Directory</div><div style="width:44px;"></div></div>
+  <div class="sum-row" style="background:#f0fdfa;border-color:#99f6e4;color:#0d9488;">Total: <b id="dirTotal">0</b> &nbsp;|&nbsp; Customers: <b id="dirCusts">0</b> &nbsp;|&nbsp; Leads: <b id="dirLeads">0</b> &nbsp;|&nbsp; With Phone: <b id="dirWithPhone">0</b></div>
+  <div class="sw"><span class="si">&#128269;</span><input id="searchDir" placeholder="Search by name or phone..." oninput="renderDir()"></div>
+  <div class="filter-pills">
+    <button class="pill on" onclick="setDirFilter('all',this)">All</button>
+    <button class="pill" onclick="setDirFilter('customer',this)">&#128176; Customers</button>
+    <button class="pill" onclick="setDirFilter('lead',this)">&#128203; Leads</button>
+    <button class="pill" onclick="setDirFilter('imported',this)">&#128229; Imported</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+    <button onclick="exportDirVCF()" style="padding:12px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128222; Export VCF</button>
+    <button onclick="exportDirCSV()" style="padding:12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128229; Export CSV</button>
+  </div>
+  <button onclick="document.getElementById('dirCSVFile').click()" style="width:100%;padding:13px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;">&#128229; Import from CSV</button>
+  <input type="file" id="dirCSVFile" accept=".csv,.txt" style="display:none;" onchange="importDirCSV(this)">
+  <div id="dirImportResult" style="font-size:13px;font-weight:600;text-align:center;min-height:20px;margin-bottom:8px;"></div>
+  <div id="dirBulkBar" style="display:none;background:#fef2f2;border:1.5px solid #fecaca;border-radius:10px;padding:10px 14px;margin-bottom:8px;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+    <div style="font-size:13px;font-weight:700;color:#dc2626;"><span id="dirSelCount">0</span> selected</div>
+    <div style="display:flex;gap:6px;">
+      <button onclick="dirSelectAll()" style="padding:7px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Select All</button>
+      <button onclick="dirDeleteSelected()" style="padding:7px 12px;background:#dc2626;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">&#128465; Delete</button>
+      <button onclick="dirClearSelection()" style="padding:7px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:8px;">
+    <div class="card-title">&#43; Add Manually</div>
+    <div class="row2">
+      <div class="fg" style="margin-bottom:0;"><label>Name *</label><input id="dirName" placeholder="Full name"></div>
+      <div class="fg" style="margin-bottom:0;"><label>Phone *</label><input id="dirPhone" type="tel" placeholder="10 digits"></div>
+    </div>
+    <button onclick="addDirContact()" style="width:100%;padding:12px;margin-top:10px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Add Contact</button>
+  </div>
+  <div id="dirList"></div>
+</div>
+
 <!-- EDIT OVERLAY -->
 <div id="editOv">
   <div id="editBox">
