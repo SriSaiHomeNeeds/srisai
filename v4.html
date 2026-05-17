@@ -236,6 +236,7 @@ function showTabNew(id){
   if(id==="campaigns"){if(window.renderFestivals)window.renderFestivals();if(window.updateCampMsg)window.updateCampMsg();if(window.renderCampHistory)window.renderCampHistory();}
   if(id==="directory"&&window.renderDir)window.renderDir();
   if(id==="stock"&&window.renderStock)window.renderStock();
+  if(id==="stockoverview"&&window.renderStockOverview)window.renderStockOverview();
   if(id==="suppliers"){if(window.renderSuppliers)window.renderSuppliers();if(window.updateSupplierSelect)window.updateSupplierSelect();}
   if(window._appRender)window._appRender();
 }
@@ -291,7 +292,7 @@ function saveStockItem(){
     var el=document.getElementById(id);if(el)el.value="";
   });
   if(window.saveDB)window.saveDB();
-  if(window.renderStock)window.renderStock();
+  if(window.renderStock)window.renderStock();if(window.renderStockOverview)window.renderStockOverview();
   document.getElementById("addStockForm").style.display="none";
   alert("Stock item saved: "+stId);
 }
@@ -716,17 +717,20 @@ function onExpCatChange(){
   </div>
 
 
-  <!-- Stock Overview Tiles -->
-  <div class="dash-grid" style="margin-bottom:10px;">
-    <div class="tile t1"><span class="ti">&#128230;</span><span class="tv" id="stTotalTile">0</span><span class="tl">Total Items</span></div>
-    <div class="tile t3"><span class="ti">&#10003;</span><span class="tv" id="stInStockTile">0</span><span class="tl">In Stock</span></div>
-    <div class="tile t2"><span class="ti">&#9888;</span><span class="tv" id="stLowTile">0</span><span class="tl">Low Stock</span></div>
-    <div class="tile t5"><span class="ti">&#10007;</span><span class="tv" id="stOutTile">0</span><span class="tl">Out of Stock</span></div>
-  </div>
-  <div style="background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;border-radius:var(--r);padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
-    <div style="font-size:12px;opacity:.85;">&#128176; Total Purchase Value</div>
-    <div style="font-size:18px;font-weight:900;">&#8377;<span id="stPurchaseValTile">0</span></div>
-  </div>
+  <!-- Inventory Overview Button -->
+  <button onclick="showTabNew('stockoverview')" style="width:100%;background:linear-gradient(135deg,#15803d,#16a34a);border:none;border-radius:var(--r);padding:12px 16px;margin-bottom:10px;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between;touch-action:manipulation;box-shadow:0 2px 8px rgba(21,128,61,.25);">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:24px;">&#128230;</span>
+      <div style="text-align:left;">
+        <div style="font-size:14px;font-weight:800;color:#fff;">Inventory Overview</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.7);">All categories &middot; Stock count</div>
+      </div>
+    </div>
+    <div style="text-align:right;">
+      <div id="stTotalTile" style="font-size:15px;font-weight:900;color:#bbf7d0;">0</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.6);">Total Items</div>
+    </div>
+  </button>
 
   <div style="margin-bottom:10px;">
     <select id="stockCatSelect" onchange="filterStockDropdown(this.value)" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;background:#fff;color:var(--text);font-weight:600;">
@@ -901,6 +905,87 @@ function onExpCatChange(){
     <button onclick="addDirContact()" style="width:100%;padding:12px;margin-top:10px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Add Contact</button>
   </div>
   <div id="dirList"></div>
+</div>
+
+
+<!-- STOCK OVERVIEW -->
+<div id="stockoverview" class="section">
+  <div class="sec-nav">
+    <button class="sec-back" onclick="showTabNew('stock')">&#8592;</button>
+    <div class="sec-nav-title">&#128230; Inventory Overview</div>
+    <div style="width:44px;"></div>
+  </div>
+
+  <!-- Summary strip -->
+  <div class="sum-row" style="background:#f0fdf4;border-color:#bbf7d0;color:#15803d;">
+    Total: <b id="ovTotal">0</b> &nbsp;|&nbsp;
+    In Stock: <b id="ovInStock">0</b> &nbsp;|&nbsp;
+    Low: <b id="ovLow" style="color:#d97706;">0</b> &nbsp;|&nbsp;
+    Out: <b id="ovOut" style="color:#dc2626;">0</b> &nbsp;|&nbsp;
+    Value: <b>&#8377;<span id="ovValue">0</span></b>
+  </div>
+
+  <!-- Category tiles - smaller 3-col grid -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;">
+    <button class="menu-card t1" onclick="goToStockCat('SOF')" style="padding:10px 4px;border:none;">
+      <div style="font-size:22px;">&#128715;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Sofa & Seating</div>
+      <div id="ovCatCount_SOF" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    </button>
+    <button class="menu-card t3" onclick="goToStockCat('BED')" style="padding:10px 4px;border:none;">
+      <div style="font-size:22px;">&#128719;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Beds</div>
+      <div id="ovCatCount_BED" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    </button>
+    <button class="menu-card t6" onclick="goToStockCat('MAT')" style="padding:10px 4px;border:none;">
+      <div style="font-size:22px;">&#128716;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Mattresses</div>
+      <div id="ovCatCount_MAT" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    </button>
+    <button class="menu-card t2" onclick="goToStockCat('TBL')" style="padding:10px 4px;border:none;">
+      <div style="font-size:22px;">&#127869;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Tables</div>
+      <div id="ovCatCount_TBL" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    </button>
+    <button class="menu-card t4" onclick="goToStockCat('STR')" style="padding:10px 4px;border:none;">
+      <div style="font-size:22px;">&#128452;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Storage</div>
+      <div id="ovCatCount_STR" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    </button>
+    <button class="menu-card t7" onclick="goToStockCat('DRS')" style="padding:10px 4px;border:none;">
+      <div style="font-size:22px;">&#129694;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Dressing Table</div>
+      <div id="ovCatCount_DRS" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    </button>
+    <button class="menu-card t3" onclick="goToStockCat('TVU')" style="padding:10px 4px;border:none;">
+      <div style="font-size:22px;">&#128250;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">TV Units</div>
+      <div id="ovCatCount_TVU" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    </button>
+    <button class="menu-card t8" onclick="goToStockCat('OFC')" style="padding:10px 4px;border:none;">
+      <div style="font-size:22px;">&#128421;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Office & Chairs</div>
+      <div id="ovCatCount_OFC" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    </button>
+    <button class="menu-card t4" onclick="goToStockCat('KID')" style="padding:10px 4px;border:none;">
+      <div style="font-size:22px;">&#129528;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Kids Furniture</div>
+      <div id="ovCatCount_KID" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    </button>
+    <button class="menu-card t6" onclick="goToStockCat('FLD')" style="padding:10px 4px;border:none;">
+      <div style="font-size:22px;">&#129681;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Folding Items</div>
+      <div id="ovCatCount_FLD" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    </button>
+    <button class="menu-card t8" onclick="goToStockCat('OTH')" style="padding:10px 4px;border:none;">
+      <div style="font-size:22px;">&#128230;</div>
+      <div style="font-size:10px;font-weight:800;color:#fff;text-align:center;line-height:1.2;">Other</div>
+      <div id="ovCatCount_OTH" style="font-size:14px;font-weight:900;color:#fff;margin-top:2px;">0</div>
+    </button>
+  </div>
+
+  <!-- Low/Out stock alerts -->
+  <div id="ovAlerts"></div>
 </div>
 
 <!-- EDIT OVERLAY -->
@@ -2564,6 +2649,77 @@ window.checkPaymentReminders=checkPaymentReminders;
     checkPaymentReminders();
   };
 })();
+
+
+// STOCK OVERVIEW SECTION
+function renderStockOverview() {
+  var all = db.stock || [];
+  var inStock=0, low=0, out=0, total=0;
+  all.forEach(function(s){
+    total++;
+    if(s.qty<=0) out++;
+    else if(s.qty<=(s.alert||2)) low++;
+    else inStock++;
+  });
+  var totalPurchase = all.reduce(function(a,s){return a+(s.buyPrice||0)*(s.qty||0);},0);
+
+  // Update summary
+  if(g("ovTotal"))g("ovTotal").textContent=total;
+  if(g("ovInStock"))g("ovInStock").textContent=inStock;
+  if(g("ovLow"))g("ovLow").textContent=low;
+  if(g("ovOut"))g("ovOut").textContent=out;
+  if(g("ovValue"))g("ovValue").textContent=totalPurchase.toFixed(0);
+  if(g("stTotalTile"))g("stTotalTile").textContent=total;
+
+  // Update category tile counts
+  var cats=["SOF","BED","MAT","TBL","STR","DRS","TVU","OFC","KID","FLD","OTH"];
+  cats.forEach(function(c){
+    var cnt=all.filter(function(s){return s.cat===c;}).length;
+    var el=g("ovCatCount_"+c); if(el) el.textContent=cnt;
+    var el2=g("catCount_"+c); if(el2) el2.textContent=cnt;
+  });
+  var allEl=g("catCount_ALL"); if(allEl) allEl.textContent=total;
+
+  // Update dropdown counts
+  var sel=g("stockCatSelect");
+  var catLabels={"SOF":"Sofa & Seating","BED":"Beds","MAT":"Mattresses","TBL":"Tables","STR":"Storage","DRS":"Dressing Table","TVU":"TV Units","OFC":"Office & Chairs","KID":"Kids Furniture","FLD":"Folding Items","OTH":"Other"};
+  if(sel){
+    for(var i=0;i<sel.options.length;i++){
+      var v=sel.options[i].value;
+      if(v==="ALL") sel.options[i].text="All Items"+(total>0?" ("+total+")":"");
+      else if(catLabels[v]){
+        var cnt2=all.filter(function(s){return s.cat===v;}).length;
+        sel.options[i].text=catLabels[v]+(cnt2>0?" ("+cnt2+")":"");
+      }
+    }
+  }
+
+  // Low/out alerts
+  var alerts=all.filter(function(s){return s.qty<=(s.alert||2);});
+  var ovAl=g("ovAlerts");
+  if(ovAl){
+    if(alerts.length===0){ovAl.innerHTML='';return;}
+    ovAl.innerHTML='<div class="card" style="border-left:4px solid #d97706;"><div class="card-title" style="color:#d97706;">&#9888; Low / Out of Stock ('+alerts.length+')</div>'+
+      alerts.map(function(s){
+        var col=s.qty<=0?"#dc2626":"#d97706";
+        var txt=s.qty<=0?"Out of Stock":"Low ("+s.qty+" left)";
+        return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;">'+
+          '<span><b>'+esc(s.name)+'</b><span style="color:#64748b;font-size:11px;"> '+s.id+'</span></span>'+
+          '<span style="color:'+col+';font-weight:700;">'+txt+'</span></div>';
+      }).join("")+'</div>';
+  }
+}
+window.renderStockOverview = renderStockOverview;
+
+// Tap category tile → go to stock section with that category filtered
+function goToStockCat(cat) {
+  _stockFilter = cat;
+  var sel = g("stockCatSelect");
+  if(sel) sel.value = cat;
+  showTabNew("stock");
+  renderStock();
+}
+window.goToStockCat = goToStockCat;
 
 </script>
 </body>
