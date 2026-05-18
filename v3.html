@@ -782,122 +782,6 @@ function onExpCatChange(){
 <div id="stock" class="section">
   <div class="sec-nav">
     <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
-    <div class="sec-nav-title">&#128230; Stock / Inventory</div>
-    <div style="width:44px;"></div>
-  </div>
-  <div class="sum-row" style="background:#f0fdf4;border-color:#bbf7d0;color:#16a34a;">
-    Items: <b id="stTotal">0</b> &nbsp;|&nbsp; In Stock: <b id="stInStock">0</b> &nbsp;|&nbsp; Low: <b id="stLow" style="color:#d97706;">0</b> &nbsp;|&nbsp; Out: <b id="stOut" style="color:#dc2626;">0</b>
-  </div>
-  <div style="background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;border-radius:var(--r);padding:12px 16px;margin-bottom:12px;text-align:center;">
-    <div style="font-size:10px;opacity:.8;margin-bottom:2px;">TOTAL PURCHASE VALUE</div>
-    <div style="font-size:20px;font-weight:900;">&#8377;<span id="stPurchaseVal">0</span></div>
-  </div>
-  <div class="menu-grid" style="margin-bottom:12px;">
-    <button class="menu-card" onclick="filterStock('ALL')" id="cat_ALL" style="padding:10px 6px;border-color:#2563eb;background:#eff6ff;">
-      <div class="mc-icon">&#128230;</div><div class="mc-label" style="font-size:10px;">All</div><div id="catCount_ALL" class="mc-sub">0</div>
-    </button>
-    <button class="menu-card" onclick="filterStock('SOF')" id="cat_SOF" style="padding:10px 6px;">
-      <div class="mc-icon">&#128763;</div><div class="mc-label" style="font-size:10px;">Sofa</div><div id="catCount_SOF" class="mc-sub">0</div>
-    </button>
-    <button class="menu-card" onclick="filterStock('COT')" id="cat_COT" style="padding:10px 6px;">
-      <div class="mc-icon">&#127812;</div><div class="mc-label" style="font-size:10px;">Cots</div><div id="catCount_COT" class="mc-sub">0</div>
-    </button>
-    <button class="menu-card" onclick="filterStock('DRS')" id="cat_DRS" style="padding:10px 6px;">
-      <div class="mc-icon">&#129706;</div><div class="mc-label" style="font-size:10px;">Dressing</div><div id="catCount_DRS" class="mc-sub">0</div>
-    </button>
-    <button class="menu-card" onclick="filterStock('DIN')" id="cat_DIN" style="padding:10px 6px;">
-      <div class="mc-icon">&#127869;</div><div class="mc-label" style="font-size:10px;">Dining</div><div id="catCount_DIN" class="mc-sub">0</div>
-    </button>
-    <button class="menu-card" onclick="filterStock('TVS')" id="cat_TVS" style="padding:10px 6px;">
-      <div class="mc-icon">&#128250;</div><div class="mc-label" style="font-size:10px;">TV Stand</div><div id="catCount_TVS" class="mc-sub">0</div>
-    </button>
-    <button class="menu-card" onclick="filterStock('IRC')" id="cat_IRC" style="padding:10px 6px;">
-      <div class="mc-icon">&#128296;</div><div class="mc-label" style="font-size:10px;">Iron Cot</div><div id="catCount_IRC" class="mc-sub">0</div>
-    </button>
-    <button class="menu-card" onclick="filterStock('CTB')" id="cat_CTB" style="padding:10px 6px;">
-      <div class="mc-icon">&#9749;</div><div class="mc-label" style="font-size:10px;">Ctr Table</div><div id="catCount_CTB" class="mc-sub">0</div>
-    </button>
-    <button class="menu-card" onclick="filterStock('WRD')" id="cat_WRD" style="padding:10px 6px;">
-      <div class="mc-icon">&#128682;</div><div class="mc-label" style="font-size:10px;">Wardrobe</div><div id="catCount_WRD" class="mc-sub">0</div>
-    </button>
-    <button class="menu-card" onclick="filterStock('OTH')" id="cat_OTH" style="padding:10px 6px;">
-      <div class="mc-icon">&#128230;</div><div class="mc-label" style="font-size:10px;">Other</div><div id="catCount_OTH" class="mc-sub">0</div>
-    </button>
-  </div>
-  <div class="sw"><span class="si">&#128269;</span><input id="searchStock" placeholder="Search by name or ID..." oninput="renderStock()"></div>
-  <button onclick="showAddStock()" style="width:100%;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:12px;touch-action:manipulation;">&#43; Add New Stock Item</button>
-  <div id="addStockForm" class="card" style="display:none;border:2px solid #16a34a;">
-    <div class="card-title" style="color:#16a34a;">&#43; New Stock Item</div>
-    <div class="row2">
-      <div class="fg" style="margin-bottom:8px;"><label>Category *</label>
-        <select id="stCat" onchange="genStockId()">
-          <option value="">Select...</option>
-          <option value="SOF">Sofa</option><option value="COT">Cots / Beds</option>
-          <option value="DRS">Dressing Table</option><option value="DIN">Dining Sets</option>
-          <option value="TVS">TV Stands</option><option value="IRC">Iron Cots</option>
-          <option value="CTB">Center Table</option><option value="WRD">Wardrobes</option>
-          <option value="OTH">Other</option>
-        </select>
-      </div>
-      <div class="fg" style="margin-bottom:8px;"><label>Product ID (auto)</label>
-        <input id="stId" placeholder="SSHN-SOF-001" readonly style="background:#f0fdf4;font-family:monospace;font-size:13px;font-weight:700;color:#16a34a;">
-      </div>
-    </div>
-    <div class="fg" style="margin-bottom:8px;"><label>Item Name *</label><input id="stName" placeholder="e.g. 3-Seater Fabric Sofa"></div>
-    <div class="fg" style="margin-bottom:8px;"><label>Description</label><input id="stDesc" placeholder="e.g. Brown colour, 6ft wide"></div>
-    <div class="row2">
-      <div class="fg" style="margin-bottom:8px;"><label>Qty in Stock *</label><input id="stQty" type="number" placeholder="0" min="0"></div>
-      <div class="fg" style="margin-bottom:8px;"><label>Low Stock Alert</label><input id="stAlert" type="number" placeholder="2" min="0"></div>
-    </div>
-    <div class="row2">
-      <div class="fg" style="margin-bottom:8px;"><label>Purchase Price (&#8377;)</label><input id="stBuyPrice" type="number" placeholder="0"></div>
-      <div class="fg" style="margin-bottom:8px;"><label>Supplier</label><input id="stSupplier" placeholder="e.g. Nilkamal"></div>
-    </div>
-    <div class="fg" style="margin-bottom:8px;"><label>Purchase Date</label><input id="stDate" type="date"></div>
-    <div style="display:flex;gap:8px;">
-      <button onclick="saveStockItem()" style="flex:2;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Save Stock</button>
-      <button onclick="g('addStockForm').style.display='none'" style="flex:1;padding:13px;background:#e5e7eb;color:#374151;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
-    </div>
-  </div>
-  <div id="stockList"></div>
-</div>
-
-<!-- STOCK PICKER MODAL -->
-<div id="stockPickerOv" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:800;overflow-y:auto;padding:16px;">
-  <div style="background:#fff;border-radius:14px;width:100%;max-width:500px;margin:0 auto;">
-    <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-      <div style="font-size:15px;font-weight:800;">&#128230; Pick from Stock</div>
-      <button onclick="closeStockPicker()" style="background:none;border:none;font-size:22px;cursor:pointer;">&#10005;</button>
-    </div>
-    <div style="padding:10px 16px;border-bottom:1px solid var(--border);overflow-x:auto;white-space:nowrap;">
-      <button class="pill on" onclick="pickerFilter('ALL',this)" style="margin-right:6px;">All</button>
-      <button class="pill" onclick="pickerFilter('SOF',this)" style="margin-right:6px;">Sofa & Seating</button>
-      <button class="pill" onclick="pickerFilter('BED',this)" style="margin-right:6px;">Beds</button>
-      <button class="pill" onclick="pickerFilter('MAT',this)" style="margin-right:6px;">Mattresses</button>
-      <button class="pill" onclick="pickerFilter('TBL',this)" style="margin-right:6px;">Tables</button>
-      <button class="pill" onclick="pickerFilter('STR',this)" style="margin-right:6px;">Storage</button>
-      <button class="pill" onclick="pickerFilter('DRS',this)" style="margin-right:6px;">Dressing Table</button>
-      <button class="pill" onclick="pickerFilter('TVU',this)" style="margin-right:6px;">TV Units</button>
-      <button class="pill" onclick="pickerFilter('OFC',this)" style="margin-right:6px;">Office & Chairs</button>
-      <button class="pill" onclick="pickerFilter('KID',this)" style="margin-right:6px;">Kids Furniture</button>
-      <button class="pill" onclick="pickerFilter('FLD',this)" style="margin-right:6px;">Folding Items</button>
-      <button class="pill" onclick="pickerFilter('OTH',this)" style="margin-right:6px;">Other</button>
-    </div></div>
-    <div style="padding:10px 16px;border-bottom:1px solid var(--border);">
-      <input id="pickerSearch" placeholder="Search stock..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;" oninput="renderPickerList()">
-    </div>
-    <div id="pickerList" style="max-height:50vh;overflow-y:auto;padding:10px 16px;"></div>
-    <div style="padding:12px 16px;border-top:1px solid var(--border);">
-      <button onclick="closeStockPicker()" style="width:100%;padding:12px;background:#f1f5f9;color:#374151;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Enter Manually (no stock deduction)</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- STOCK SECTION -->
-<div id="stock" class="section">
-  <div class="sec-nav">
-    <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
     <div class="sec-nav-title">&#128230; Stock Details</div>
     <div style="width:44px;"></div>
   </div>
@@ -2466,13 +2350,26 @@ var CAT_NAMES = {"SOF":"Sofa","COT":"Cots/Beds","DRS":"Dressing Table","DIN":"Di
 function renderStock() {
   var all = db.stock || [];
   var q = (g("searchStock")?g("searchStock").value||"":"").toLowerCase().trim();
-  var cats = ["SOF","COT","DRS","DIN","TVS","IRC","CTB","WRD","OTH"];
+  var cats = ["SOF","BED","MAT","TBL","STR","DRS","TVU","OFC","KID","FLD","OTH"];
   var allCnt = all.length;
   var el = g("catCount_ALL"); if(el) el.textContent = allCnt;
+  // Update dropdown option labels with counts
+  var sel = g("stockCatSelect");
+  var catLabels = {"SOF":"Sofa & Seating","BED":"Beds","MAT":"Mattresses","TBL":"Tables","STR":"Storage","DRS":"Dressing Table","TVU":"TV Units","OFC":"Office & Chairs","KID":"Kids Furniture","FLD":"Folding Items","OTH":"Other"};
+  var catIcons = {"SOF":"&#128715;","BED":"&#128719;","MAT":"&#128716;","TBL":"&#127869;","STR":"&#128452;","DRS":"&#129694;","TVU":"&#128250;","OFC":"&#128421;","KID":"&#129528;","FLD":"&#129681;","OTH":"&#128230;"};
   cats.forEach(function(c){
     var cnt = all.filter(function(s){return s.cat===c;}).length;
     var el2 = g("catCount_"+c); if(el2) el2.textContent = cnt;
+    if(sel){
+      for(var i=0;i<sel.options.length;i++){
+        if(sel.options[i].value===c){
+          sel.options[i].text = (catLabels[c]||c) + (cnt>0?" ("+cnt+")":"");
+          break;
+        }
+      }
+    }
   });
+  if(sel) sel.options[0].text = "All Items" + (allCnt>0?" ("+allCnt+")":"");
   var filtered = _stockFilter==="ALL" ? all : all.filter(function(s){return s.cat===_stockFilter;});
   if(q) filtered = filtered.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0||s.id.toLowerCase().indexOf(q)>=0;});
   var inStock=0,low=0,out=0,totalPurchase=0;
@@ -2485,6 +2382,11 @@ function renderStock() {
   if(g("stLow"))g("stLow").textContent=low;
   if(g("stOut"))g("stOut").textContent=out;
   if(g("stPurchaseVal"))g("stPurchaseVal").textContent=totalPurchase.toFixed(0);
+  if(g("stTotalTile"))g("stTotalTile").textContent=all.length;
+  if(g("stInStockTile"))g("stInStockTile").textContent=inStock;
+  if(g("stLowTile"))g("stLowTile").textContent=low;
+  if(g("stOutTile"))g("stOutTile").textContent=out;
+  if(g("stPurchaseValTile"))g("stPurchaseValTile").textContent=totalPurchase.toFixed(0);
   var badge=g("stockAlertBadge");
   if(badge){var alerts=low+out;badge.style.display=alerts>0?"flex":"none";badge.textContent=alerts;}
   var sl=g("stockList");if(!sl)return;
@@ -2518,13 +2420,15 @@ function renderStock() {
 window.renderStock = renderStock;
 
 function filterStock(cat) {
-  _stockFilter=cat;
-  document.querySelectorAll("[id^='cat_']").forEach(function(b){b.style.borderColor="";b.style.background="";});
-  var ab=g("cat_"+cat);if(ab){ab.style.borderColor="#2563eb";ab.style.background="#eff6ff";}
+  _stockFilter = cat || "ALL";
+  var sel = g("stockCatSelect");
+  if(sel) sel.value = _stockFilter;
   renderStock();
 }
-window.filterStock = filterStock;
-
+function filterStockDropdown(cat) {
+  _stockFilter = cat || "ALL";
+  renderStock();
+}
 function addMoreStock(ri) {
   var s=db.stock[ri];if(!s)return;
   var n=prompt("Current qty: "+s.qty+"\nAdd how many units?","1");
