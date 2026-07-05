@@ -239,6 +239,10 @@ function showTabNew(id){
   if(id==="stock"&&window.renderStock)window.renderStock();
   if(id==="stockoverview"&&window.renderStockOverview)window.renderStockOverview();
   if(id==="suppliers"){if(window.renderSuppliers)window.renderSuppliers();if(window.updateSupplierSelect)window.updateSupplierSelect();}
+  if(id==="paymentsoverview"&&window.renderPaymentsOverview)window.renderPaymentsOverview();
+  if(id==="leadsoverview"&&window.renderLeadsOverview)window.renderLeadsOverview();
+  if(id==="deliveryoverview"&&window.renderOrdersOverview)window.renderOrdersOverview();
+  if(id==="suppliersoverview"&&window.renderSuppliersOverview)window.renderSuppliersOverview();
   if(window._appRender)window._appRender();
 }
 
@@ -530,6 +534,22 @@ function onExpCatChange(){
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchLeads" placeholder="Search leads..."></div>
   <div id="leadList"></div>
+  <div id="leadViewAllWrap" style="display:none;text-align:center;padding:10px 0;"><a href="javascript:void(0)" onclick="showTabNew('leadsoverview')" style="color:#2563eb;font-weight:700;font-size:13px;">View All Leads in Overview &rsaquo;</a></div>
+</div>
+
+<!-- LEADS OVERVIEW -->
+<div id="leadsoverview" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('leads')">&#8592;</button><div class="sec-nav-title">&#128203; All Leads</div><div style="width:44px;"></div></div>
+  <div class="filter-pills">
+    <button class="pill on" onclick="setLeadOvFilter('all',this)">All</button>
+    <button class="pill" onclick="setLeadOvFilter('Hot',this)">&#128293; Serious</button>
+    <button class="pill" onclick="setLeadOvFilter('Warm',this)">&#128336; Follow-up</button>
+    <button class="pill" onclick="setLeadOvFilter('Cold',this)">&#129398; Casual</button>
+    <button class="pill" onclick="setLeadOvFilter('due',this)">Due Today</button>
+  </div>
+  <div class="sw"><span class="si">&#128269;</span><input id="searchLeadsOv" placeholder="Search all leads..." oninput="renderLeadsOverview()"></div>
+  <div class="sum-row">Total: <span id="leadOvCount">0</span></div>
+  <div id="leadListFull"></div>
 </div>
 
 <!-- ORDERS -->
@@ -562,6 +582,15 @@ function onExpCatChange(){
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchOrders" placeholder="Search orders..."></div>
   <div id="orderList"></div>
+  <div id="orderViewAllWrap" style="display:none;text-align:center;padding:10px 0;"><a href="javascript:void(0)" onclick="showTabNew('deliveryoverview')" style="color:#2563eb;font-weight:700;font-size:13px;">View All Deliveries in Overview &rsaquo;</a></div>
+</div>
+
+<!-- DELIVERY / ORDERS OVERVIEW -->
+<div id="deliveryoverview" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('orders')">&#8592;</button><div class="sec-nav-title">&#128230; All Deliveries</div><div style="width:44px;"></div></div>
+  <div class="sw"><span class="si">&#128269;</span><input id="searchOrdersOv" placeholder="Search all deliveries..." oninput="renderOrdersOverview()"></div>
+  <div class="sum-row">Total: <span id="orderOvCount">0</span></div>
+  <div id="orderListFull"></div>
 </div>
 
 <!-- PAYMENTS -->
@@ -575,11 +604,6 @@ function onExpCatChange(){
     <div class="card-title">Pending Due Payments</div>
     <p style="font-size:11px;color:var(--muted);margin-bottom:7px;">Auto-tracked from Sales with balance due.</p>
     <div id="autoDueList"></div>
-  </div>
-  <div class="card" style="border:1.5px solid #ddd6fe;">
-    <div class="card-title" style="color:#7c3aed;">&#127968; Supplier Dues (synced with Suppliers section)</div>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:7px;">Same balances shown here and in Suppliers - always in sync, no separate data.</p>
-    <div id="supplierDuesList"></div>
   </div>
   <div class="card">
     <div class="card-title">Add Standalone Payment Due</div>
@@ -623,6 +647,15 @@ function onExpCatChange(){
   <div class="sw"><span class="si">&#128269;</span><input id="searchPay" placeholder="Search payments..."></div>
   <div class="sum-row">Standalone Pending: &#8377;<span id="payPendTot">0</span></div>
   <div id="payList"></div>
+  <div id="payViewAllWrap" style="display:none;text-align:center;padding:10px 0;"><a href="javascript:void(0)" onclick="showTabNew('paymentsoverview')" style="color:#2563eb;font-weight:700;font-size:13px;">View All Payments in Overview &rsaquo;</a></div>
+</div>
+
+<!-- PAYMENTS OVERVIEW -->
+<div id="paymentsoverview" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('payments')">&#8592;</button><div class="sec-nav-title">&#128184; All Payments</div><div style="width:44px;"></div></div>
+  <div class="sw"><span class="si">&#128269;</span><input id="searchPayOv" placeholder="Search all payments..." oninput="renderPaymentsOverview()"></div>
+  <div class="sum-row">Total: <span id="payOvCount">0</span> &nbsp;|&nbsp; Pending: &#8377;<span id="payOvPend">0</span></div>
+  <div id="payListFull"></div>
 </div>
 
 <!-- EXPENSES (removed from UI per request; hidden placeholders kept so internal references don't break) -->
@@ -689,7 +722,7 @@ function onExpCatChange(){
       <button class="pill" onclick="pickerFilter('KID',this)" style="margin-right:6px;">Kids Furniture</button>
       <button class="pill" onclick="pickerFilter('FLD',this)" style="margin-right:6px;">Folding Items</button>
       <button class="pill" onclick="pickerFilter('OTH',this)" style="margin-right:6px;">Other</button>
-    </div></div>
+    </div>
     <div style="padding:10px 16px;border-bottom:1px solid var(--border);">
       <input id="pickerSearch" placeholder="Search stock..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;" oninput="renderPickerList()">
     </div>
@@ -845,6 +878,15 @@ function onExpCatChange(){
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchSup" placeholder="Search suppliers..." oninput="if(window.renderSuppliers)window.renderSuppliers()"></div>
   <div id="supplierList"></div>
+  <div id="supViewAllWrap" style="display:none;text-align:center;padding:10px 0;"><a href="javascript:void(0)" onclick="showTabNew('suppliersoverview')" style="color:#2563eb;font-weight:700;font-size:13px;">View All Suppliers in Overview &rsaquo;</a></div>
+</div>
+
+<!-- SUPPLIERS OVERVIEW -->
+<div id="suppliersoverview" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('suppliers')">&#8592;</button><div class="sec-nav-title">&#127968; All Suppliers</div><div style="width:44px;"></div></div>
+  <div class="sw"><span class="si">&#128269;</span><input id="searchSupOv" placeholder="Search all suppliers..." oninput="renderSuppliersOverview()"></div>
+  <div class="sum-row">Total: <span id="supOvCount">0</span></div>
+  <div id="supplierListFull"></div>
 </div>
 
 </div>
@@ -1242,6 +1284,57 @@ function filt(arr, sid) {
     (x.desc &&x.desc.toLowerCase().includes(q))
   );
 }
+
+function _leadRowHtml(x,ri){
+  return `<div class="rec lead-r">
+<div class="rec-name" style="border-left:3px solid ${pcolor(x.priority||"Warm")};padding-left:5px;">${esc(x.n)}${dbadge(x.d)}${x.priority?`<span class="badge" style="background:#f4f6f7;color:${pcolor(x.priority)};">${priLabel(x.priority)}</span>`:""}</div>
+<div class="rec-sub">Follow-up: ${fmtDMY(x.d)}${x.phone?" | "+esc(x.phone):""}${x.item?"<br>"+esc(x.item):""}${x.budget?" | Budget: Rs."+x.budget:""}</div>
+${x.source?`<div class="rec-sub">Source: ${esc(x.source)}</div>`:""}
+${x.note?`<div class="note-chip">${esc(x.note)}</div>`:""}
+<div class="row-btn">
+${x.phone?`<button class="btn btn-call" onclick="callCust(this.dataset.p)" data-p="${esc(x.phone)}">Call</button>`:""}
+${x.phone?`<button class="btn btn-wa" onclick="waLead(${ri})">WA</button>`:""}
+<button class="btn btn-blue" onclick="openEdit('leads',${ri})">&#9998; Edit</button>
+<button class="btn btn-done" onclick="markDone('leads',${ri})">Done</button>
+<button class="btn btn-del" onclick="delItem('leads',${ri})">Del</button>
+</div></div>`;
+}
+function renderLeadsOverview(){
+  const box=g("leadListFull");if(!box)return;
+  let arr=filt(db.leads,"searchLeadsOv").filter(x=>{
+    if(leadOvFilter==="all")return !x.done;
+    if(leadOvFilter==="due")return !x.done&&x.d<=TODAY;
+    return !x.done&&x.priority===leadOvFilter;
+  });
+  box.innerHTML=arr.map(x=>_leadRowHtml(x,db.leads.indexOf(x))).join("")||'<div class="empty"><div class="ei">&#128203;</div>No leads found</div>';
+  if(g("leadOvCount"))g("leadOvCount").textContent=arr.length;
+}
+window.renderLeadsOverview=renderLeadsOverview;
+let leadOvFilter="all";
+function setLeadOvFilter(f,btn){leadOvFilter=f;document.querySelectorAll("#leadsoverview .pill").forEach(p=>p.classList.remove("on"));if(btn)btn.classList.add("on");renderLeadsOverview();}
+window.setLeadOvFilter=setLeadOvFilter;
+
+function _orderRowHtml(x,ri){
+  return `<div class="rec order-r${x.done?" closed-r":""}">
+<div class="rec-name">${esc(x.n)}${x.done?'<span class="badge b-closed">Delivered</span>':dbadge(x.d)}</div>
+<div class="rec-sub">Delivery: ${fmtDMY(x.d)}${x.phone?" | "+esc(x.phone):""}${x.item?"<br>"+esc(x.item):""}${x.addr?"<br>"+esc(x.addr):""}</div>
+${x.linkBill?`<div class="order-tag">Linked: ${esc(x.linkBill)}</div>`:""}
+${x.note?`<div class="note-chip">${esc(x.note)}</div>`:""}
+<div class="row-btn">
+${x.phone?`<button class="btn btn-call" onclick="callCust(this.dataset.p)" data-p="${esc(x.phone)}">Call</button>`:""}
+${x.phone?`<button class="btn btn-wa" onclick="waOrder(${ri})">WA</button>`:""}
+${!x.done?`<button class="btn btn-done" onclick="markDone('orders',${ri})">Delivered</button>`:""}
+<button class="btn btn-blue" onclick="openEdit('orders',${ri})">&#9998; Edit</button>
+<button class="btn btn-del" onclick="delItem('orders',${ri})">Del</button>
+</div></div>`;
+}
+function renderOrdersOverview(){
+  const box=g("orderListFull");if(!box)return;
+  let arr=filt(db.orders,"searchOrdersOv");
+  box.innerHTML=arr.map(x=>_orderRowHtml(x,db.orders.indexOf(x))).join("")||'<div class="empty"><div class="ei">&#128230;</div>No orders found</div>';
+  if(g("orderOvCount"))g("orderOvCount").textContent=arr.length;
+}
+window.renderOrdersOverview=renderOrdersOverview;
 
 function tickClock() {
   g("clockBar").textContent =
@@ -1733,42 +1826,13 @@ ${x.phone?`<button class="btn btn-wa" style="padding:4px 7px;font-size:11px;" on
     if(leadFilter==="due")return !x.done&&x.d<=TODAY;
     return !x.done&&x.priority===leadFilter;
   });
-  let lH="";
-  lArr.forEach(x=>{
-    const ri=db.leads.indexOf(x);
-    lH+=`<div class="rec lead-r">
-<div class="rec-name" style="border-left:3px solid ${pcolor(x.priority||"Warm")};padding-left:5px;">${esc(x.n)}${dbadge(x.d)}${x.priority?`<span class="badge" style="background:#f4f6f7;color:${pcolor(x.priority)};">${priLabel(x.priority)}</span>`:""}</div>
-<div class="rec-sub">Follow-up: ${fmtDMY(x.d)}${x.phone?" | "+esc(x.phone):""}${x.item?"<br>"+esc(x.item):""}${x.budget?" | Budget: Rs."+x.budget:""}</div>
-${x.source?`<div class="rec-sub">Source: ${esc(x.source)}</div>`:""}
-${x.note?`<div class="note-chip">${esc(x.note)}</div>`:""}
-<div class="row-btn">
-${x.phone?`<button class="btn btn-call" onclick="callCust(this.dataset.p)" data-p="${esc(x.phone)}">Call</button>`:""}
-${x.phone?`<button class="btn btn-wa" onclick="waLead(${ri})">WA</button>`:""}
-<button class="btn btn-blue" onclick="openEdit('leads',${ri})">&#9998; Edit</button>
-<button class="btn btn-done" onclick="markDone('leads',${ri})">Done</button>
-<button class="btn btn-del" onclick="delItem('leads',${ri})">Del</button>
-</div></div>`;
-  });
-  g("leadList").innerHTML=lH||'<div class="empty"><div class="ei">&#128203;</div>No leads found</div>';
+  g("leadList").innerHTML=lArr.slice(0,5).map(x=>_leadRowHtml(x,db.leads.indexOf(x))).join("")||'<div class="empty"><div class="ei">&#128203;</div>No leads found</div>';
+  const leadWrap=g("leadViewAllWrap");if(leadWrap)leadWrap.style.display=lArr.length>5?"block":"none";
 
   // ORDERS
-  let oArr=filt(db.orders,"searchOrders"),oH="";
-  oArr.forEach(x=>{
-    const ri=db.orders.indexOf(x);
-    oH+=`<div class="rec order-r${x.done?" closed-r":""}">
-<div class="rec-name">${esc(x.n)}${x.done?'<span class="badge b-closed">Delivered</span>':dbadge(x.d)}</div>
-<div class="rec-sub">Delivery: ${fmtDMY(x.d)}${x.phone?" | "+esc(x.phone):""}${x.item?"<br>"+esc(x.item):""}${x.addr?"<br>"+esc(x.addr):""}</div>
-${x.linkBill?`<div class="order-tag">Linked: ${esc(x.linkBill)}</div>`:""}
-${x.note?`<div class="note-chip">${esc(x.note)}</div>`:""}
-<div class="row-btn">
-${x.phone?`<button class="btn btn-call" onclick="callCust(this.dataset.p)" data-p="${esc(x.phone)}">Call</button>`:""}
-${x.phone?`<button class="btn btn-wa" onclick="waOrder(${ri})">WA</button>`:""}
-${!x.done?`<button class="btn btn-done" onclick="markDone('orders',${ri})">Delivered</button>`:""}
-<button class="btn btn-blue" onclick="openEdit('orders',${ri})">&#9998; Edit</button>
-<button class="btn btn-del" onclick="delItem('orders',${ri})">Del</button>
-</div></div>`;
-  });
-  g("orderList").innerHTML=oH||'<div class="empty"><div class="ei">&#128230;</div>No orders yet</div>';
+  let oArr=filt(db.orders,"searchOrders");
+  g("orderList").innerHTML=oArr.slice(0,5).map(x=>_orderRowHtml(x,db.orders.indexOf(x))).join("")||'<div class="empty"><div class="ei">&#128230;</div>No orders yet</div>';
+  const orderWrap=g("orderViewAllWrap");if(orderWrap)orderWrap.style.display=oArr.length>5?"block":"none";
 
   // PAYMENTS
   let pArr=filt(db.payments,"searchPay"),pPend=0,pH="";
@@ -2217,7 +2281,7 @@ function copyBroadcastMsg() {
 window.copyBroadcastMsg = copyBroadcastMsg;
 
 // === CUSTOMER DIRECTORY ===
-var _dirImported = [], _dirManual = [], _dirFilter = "all", _dirSelected = {};
+var _dirImported = [], _dirManual = [], _dirFilter = "all", _dirSelected = {}, _dirShowAll = false;
 
 function _dirKey(phone, name) {
   var p = (phone||"").replace(/[^0-9]/g,"").slice(-10);
@@ -2268,10 +2332,12 @@ function renderDir() {
   upd("dirWithPhone",full.filter(function(c){return c.phone;}).length);
   var dl = g("dirList"); if(!dl) return;
   if(all.length === 0) { dl.innerHTML = q ? '<div class="empty">No results for "'+q+'"</div>' : '<div class="empty"><div class="ei">&#128101;</div><p>No contacts yet. Auto-syncs from Sales, Leads, Orders.</p></div>'; return; }
+  var showCap=20;
+  var capped = (!_dirShowAll && all.length>showCap) ? all.slice(0,showCap) : all;
   var colors = ["#2563eb","#16a34a","#7c3aed","#d97706","#dc2626","#0d9488","#ea580c","#475569"];
   var e = function(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");};
   var html = "";
-  all.forEach(function(c) {
+  capped.forEach(function(c) {
     var init = c.name.trim().split(" ");
     init = init.length>=2 ? init[0][0]+init[1][0] : c.name.slice(0,2).toUpperCase();
     var color = colors[c.name.charCodeAt(0)%colors.length];
@@ -2297,6 +2363,11 @@ function renderDir() {
         "<div class=\"dir-actions\">" + callBtn + waBtn + delBtn + "</div>" +
       "</div></div></div>";
   });
+  if(!_dirShowAll && all.length>showCap){
+    html += '<div style="text-align:center;padding:10px 0;"><button onclick="_dirShowAll=true;renderDir();" style="padding:10px 18px;background:#eff6ff;color:#2563eb;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Show All '+all.length+' Contacts &rsaquo;</button></div>';
+  } else if(_dirShowAll && all.length>showCap){
+    html += '<div style="text-align:center;padding:10px 0;"><button onclick="_dirShowAll=false;renderDir();" style="padding:10px 18px;background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Show Less</button></div>';
+  }
   dl.innerHTML = html;
 
 }
@@ -2319,6 +2390,7 @@ function updateBulkBar() {
 }
 
 function dirSelectAll() {
+  _dirShowAll=true;
   buildDirectory().filter(function(c){return c.deletable;}).forEach(function(c){_dirSelected[c.key]=1;});
   updateBulkBar(); renderDir();
 }
@@ -2468,6 +2540,7 @@ if(be2) be2.addEventListener("click", exportData);
 // STOCK MANAGEMENT JS - all in one clean block
 // ================================================================
 var _stockFilter = "ALL";
+var _stockShowAll = false;
 var _pickerTarget = "sale";
 var _pickerCatFilter = "ALL";
 var CAT_NAMES = {"SOF":"Sofa & Seating","BED":"Beds","MAT":"Mattresses","TBL":"Tables","STR":"Storage","DRS":"Dressing Table","TVU":"TV Units","OFC":"Office & Chairs","KID":"Kids Furniture","FLD":"Folding Items","OTH":"Other"};
@@ -2517,7 +2590,9 @@ function renderStock() {
   if(badge){var alerts=low+out;badge.style.display=alerts>0?"flex":"none";badge.textContent=alerts;}
   var sl=g("stockList");if(!sl)return;
   if(filtered.length===0){sl.innerHTML='<div class="empty"><div class="ei">&#128230;</div><p>No stock items. Tap "+ Add New Stock Item"</p></div>';return;}
-  sl.innerHTML=filtered.map(function(s){
+  var showCap=8;
+  var cappedStock=(!_stockShowAll && filtered.length>showCap)?filtered.slice(0,showCap):filtered;
+  var html=cappedStock.map(function(s){
     var ri=db.stock.indexOf(s);
     var reserved=(db.orders||[]).filter(function(o){return !o.done&&o.stockId===s.id;}).length;
     var avail=s.qty-reserved;
@@ -2542,6 +2617,12 @@ function renderStock() {
         '<button class="btn btn-sm btn-del" onclick="deleteStockItem('+ri+')">&#128465;</button>'+
       '</div></div>';
   }).join("");
+  if(!_stockShowAll && filtered.length>showCap){
+    html+='<div style="text-align:center;padding:10px 0;"><button onclick="_stockShowAll=true;renderStock();" style="padding:10px 18px;background:#f0fdf4;color:#16a34a;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Show All '+filtered.length+' Items &rsaquo;</button></div>';
+  } else if(_stockShowAll && filtered.length>showCap){
+    html+='<div style="text-align:center;padding:10px 0;"><button onclick="_stockShowAll=false;renderStock();" style="padding:10px 18px;background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Show Less</button></div>';
+  }
+  sl.innerHTML=html;
 }
 window.renderStock = renderStock;
 
@@ -2773,13 +2854,19 @@ function renderPaymentsEnhanced(){
   var q=(g("searchPay")?g("searchPay").value||"":"").toLowerCase();
   var TODAY=new Date().toISOString().split("T")[0];
   var all=(db.payments||[]).filter(function(p){return !q||p.n.toLowerCase().indexOf(q)>=0;});
-  if(all.length===0){pl.innerHTML='<div class="empty"><div class="ei">&#128184;</div>No payments yet</div>';return;}
-  pl.innerHTML=all.map(function(p,ri){
+  var wrap=g("payViewAllWrap");
+  if(all.length===0){pl.innerHTML='<div class="empty"><div class="ei">&#128184;</div>No payments yet</div>';if(wrap)wrap.style.display="none";return;}
+  var shortArr=all.slice(0,5);
+  pl.innerHTML=shortArr.map(_payRowHtml).join("");
+  if(wrap)wrap.style.display=all.length>5?"block":"none";
+}
+window.renderPaymentsEnhanced=renderPaymentsEnhanced;
+function _payRowHtml(p,ri){
     var paidAmt=p.paidAmt||0;
     var bal=(p.amt||0)-paidAmt;
     var pct=p.amt>0?Math.min(100,Math.round(paidAmt/p.amt*100)):0;
     var isDone=p.done||(p.amt>0&&bal<=0);
-    var isOverdue=!isDone&&p.d<TODAY;
+    var isOverdue=!isDone&&p.d<new Date().toISOString().split("T")[0];
     return '<div class="rec pay-r'+(isDone?" closed-r":"")+'">'+
       '<div class="rec-name">'+esc(p.n)+
         (isDone?'<span class="badge b-closed">&#10003; Paid</span>':isOverdue?'<span class="badge b-overdue">Overdue</span>':'<span class="badge b-pending">Pending</span>')+
@@ -2803,9 +2890,17 @@ function renderPaymentsEnhanced(){
       (!isDone?'<div class="row-btn"><button class="btn btn-done btn-sm" onclick="collectPartialPay('+ri+')">&#128184; Pay</button>'+(p.phone?'<button class="btn btn-wa btn-sm" onclick="waPayment('+ri+')">&#128245; WA</button>':"")+' <button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="openEdit(\'payments\','+ri+')">Edit</button><button class="btn btn-del btn-sm" onclick="delItem(\'payments\','+ri+')">&#128465;</button></div>':
        '<div class="row-btn"><button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="openEdit(\'payments\','+ri+')">Edit</button><button class="btn btn-del btn-sm" onclick="delItem(\'payments\','+ri+')">&#128465;</button></div>')+
     '</div>';
-  }).join("");
 }
-window.renderPaymentsEnhanced=renderPaymentsEnhanced;
+function renderPaymentsOverview(){
+  var pl=g("payListFull");if(!pl)return;
+  var q=(g("searchPayOv")?g("searchPayOv").value||"":"").toLowerCase();
+  var all=(db.payments||[]).filter(function(p){return !q||p.n.toLowerCase().indexOf(q)>=0;});
+  var pend=0;all.forEach(function(p){if(!p.done)pend+=Math.max(0,(p.amt||0)-(p.paidAmt||0));});
+  if(g("payOvCount"))g("payOvCount").textContent=all.length;
+  if(g("payOvPend"))g("payOvPend").textContent=pend.toFixed(0);
+  pl.innerHTML=all.length?all.map(function(p){var ri=db.payments.indexOf(p);return _payRowHtml(p,ri);}).join(""):'<div class="empty"><div class="ei">&#128184;</div>No payments found</div>';
+}
+window.renderPaymentsOverview=renderPaymentsOverview;
 
 // ── Suppliers ────────────────────────────────────────────────────
 function addSupplier(){
@@ -3029,6 +3124,29 @@ async function shareVoucherPDF(){
 g("btnShareVoucherPDF").addEventListener("click",shareVoucherPDF);
 window.shareVoucherPDF=shareVoucherPDF;
 
+function _supplierRowHtml(s,ri){
+  var totalBilled=(s.txns||[]).filter(function(t){return t.type==="bill";}).reduce(function(a,t){return a+t.amt;},0);
+  var totalPaid=(s.txns||[]).filter(function(t){return t.type==="payment";}).reduce(function(a,t){return a+t.amt;},0);
+  var bal=s.balance||0;
+  var pct=totalBilled>0?Math.min(100,Math.round(totalPaid/totalBilled*100)):0;
+  var recent=(s.txns||[]).slice(-3).reverse();
+  return '<div class="rec" style="border-left-color:#2563eb;">'+
+    '<div class="rec-name">'+esc(s.name)+(s.phone?' <span style="font-size:12px;color:#64748b;font-weight:400;">'+esc(s.phone)+'</span>':'')+
+      (bal>0?'<span class="badge b-pending">Bal: Rs.'+bal.toFixed(0)+'</span>':bal<0?'<span class="badge b-partial">Credit: Rs.'+Math.abs(bal).toFixed(0)+'</span>':'<span class="badge b-closed">&#10003; Clear</span>')+
+    '</div>'+
+    '<div style="display:flex;gap:12px;font-size:12px;margin:6px 0;flex-wrap:wrap;">'+
+      '<span style="color:#dc2626;font-weight:600;">Billed: Rs.'+totalBilled.toFixed(0)+'</span>'+
+      '<span style="color:#16a34a;font-weight:600;">Paid: Rs.'+totalPaid.toFixed(0)+'</span>'+
+      '<span style="color:'+(bal<0?'#15803d':'#d97706')+';font-weight:700;">Balance: '+fmtBal(bal)+'</span>'+
+    '</div>'+
+    '<div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:'+pct+'%;"></div></div>'+
+    (recent.length>0?'<div style="font-size:11px;color:var(--muted);margin-top:5px;">'+recent.map(function(t){return t.date+': '+(t.type==="bill"?"Bill":"Paid")+' Rs.'+t.amt.toFixed(0)+(t.ref?' ('+t.ref+')':'');}).join(' | ')+'</div>':'')+
+    '<div class="row-btn">'+
+      '<button class="btn btn-sm" style="background:var(--muted);" onclick="editSupplier('+ri+')">&#9998; Edit</button>'+
+      '<button class="btn btn-teal btn-sm" onclick="selectSupplierInForm('+ri+')">&#128196; Generate Voucher (PDF)</button>'+
+      '<button class="btn btn-del btn-sm" onclick="deleteSupplier('+ri+')">&#128465;</button></div>'+
+  '</div>';
+}
 function renderSuppliers(){
   var sl=g("supplierList");if(!sl)return;
   var q=(g("searchSup")?g("searchSup").value||"":"").toLowerCase();
@@ -3038,32 +3156,21 @@ function renderSuppliers(){
   if(g("supTotal"))g("supTotal").textContent=all.length;
   if(g("supTotalOwed"))g("supTotalOwed").textContent="Rs."+totalOwed.toFixed(0);
   if(g("supOverdue"))g("supOverdue").textContent=all.filter(function(s){return (s.balance||0)>0;}).length;
-  if(filtered.length===0){sl.innerHTML='<div class="empty"><div class="ei">&#127968;</div><p>No suppliers yet. Add one above.</p></div>';return;}
-  sl.innerHTML=filtered.map(function(s,ri){
-    var totalBilled=(s.txns||[]).filter(function(t){return t.type==="bill";}).reduce(function(a,t){return a+t.amt;},0);
-    var totalPaid=(s.txns||[]).filter(function(t){return t.type==="payment";}).reduce(function(a,t){return a+t.amt;},0);
-    var bal=s.balance||0;
-    var pct=totalBilled>0?Math.min(100,Math.round(totalPaid/totalBilled*100)):0;
-    var recent=(s.txns||[]).slice(-3).reverse();
-    return '<div class="rec" style="border-left-color:#2563eb;">'+
-      '<div class="rec-name">'+esc(s.name)+(s.phone?' <span style="font-size:12px;color:#64748b;font-weight:400;">'+esc(s.phone)+'</span>':'')+
-        (bal>0?'<span class="badge b-pending">Bal: Rs.'+bal.toFixed(0)+'</span>':bal<0?'<span class="badge b-partial">Credit: Rs.'+Math.abs(bal).toFixed(0)+'</span>':'<span class="badge b-closed">&#10003; Clear</span>')+
-      '</div>'+
-      '<div style="display:flex;gap:12px;font-size:12px;margin:6px 0;flex-wrap:wrap;">'+
-        '<span style="color:#dc2626;font-weight:600;">Billed: Rs.'+totalBilled.toFixed(0)+'</span>'+
-        '<span style="color:#16a34a;font-weight:600;">Paid: Rs.'+totalPaid.toFixed(0)+'</span>'+
-        '<span style="color:'+(bal<0?'#15803d':'#d97706')+';font-weight:700;">Balance: '+fmtBal(bal)+'</span>'+
-      '</div>'+
-      '<div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:'+pct+'%;"></div></div>'+
-      (recent.length>0?'<div style="font-size:11px;color:var(--muted);margin-top:5px;">'+recent.map(function(t){return t.date+': '+(t.type==="bill"?"Bill":"Paid")+' Rs.'+t.amt.toFixed(0)+(t.ref?' ('+t.ref+')':'');}).join(' | ')+'</div>':'')+
-      '<div class="row-btn">'+
-        '<button class="btn btn-sm" style="background:var(--muted);" onclick="editSupplier('+ri+')">&#9998; Edit</button>'+
-        '<button class="btn btn-teal btn-sm" onclick="selectSupplierInForm('+ri+')">&#128196; Generate Voucher (PDF)</button>'+
-        '<button class="btn btn-del btn-sm" onclick="deleteSupplier('+ri+')">&#128465;</button></div>'+
-    '</div>';
-  }).join("");
+  var wrap=g("supViewAllWrap");
+  if(filtered.length===0){sl.innerHTML='<div class="empty"><div class="ei">&#127968;</div><p>No suppliers yet. Add one above.</p></div>';if(wrap)wrap.style.display="none";return;}
+  sl.innerHTML=filtered.slice(0,5).map(function(s,ri){return _supplierRowHtml(s,ri);}).join("");
+  if(wrap)wrap.style.display=filtered.length>5?"block":"none";
 }
 window.renderSuppliers=renderSuppliers;
+function renderSuppliersOverview(){
+  var sl=g("supplierListFull");if(!sl)return;
+  var q=(g("searchSupOv")?g("searchSupOv").value||"":"").toLowerCase();
+  var all=db.suppliers||[];
+  var filtered=q?all.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0;}):all;
+  if(g("supOvCount"))g("supOvCount").textContent=filtered.length;
+  sl.innerHTML=filtered.length?filtered.map(function(s,ri){return _supplierRowHtml(s,ri);}).join(""):'<div class="empty"><div class="ei">&#127968;</div><p>No suppliers found.</p></div>';
+}
+window.renderSuppliersOverview=renderSuppliersOverview;
 
 function editSupplier(ri){
   var s=(db.suppliers||[])[ri];if(!s)return;
