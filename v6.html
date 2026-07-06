@@ -155,6 +155,8 @@ textarea{resize:vertical;min-height:60px;}
 html{-webkit-overflow-scrolling:touch;}
 
 .stock-card{background:#fff;border-radius:var(--r);padding:11px;margin-bottom:8px;box-shadow:var(--shadow);border-left:4px solid var(--border);}
+.picker-row{touch-action:manipulation;transition:background .1s;border-radius:10px;}
+.picker-row:active{background:#eff6ff;}
 .stock-card.in-stock{border-left-color:#16a34a;}
 .stock-card.low-stock{border-left-color:#d97706;}
 .stock-card.out-stock{border-left-color:#dc2626;}
@@ -235,9 +237,11 @@ function showTabNew(id){
   window.scrollTo({top:0,behavior:"smooth"});
   if(id==="campaigns"){if(window.renderFestivals)window.renderFestivals();if(window.updateCampMsg)window.updateCampMsg();if(window.renderCampHistory)window.renderCampHistory();}
   if(id==="directory"&&window.renderDir)window.renderDir();
+  if(id==="contactsoverview"&&window.renderDir)window.renderDir();
   if(id==="overview"&&window.renderAllSalesOverview)window.renderAllSalesOverview();
   if(id==="stock"&&window.renderStock)window.renderStock();
   if(id==="stockoverview"&&window.renderStockOverview)window.renderStockOverview();
+  if(id==="stockoverview"&&window.renderStockDetailsOverview)window.renderStockDetailsOverview();
   if(id==="suppliers"){if(window.renderSuppliers)window.renderSuppliers();if(window.updateSupplierSelect)window.updateSupplierSelect();}
   if(id==="paymentsoverview"&&window.renderPaymentsOverview)window.renderPaymentsOverview();
   if(id==="leadsoverview"&&window.renderLeadsOverview)window.renderLeadsOverview();
@@ -262,7 +266,12 @@ function genStockId(){
   if(!cat)return;
   var _db=window._getDb?window._getDb():{stock:[]};
   var items=(_db.stock||[]).filter(function(s){return s.cat===cat;});
-  var next=items.length+1;
+  var maxNum=0;
+  items.forEach(function(s){
+    var m=/-(\d+)$/.exec(s.id||"");
+    if(m){var n=parseInt(m[1],10);if(n>maxNum)maxNum=n;}
+  });
+  var next=maxNum+1;
   var num=next<10?"00"+next:next<100?"0"+next:""+next;
   var el=document.getElementById("stId");if(el)el.value="SSHN-"+cat+"-"+num;
 }
@@ -726,7 +735,7 @@ function onExpCatChange(){
     <div style="padding:10px 16px;border-bottom:1px solid var(--border);">
       <input id="pickerSearch" placeholder="Search stock..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;" oninput="renderPickerList()">
     </div>
-    <div id="pickerList" style="max-height:50vh;overflow-y:auto;padding:10px 16px;"></div>
+    <div id="pickerList" style="max-height:55vh;overflow-y:auto;padding:6px 16px;"></div>
     <div style="padding:12px 16px;border-top:1px solid var(--border);">
       <button onclick="closeStockPicker()" style="width:100%;padding:12px;background:#f1f5f9;color:#374151;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Enter Manually (no stock deduction)</button>
     </div>
@@ -808,7 +817,10 @@ function onExpCatChange(){
     </div>
     <div class="fg" style="margin-bottom:8px;"><label>Item Name *</label><input id="stName" placeholder="e.g. 3-Seater Fabric Sofa"></div>
     <div class="fg" style="margin-bottom:8px;"><label>Description</label><input id="stDesc" placeholder="e.g. Brown colour, 6ft wide"></div>
-    <div class="fg" style="margin-bottom:8px;"><label>Qty in Stock *</label><input id="stQty" type="number" placeholder="0" min="0"></div>
+    <div class="row2">
+      <div class="fg" style="margin-bottom:8px;"><label>Qty in Stock *</label><input id="stQty" type="number" placeholder="0" min="0"></div>
+      <div class="fg" style="margin-bottom:8px;"><label>Purchase Date</label><input id="stDate" type="date"></div>
+    </div>
     <div class="row2">
       <div class="fg" style="margin-bottom:8px;"><label>Purchase Price (&#8377;)</label><input id="stBuyPrice" type="number" placeholder="0"></div>
       <div class="fg" style="margin-bottom:8px;"><label>Supplier</label>
@@ -816,13 +828,13 @@ function onExpCatChange(){
         <input id="stSupplierNew" placeholder="Type new supplier name" style="display:none;margin-top:6px;">
       </div>
     </div>
-    <div class="fg" style="margin-bottom:8px;"><label>Purchase Date</label><input id="stDate" type="date"></div>
     <div style="display:flex;gap:8px;">
       <button onclick="saveStockItem()" style="flex:2;padding:13px;background:#16a34a;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Save Stock</button>
       <button onclick="g('addStockForm').style.display='none'" style="flex:1;padding:13px;background:#e5e7eb;color:#374151;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
     </div>
   </div>
   <div id="stockList"></div>
+  <div id="stockViewAllWrap" style="display:none;text-align:center;padding:10px 0;"><a href="javascript:void(0)" onclick="showTabNew('stockoverview')" style="color:#2563eb;font-weight:700;font-size:13px;">View All Stock in Overview &rsaquo;</a></div>
 </div>
 
 
@@ -930,6 +942,21 @@ function onExpCatChange(){
 <div id="directory" class="section">
   <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#128101; Customer Directory</div><div style="width:44px;"></div></div>
   <div class="sum-row" style="background:#f0fdfa;border-color:#99f6e4;color:#0d9488;">Total: <b id="dirTotal">0</b> &nbsp;|&nbsp; Customers: <b id="dirCusts">0</b> &nbsp;|&nbsp; Leads: <b id="dirLeads">0</b> &nbsp;|&nbsp; With Phone: <b id="dirWithPhone">0</b></div>
+  <div class="card" style="margin-bottom:8px;">
+    <div class="card-title">&#43; Add Manually</div>
+    <div class="row2">
+      <div class="fg" style="margin-bottom:0;"><label>Name *</label><input id="dirName" placeholder="Full name"></div>
+      <div class="fg" style="margin-bottom:0;"><label>Phone *</label><input id="dirPhone" type="tel" placeholder="10 digits"></div>
+    </div>
+    <button onclick="addDirContact()" style="width:100%;padding:12px;margin-top:10px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Add Contact</button>
+  </div>
+  <div id="dirListPreview"></div>
+  <div id="dirViewAllWrap" style="display:none;text-align:center;padding:10px 0;"><a href="javascript:void(0)" onclick="showTabNew('contactsoverview')" style="color:#2563eb;font-weight:700;font-size:13px;">View All Contacts in Overview &rsaquo;</a></div>
+</div>
+
+<!-- CONTACTS OVERVIEW -->
+<div id="contactsoverview" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('directory')">&#8592;</button><div class="sec-nav-title">&#128101; All Contacts</div><div style="width:44px;"></div></div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchDir" placeholder="Search by name or phone..." oninput="renderDir()"></div>
   <div class="filter-pills">
     <button class="pill on" onclick="setDirFilter('all',this)">All</button>
@@ -951,14 +978,6 @@ function onExpCatChange(){
       <button onclick="dirDeleteSelected()" style="padding:7px 12px;background:#dc2626;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">&#128465; Delete</button>
       <button onclick="dirClearSelection()" style="padding:7px 12px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
     </div>
-  </div>
-  <div class="card" style="margin-bottom:8px;">
-    <div class="card-title">&#43; Add Manually</div>
-    <div class="row2">
-      <div class="fg" style="margin-bottom:0;"><label>Name *</label><input id="dirName" placeholder="Full name"></div>
-      <div class="fg" style="margin-bottom:0;"><label>Phone *</label><input id="dirPhone" type="tel" placeholder="10 digits"></div>
-    </div>
-    <button onclick="addDirContact()" style="width:100%;padding:12px;margin-top:10px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Add Contact</button>
   </div>
   <div id="dirList"></div>
 </div>
@@ -1042,6 +1061,13 @@ function onExpCatChange(){
 
   <!-- Low/Out stock alerts -->
   <div id="ovAlerts"></div>
+
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title">&#128230; All Stock Items</div>
+    <div class="sw"><span class="si">&#128269;</span><input id="searchStockOv" placeholder="Search all stock..." oninput="renderStockDetailsOverview()"></div>
+    <div class="sum-row">Total: <span id="stockOvCount">0</span></div>
+    <div id="stockListFull"></div>
+  </div>
 </div>
 
 <!-- EDIT OVERLAY -->
@@ -1186,6 +1212,7 @@ function numToWordsIN(num){
   return str.trim()+" Rupees Only";
 }
 let billCounter = 100000;
+let voucherCounter = 1;
 let curBillIdx  = -1;
 let curBillType = "cash";
 let saleFilter  = "all";
@@ -1223,12 +1250,13 @@ function ss(msg, cls) {
 }
 
 function saveDB() {
-  try { localStorage.setItem("srisai_ns2", JSON.stringify({db, billCounter})); } catch(e){}
+  try { localStorage.setItem("srisai_ns2", JSON.stringify({db, billCounter, voucherCounter})); } catch(e){}
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
     ss("Saving...", "syn");
     const p = JSON.parse(JSON.stringify(db));
     p.billCounter = billCounter;
+    p.voucherCounter = voucherCounter;
     setDoc(DOC, p)
       .then(() => ss("Synced " + new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}), ""))
       .catch(e => { ss("Sync failed", "err"); console.error(e); });
@@ -1247,14 +1275,15 @@ onSnapshot(DOC, snap => {
     db.stock    = p.stock    || [];
     db.suppliers = p.suppliers || [];
     if (p.billCounter) billCounter = p.billCounter;
+    if (p.voucherCounter) voucherCounter = p.voucherCounter;
     ss("Synced " + new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}), "");
   } else {
-    try { const r=localStorage.getItem("srisai_ns2"); if(r){const q=JSON.parse(r);db=q.db;billCounter=q.billCounter||100000;} } catch(e){}
+    try { const r=localStorage.getItem("srisai_ns2"); if(r){const q=JSON.parse(r);db=q.db;billCounter=q.billCounter||100000;voucherCounter=q.voucherCounter||1;} } catch(e){}
     ss("Ready", "");
   }
   render(); checkRem();
 }, err => {
-  try { const r=localStorage.getItem("srisai_ns2"); if(r){const q=JSON.parse(r);db=q.db;billCounter=q.billCounter||100000;} } catch(e){}
+  try { const r=localStorage.getItem("srisai_ns2"); if(r){const q=JSON.parse(r);db=q.db;billCounter=q.billCounter||100000;voucherCounter=q.voucherCounter||1;} } catch(e){}
   ss("Offline - local data", "err");
   render();
   console.error(err);
@@ -1941,7 +1970,7 @@ g("btnClr").addEventListener("click",()=>{
   {
     if(true){
       db={sales:[],leads:[],orders:[],payments:[],expenses:[]};
-      billCounter=1;saveDB();render();alert("All data cleared.");
+      billCounter=1;voucherCounter=1;saveDB();render();alert("All data cleared.");
     }
   }
 });
@@ -2281,7 +2310,7 @@ function copyBroadcastMsg() {
 window.copyBroadcastMsg = copyBroadcastMsg;
 
 // === CUSTOMER DIRECTORY ===
-var _dirImported = [], _dirManual = [], _dirFilter = "all", _dirSelected = {}, _dirShowAll = false;
+var _dirImported = [], _dirManual = [], _dirFilter = "all", _dirSelected = {};
 
 function _dirKey(phone, name) {
   var p = (phone||"").replace(/[^0-9]/g,"").slice(-10);
@@ -2311,7 +2340,7 @@ function buildDirectory() {
 function setDirFilter(f, btn) {
   _dirFilter = f; _dirSelected = {};
   updateBulkBar();
-  document.querySelectorAll("#directory .pill").forEach(function(p){p.classList.remove("on");});
+  document.querySelectorAll("#contactsoverview .pill").forEach(function(p){p.classList.remove("on");});
   if(btn) btn.classList.add("on");
   renderDir();
 }
@@ -2331,13 +2360,11 @@ function renderDir() {
   upd("dirLeads",full.filter(function(c){return c.tags.indexOf("lead")>=0&&c.tags.indexOf("customer")<0;}).length);
   upd("dirWithPhone",full.filter(function(c){return c.phone;}).length);
   var dl = g("dirList"); if(!dl) return;
-  if(all.length === 0) { dl.innerHTML = q ? '<div class="empty">No results for "'+q+'"</div>' : '<div class="empty"><div class="ei">&#128101;</div><p>No contacts yet. Auto-syncs from Sales, Leads, Orders.</p></div>'; return; }
-  var showCap=20;
-  var capped = (!_dirShowAll && all.length>showCap) ? all.slice(0,showCap) : all;
+  if(all.length === 0) { dl.innerHTML = q ? '<div class="empty">No results for "'+q+'"</div>' : '<div class="empty"><div class="ei">&#128101;</div><p>No contacts yet. Auto-syncs from Sales, Leads, Orders.</p></div>'; renderDirPreview(); return; }
   var colors = ["#2563eb","#16a34a","#7c3aed","#d97706","#dc2626","#0d9488","#ea580c","#475569"];
   var e = function(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");};
   var html = "";
-  capped.forEach(function(c) {
+  all.forEach(function(c) {
     var init = c.name.trim().split(" ");
     init = init.length>=2 ? init[0][0]+init[1][0] : c.name.slice(0,2).toUpperCase();
     var color = colors[c.name.charCodeAt(0)%colors.length];
@@ -2363,15 +2390,41 @@ function renderDir() {
         "<div class=\"dir-actions\">" + callBtn + waBtn + delBtn + "</div>" +
       "</div></div></div>";
   });
-  if(!_dirShowAll && all.length>showCap){
-    html += '<div style="text-align:center;padding:10px 0;"><button onclick="_dirShowAll=true;renderDir();" style="padding:10px 18px;background:#eff6ff;color:#2563eb;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Show All '+all.length+' Contacts &rsaquo;</button></div>';
-  } else if(_dirShowAll && all.length>showCap){
-    html += '<div style="text-align:center;padding:10px 0;"><button onclick="_dirShowAll=false;renderDir();" style="padding:10px 18px;background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Show Less</button></div>';
-  }
   dl.innerHTML = html;
-
+  renderDirPreview();
 }
 window.renderDir = renderDir;
+
+function renderDirPreview(){
+  var dp=g("dirListPreview");if(!dp)return;
+  var all=buildDirectory();
+  var wrap=g("dirViewAllWrap");
+  if(all.length===0){dp.innerHTML='<div class="empty"><div class="ei">&#128101;</div><p>No contacts yet. Auto-syncs from Sales, Leads, Orders.</p></div>';if(wrap)wrap.style.display="none";return;}
+  var colors = ["#2563eb","#16a34a","#7c3aed","#d97706","#dc2626","#0d9488","#ea580c","#475569"];
+  var e = function(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");};
+  dp.innerHTML=all.slice(0,5).map(function(c){
+    var init = c.name.trim().split(" ");
+    init = init.length>=2 ? init[0][0]+init[1][0] : c.name.slice(0,2).toUpperCase();
+    var color = colors[c.name.charCodeAt(0)%colors.length];
+    var tags = c.tags.map(function(t){
+      var lbl = t==="customer"?"Customer":t==="lead"?"Lead":t==="order"?"Order":t==="payment"?"Due":t==="imported"?"Imported":"Manual";
+      return "<span class=\"dir-tag tag-"+t+"\">"+lbl+"</span>";
+    }).join(" ");
+    var callBtn = c.phone ? "<button class=\"btn btn-call btn-sm\" onclick=\"callCust("+JSON.stringify(c.phone)+")\">&#128222;</button> " : "";
+    var waBtn   = c.phone ? "<button class=\"btn btn-wa btn-sm\" onclick=\"waCust("+JSON.stringify(c.phone)+")\">&#128245; WA</button> " : "";
+    return "<div class=\"dir-card\">" +
+      "<div style=\"display:flex;align-items:flex-start;gap:10px;width:100%;\">" +
+      "<div class=\"dir-avatar\" style=\"background:"+color+";\">" + init + "</div>" +
+      "<div class=\"dir-info\">" +
+        "<div class=\"dir-name\">" + e(c.name) + "</div>" +
+        (c.phone ? "<div class=\"dir-phone\">&#128222; "+e(c.phone)+"</div>" : "<div class=\"dir-phone\" style=\"color:var(--muted);\">No phone</div>") +
+        "<div class=\"dir-tags\">" + tags + "</div>" +
+        "<div class=\"dir-actions\">" + callBtn + waBtn + "</div>" +
+      "</div></div></div>";
+  }).join("");
+  if(wrap)wrap.style.display=all.length>5?"block":"none";
+}
+window.renderDirPreview=renderDirPreview;
 
 function dirToggleSelect(key) {
   if(_dirSelected[key]) delete _dirSelected[key]; else _dirSelected[key]=1;
@@ -2390,7 +2443,6 @@ function updateBulkBar() {
 }
 
 function dirSelectAll() {
-  _dirShowAll=true;
   buildDirectory().filter(function(c){return c.deletable;}).forEach(function(c){_dirSelected[c.key]=1;});
   updateBulkBar(); renderDir();
 }
@@ -2540,7 +2592,6 @@ if(be2) be2.addEventListener("click", exportData);
 // STOCK MANAGEMENT JS - all in one clean block
 // ================================================================
 var _stockFilter = "ALL";
-var _stockShowAll = false;
 var _pickerTarget = "sale";
 var _pickerCatFilter = "ALL";
 var CAT_NAMES = {"SOF":"Sofa & Seating","BED":"Beds","MAT":"Mattresses","TBL":"Tables","STR":"Storage","DRS":"Dressing Table","TVU":"TV Units","OFC":"Office & Chairs","KID":"Kids Furniture","FLD":"Folding Items","OTH":"Other"};
@@ -2589,13 +2640,15 @@ function renderStock() {
   var badge=g("stockAlertBadge");
   if(badge){var alerts=low+out;badge.style.display=alerts>0?"flex":"none";badge.textContent=alerts;}
   var sl=g("stockList");if(!sl)return;
-  if(filtered.length===0){sl.innerHTML='<div class="empty"><div class="ei">&#128230;</div><p>No stock items. Tap "+ Add New Stock Item"</p></div>';return;}
-  var showCap=8;
-  var cappedStock=(!_stockShowAll && filtered.length>showCap)?filtered.slice(0,showCap):filtered;
-  var html=cappedStock.map(function(s){
+  var wrap=g("stockViewAllWrap");
+  if(filtered.length===0){sl.innerHTML='<div class="empty"><div class="ei">&#128230;</div><p>No stock items. Tap "+ Add New Stock Item"</p></div>';if(wrap)wrap.style.display="none";return;}
+  sl.innerHTML=filtered.slice(0,5).map(_stockRowHtml).join("");
+  if(wrap)wrap.style.display=filtered.length>5?"block":"none";
+}
+window.renderStock = renderStock;
+function _stockRowHtml(s){
     var ri=db.stock.indexOf(s);
     var reserved=(db.orders||[]).filter(function(o){return !o.done&&o.stockId===s.id;}).length;
-    var avail=s.qty-reserved;
     var statusCls=s.qty<=0?"out-stock":s.qty<=(s.alert||2)?"low-stock":"in-stock";
     var badgeCls=s.qty<=0?"sb-out":s.qty<=(s.alert||2)?"sb-low":"sb-in";
     var badgeTxt=s.qty<=0?"Out of Stock":s.qty<=(s.alert||2)?"Low ("+s.qty+" left)":"In Stock ("+s.qty+")";
@@ -2616,15 +2669,24 @@ function renderStock() {
         '<button class="btn btn-sm btn-blue" onclick="editStockItem('+ri+')">&#9998; Edit</button>'+
         '<button class="btn btn-sm btn-del" onclick="deleteStockItem('+ri+')">&#128465;</button>'+
       '</div></div>';
-  }).join("");
-  if(!_stockShowAll && filtered.length>showCap){
-    html+='<div style="text-align:center;padding:10px 0;"><button onclick="_stockShowAll=true;renderStock();" style="padding:10px 18px;background:#f0fdf4;color:#16a34a;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Show All '+filtered.length+' Items &rsaquo;</button></div>';
-  } else if(_stockShowAll && filtered.length>showCap){
-    html+='<div style="text-align:center;padding:10px 0;"><button onclick="_stockShowAll=false;renderStock();" style="padding:10px 18px;background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Show Less</button></div>';
-  }
-  sl.innerHTML=html;
 }
-window.renderStock = renderStock;
+function renderStockDetailsOverview(){
+  var sl=g("stockListFull");if(!sl)return;
+  var all=db.stock||[];
+  var q=(g("searchStockOv")?g("searchStockOv").value||"":"").toLowerCase().trim();
+  var filtered=_stockOvFilter==="ALL"?all:all.filter(function(s){return s.cat===_stockOvFilter;});
+  if(q)filtered=filtered.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0||s.id.toLowerCase().indexOf(q)>=0;});
+  if(g("stockOvCount"))g("stockOvCount").textContent=filtered.length;
+  sl.innerHTML=filtered.length?filtered.map(_stockRowHtml).join(""):'<div class="empty"><div class="ei">&#128230;</div><p>No stock items found.</p></div>';
+}
+window.renderStockDetailsOverview=renderStockDetailsOverview;
+var _stockOvFilter="ALL";
+function setStockOvFilter(cat){
+  _stockOvFilter=cat;
+  var sel=g("stockOvCatSelect");if(sel)sel.value=cat;
+  renderStockDetailsOverview();
+}
+window.setStockOvFilter=setStockOvFilter;
 
 function filterStock(cat) {
   _stockFilter = cat || "ALL";
@@ -2716,7 +2778,7 @@ function renderPickerList(){
     var statusColor=avail<=0?"#dc2626":avail<=(s.alert||2)?"#d97706":"#16a34a";
     var statusTxt=avail<=0?"Out of Stock":avail<=(s.alert||2)?"Low ("+avail+")":"In Stock ("+avail+")";
     var disable=avail<=0?"opacity:.5;pointer-events:none;":"";
-    return '<div onclick="pickStockItem(\''+s.id+'\')" style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--border);cursor:pointer;'+disable+'">'+
+    return '<div class="picker-row" onclick="pickStockItem(\''+s.id+'\')" style="display:flex;align-items:center;gap:12px;padding:14px 10px;border-bottom:1px solid var(--border);border-left:4px solid '+statusColor+';cursor:pointer;'+disable+'">'+
       '<div style="flex:1;"><div style="font-weight:700;font-size:14px;">'+esc(s.name)+'</div>'+
       '<div style="font-size:11px;color:#2563eb;font-family:monospace;">'+s.id+'</div>'+
       (s.desc?'<div style="font-size:11px;color:var(--muted);">'+esc(s.desc)+'</div>':'')+
@@ -3022,7 +3084,6 @@ window.sendSupplierWA=sendSupplierWA;
 // Single flow: uses the Record Bill/Payment form.
 // Voucher is only generated for "Payment Made" entries - a new Bill (owed)
 // is just recorded silently, no voucher needed for that.
-let voucherCounter=1;
 let curVoucherPhone="";
 function openVoucherFromForm(){
   const si=g("supSelect")?parseInt(g("supSelect").value):-1;
