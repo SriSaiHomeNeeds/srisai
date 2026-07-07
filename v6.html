@@ -427,6 +427,7 @@ function onExpCatChange(){
 
   <div class="card"><div class="card-title">&#128276; Today Follow-ups</div><div id="todayFU"></div></div>
   <div class="card"><div class="card-title">&#9888;&#65039; Overdue Payments</div><div id="overduePay"></div></div>
+  <button onclick="saveOwnNumberContact()" style="width:100%;padding:12px;margin-top:4px;background:#fff;color:#0d9488;border:1.5px solid #99f6e4;border-radius:var(--r);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;">&#128199; Save Our Number to Contacts</button>
   <span id="quickSummary" style="display:none;"></span>
   <button id="btnExport" style="display:none;"></button>
   <div id="profitPill" style="display:none;"></div>
@@ -1177,6 +1178,20 @@ const BIZ = {
   gstRate:0.09,
   mapLink:"https://maps.app.goo.gl/B4bDvsT47zLZvYPt9"
 };
+const VCARD_URL = "https://srisaihomeneeds.github.io/srisai/contact.vcf";
+function saveOwnNumberContact(){
+  const vcard = "BEGIN:VCARD\r\nVERSION:3.0\r\nN:;"+BIZ.name+";;;\r\nFN:"+BIZ.name+"\r\nORG:"+BIZ.name+"\r\nTEL;TYPE=CELL:+91"+BIZ.mobile+"\r\nADR;TYPE=WORK:;;"+BIZ.addr+";;;;\r\nURL:"+BIZ.mapLink+"\r\nEND:VCARD";
+  const blob = new Blob([vcard], {type:"text/vcard"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Sri Sai Home Needs.vcf";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 3000);
+}
+window.saveOwnNumberContact = saveOwnNumberContact;
 function fmtDMY(iso){
   if(!iso)return "---";
   const p=iso.split("-");
@@ -1299,7 +1314,7 @@ function dbadge(d) {
   return"";
 }
 function pcolor(p) { return p==="Hot"?"#e74c3c":p==="Warm"?"#d4ac0d":"#2471a3"; }
-function priLabel(p) { return p==="Hot"?"🔥 Serious Buyer":p==="Warm"?"🕐 Follow-up Needed":p==="Cold"?"🧊 Casual Inquiry":p||""; }
+function priLabel(p) { return p==="Hot"?"\u{1F525} Serious Buyer":p==="Warm"?"\u{1F550} Follow-up Needed":p==="Cold"?"\u{1F9CA} Casual Inquiry":p||""; }
 function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
 function filt(arr, sid) {
@@ -1520,11 +1535,12 @@ function waPhone(phone) {
 
 function sendSaleThankYou(phone,name,item){
   if(!phone){alert("No phone number saved.");return;}
-  const msg="Hi "+(name||"there")+"! 👋\n\n"
-    +"Thank you for shopping with *"+BIZ.name+"*! 🙏 We truly appreciate your business.\n\n"
-    +"We hope you love your purchase and look forward to serving you again.\n\n"
-    +"📍 Visit us: "+BIZ.mapLink+"\n"
-    +"📞 "+BIZ.mobile;
+  const msg="Hi "+(name||"there")+"! \u{1F44B}\n\n"
+    +"Thank you for shopping with *"+BIZ.name+"*! We truly appreciate you choosing us. \u{1F64F}\n\n"
+    +"We hope you love your new purchase, and we'd love to welcome you back again soon.\n\n"
+    +"\u{1F4CD} Visit us: "+BIZ.mapLink+"\n"
+    +"\u{1F4DE} Call us: "+BIZ.mobile+"\n\n"
+    +"\u{1F4C7} Save our number: "+VCARD_URL;
   let p=phone.replace(/[^0-9]/g,"");
   if(p.length===10) p="91"+p;
   else if(p.length===11 && p.startsWith("0")) p="91"+p.slice(1);
@@ -1535,12 +1551,12 @@ window.sendSaleThankYou=sendSaleThankYou;
 function waLead(i){
   const l=db.leads[i];
   if(!l.phone){alert("No phone saved.");return;}
-  let msg="*Sri Sai Home Needs - Furniture * Interiors * Lifestyle*\nhttps://maps.app.goo.gl/B4bDvsT47zLZvYPt9\n\n";
+  let msg="*Sri Sai Home Needs - Furniture, Interiors & Lifestyle*\nhttps://maps.app.goo.gl/B4bDvsT47zLZvYPt9\n\n";
   if(l.n) msg+="Customer: "+l.n+"\n";
   if(l.item) msg+="Interested In: "+l.item+"\n";
   if(l.budget) msg+="Budget: Rs."+l.budget+"\n";
   if(l.d) msg+="Follow-up Date: "+l.d+"\n";
-  msg+="\n";
+  msg+="\n\u{1F4C7} Save our number: "+VCARD_URL+"\n";
   let p=l.phone.replace(/[^0-9]/g,"");
   if(p.length===10)p="91"+p;
   else if(p.length===11&&p.startsWith("0"))p="91"+p.slice(1);
@@ -1550,20 +1566,20 @@ function waLead(i){
 function waOrder(i){
   const o=db.orders[i];
   if(!o.phone){alert("No phone saved.");return;}
-  let msg="*Sri Sai Home Needs - Furniture * Interiors * Lifestyle*\nhttps://maps.app.goo.gl/B4bDvsT47zLZvYPt9\n\n";
+  let msg="*Sri Sai Home Needs - Furniture, Interiors & Lifestyle*\nhttps://maps.app.goo.gl/B4bDvsT47zLZvYPt9\n\n";
   if(o.n) msg+="Customer: "+o.n+"\n";
   if(o.item) msg+="Item: "+o.item+"\n";
   if(o.d) msg+="Delivery Date: "+o.d+"\n";
   if(o.addr) msg+="Address: "+o.addr+"\n";
   if(o.linkBill) msg+="Bill Ref: "+o.linkBill+"\n";
-  msg+="\n";
+  msg+="\n\u{1F4C7} Save our number: "+VCARD_URL+"\n";
   let p=o.phone.replace(/[^0-9]/g,"");
   if(p.length===10)p="91"+p;
   else if(p.length===11&&p.startsWith("0"))p="91"+p.slice(1);
   window.open("https://wa.me/"+p+"?text="+encodeURIComponent(msg),"_blank");
 }
 
-function waPayment(i){const x=db.payments[i];if(!x.phone){alert("No phone number for this payment.");return;}const extra=prompt("Add custom message (optional):","")||"";const msg="*Sri Sai Home Needs - Payment Reminder*\n\nDear "+x.n+",\n\nThis is a reminder that *Rs."+x.a.toFixed(2)+"* is due on *"+x.d+"*."+(x.bill?"\n\nReference: "+x.bill:"")+(extra?"\n\n"+extra:"")+"\n\nPlease pay at your earliest. Thank you!\n\nFind us: https://maps.app.goo.gl/B4bDvsT47zLZvYPt9";const p=x.phone.replace(/[^0-9]/g,"");window.open("https://wa.me/"+(p.length===10?"91"+p:p)+"?text="+encodeURIComponent(msg),"_blank");}
+function waPayment(i){const x=db.payments[i];if(!x.phone){alert("No phone number for this payment.");return;}const extra=prompt("Add custom message (optional):","")||"";const msg="*Sri Sai Home Needs - Payment Reminder*\n\nDear "+x.n+",\n\nThis is a reminder that *Rs."+x.a.toFixed(2)+"* is due on *"+x.d+"*."+(x.bill?"\n\nReference: "+x.bill:"")+(extra?"\n\n"+extra:"")+"\n\nPlease pay at your earliest. Thank you!\n\nFind us: https://maps.app.goo.gl/B4bDvsT47zLZvYPt9\n\n\u{1F4C7} Save our number: "+VCARD_URL;const p=x.phone.replace(/[^0-9]/g,"");window.open("https://wa.me/"+(p.length===10?"91"+p:p)+"?text="+encodeURIComponent(msg),"_blank");}
 
 function editSN(i){const s=db.sales[i],n=prompt("Edit Note:",s.note||"");if(n!==null){s.note=n;saveDB();render();}}
 function editLN(i){
@@ -1707,12 +1723,13 @@ function sendWelcomeMessage(){
   if(curBillIdx<0)return;
   const s=db.sales[curBillIdx];
   if(!s.phone){alert("No phone number saved for this customer.");return;}
-  const msg="Hi "+s.n+"! 👋\n\n"
-    +"Thank you for visiting *"+BIZ.name+"*! 🙏\n"
-    +"We're your trusted store for Furniture * Interiors * Lifestyle in Chandanagar, Hyderabad.\n\n"
-    +"📍 Visit us: "+BIZ.mapLink+"\n"
-    +"📞 "+BIZ.mobile+"\n\n"
-    +"We appreciate your business and look forward to serving you again! Your bill will follow shortly.";
+  const msg="Hi "+s.n+"! \u{1F44B}\n\n"
+    +"Thank you for visiting *"+BIZ.name+"*! \u{1F64F}\n"
+    +"We're your trusted store for furniture, interiors & lifestyle in Chandanagar, Hyderabad.\n\n"
+    +"\u{1F4CD} Visit us: "+BIZ.mapLink+"\n"
+    +"\u{1F4DE} Call us: "+BIZ.mobile+"\n\n"
+    +"Thanks for shopping with us today \u2014 your bill will follow shortly. Hope to see you again soon!\n\n"
+    +"\u{1F4C7} Save our number: "+VCARD_URL;
   let ph=s.phone.replace(/[^0-9]/g,"");
   if(ph.length===10)ph="91"+ph;
   else if(ph.length===11&&ph.startsWith("0"))ph="91"+ph.slice(1);
@@ -2007,7 +2024,7 @@ window._getDb = function(){ return db; };
 function waSaleMsg(i) {
   var s = db.sales[i];
   if(!s.phone) { alert("No phone saved."); return; }
-  var msg = "*" + "Sri Sai Home Needs - Furniture * Interiors * Lifestyle" + "*\n\n";
+  var msg = "*" + "Sri Sai Home Needs - Furniture, Interiors & Lifestyle" + "*\n\n";
   msg += "Dear " + s.n + ",\n\nThank you for shopping with us!\n\n";
   if(s.item) msg += "*Item:* " + s.item + "\n";
   msg += "*Total:* Rs." + s.amt.toFixed(2) + "\n";
@@ -2016,7 +2033,7 @@ function waSaleMsg(i) {
   if(d > 0) msg += "*Balance Due:* Rs." + d.toFixed(2) + (s.dueDate ? " (by " + s.dueDate + ")" : "") + "\n";
   else msg += "*Status:* Fully Paid\n";
   if(s.bill) msg += "*Bill No:* " + s.bill + "\n";
-  msg += "\nWe look forward to serving you again!\n\nOur Store: https://maps.app.goo.gl/B4bDvsT47zLZvYPt9";
+  msg += "\nWe look forward to serving you again!\n\nOur Store: https://maps.app.goo.gl/B4bDvsT47zLZvYPt9\n\n\u{1F4C7} Save our number: " + VCARD_URL;
   var p = s.phone.replace(/[^0-9]/g,"");
   if(p.length === 10) p = "91" + p;
   window.open("https://wa.me/" + p + "?text=" + encodeURIComponent(msg), "_blank");
@@ -2124,7 +2141,7 @@ var FESTIVALS = [
   {name:"New Year",month:1,day:1},{name:"Sankranti",month:1,day:14}
 ];
 
-var SHOP_HDR = "*Sri Sai Home Needs - Furniture * Interiors * Lifestyle*";
+var SHOP_HDR = "*Sri Sai Home Needs - Furniture, Interiors & Lifestyle*";
 var SHOP_LOC = "\n\nOur Store: https://maps.app.goo.gl/B4bDvsT47zLZvYPt9";
 var CAMP_MSGS = {
   "Diwali":   SHOP_HDR + "\nwishes you a very *Happy Diwali!*"   + SHOP_LOC,
@@ -2947,7 +2964,7 @@ function _payRowHtml(p,ri){
           '<span style="color:var(--muted);">Total: &#8377;'+(p.amt||0).toFixed(0)+'</span>'+
         '</div>'+
         '<div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:'+pct+'%;background:'+(isDone?"#16a34a":"#2563eb")+';"></div></div>'+
-        '<div style="font-size:10px;color:var(--muted);text-align:right;">'+pct+'% paid'+(isDone?' ✅ Complete':'')+' </div>'+
+        '<div style="font-size:10px;color:var(--muted);text-align:right;">'+pct+'% paid'+(isDone?' \u{2705} Complete':'')+' </div>'+
       '</div>'+
       (!isDone?'<div class="row-btn"><button class="btn btn-done btn-sm" onclick="collectPartialPay('+ri+')">&#128184; Pay</button>'+(p.phone?'<button class="btn btn-wa btn-sm" onclick="waPayment('+ri+')">&#128245; WA</button>':"")+' <button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="openEdit(\'payments\','+ri+')">Edit</button><button class="btn btn-del btn-sm" onclick="delItem(\'payments\','+ri+')">&#128465;</button></div>':
        '<div class="row-btn"><button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="openEdit(\'payments\','+ri+')">Edit</button><button class="btn btn-del btn-sm" onclick="delItem(\'payments\','+ri+')">&#128465;</button></div>')+
@@ -3066,7 +3083,7 @@ function sendSupplierWA(){
   var lastPay=pays.length>0?pays[pays.length-1]:null;
   var totalBilled=bills.reduce(function(a,t){return a+t.amt;},0);
   var totalPaid=pays.reduce(function(a,t){return a+t.amt;},0);
-  var msg="*Sri Sai Home Needs - Furniture * Interiors * Lifestyle*\n\n";
+  var msg="*Sri Sai Home Needs - Furniture, Interiors & Lifestyle*\n\n";
   msg+="Supplier: *"+sup.name+"*\n";
   msg+="Date: "+new Date().toLocaleDateString("en-IN")+"\n\n";
   msg+="Total Billed: Rs."+totalBilled.toFixed(0)+"\n";
