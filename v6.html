@@ -209,6 +209,7 @@ function _chk() {
     var ap = document.getElementById("adminPanel");
     if (ap) ap.style.display = "block";
     var bc=document.getElementById("btnClr");if(bc)bc.style.display="block";
+    var rmt=document.getElementById("reportsMenuTile");if(rmt)rmt.style.display="";
     if(window._fbStart)window._fbStart();
   } else if (_pe === sp) {
     window._isAdmin = false;
@@ -218,6 +219,7 @@ function _chk() {
     var ap = document.getElementById("adminPanel");
     if (ap) ap.style.display = "none";
     var bc=document.getElementById("btnClr");if(bc)bc.style.display="none";
+    var rmt=document.getElementById("reportsMenuTile");if(rmt)rmt.style.display="none";
   } else {
     document.getElementById("pinErr").innerText = "Wrong PIN. Try again.";
     _pe = "";
@@ -229,6 +231,7 @@ function _chk() {
 <script>
 function showTabNew(id){
   if(!id)id="home";
+  if(id==="reports"&&!window._isAdmin){id="home";}
   document.querySelectorAll(".section").forEach(function(s){s.classList.remove("active");});
   var sec=document.getElementById(id);
   if(sec)sec.classList.add("active");
@@ -238,7 +241,7 @@ function showTabNew(id){
   if(id==="campaigns"){if(window.renderFestivals)window.renderFestivals();if(window.updateCampMsg)window.updateCampMsg();if(window.renderCampHistory)window.renderCampHistory();}
   if(id==="directory"&&window.renderDir)window.renderDir();
   if(id==="contactsoverview"&&window.renderDir)window.renderDir();
-  if(id==="overview"&&window.renderAllSalesOverview)window.renderAllSalesOverview();
+  if(id==="sales"&&window.renderAllSalesOverview)window.renderAllSalesOverview();
   if(id==="stock"&&window.renderStock)window.renderStock();
   if(id==="stockoverview"&&window.renderStockOverview)window.renderStockOverview();
   if(id==="stockoverview"&&window.renderStockDetailsOverview)window.renderStockDetailsOverview();
@@ -429,10 +432,10 @@ function onExpCatChange(){
     <button class="menu-card" onclick="showTabNew('sales')"><div class="mc-icon">&#128176;</div><div class="mc-label">Sales</div><div class="mc-sub">Add / View</div></button>
     <button class="menu-card" onclick="showTabNew('leads')"><div class="mc-icon">&#128203;</div><div class="mc-label">Leads</div><div class="mc-sub">Enquiries</div></button>
     <button class="menu-card" onclick="showTabNew('payments')"><div class="mc-icon">&#128184;</div><div class="mc-label">Payments</div><div class="mc-sub">Dues</div></button>
-    <button class="menu-card" onclick="showTabNew('suppliers')"><div class="mc-icon">&#127968;</div><div class="mc-label">Suppliers</div><div class="mc-sub">Vendors</div></button>
+    <button class="menu-card" onclick="showTabNew('suppliers')"><div class="mc-icon">&#128666;</div><div class="mc-label">Suppliers</div><div class="mc-sub">Vendors</div></button>
     <button class="menu-card" onclick="showTabNew('stock')" style="position:relative;"><div class="mc-icon">&#128230;</div><div class="mc-label">Stock</div><div class="mc-sub">Inventory</div><div id="stockAlertBadge" style="display:none;position:absolute;top:6px;right:6px;background:#dc2626;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;align-items:center;justify-content:center;"></div></button>
     <button class="menu-card" onclick="showTabNew('directory')"><div class="mc-icon">&#128101;</div><div class="mc-label">Contacts</div><div class="mc-sub">Directory</div></button>
-    <button class="menu-card" onclick="showTabNew('reports')"><div class="mc-icon">&#128202;</div><div class="mc-label">Reports</div><div class="mc-sub">More</div></button>
+    <button class="menu-card" id="reportsMenuTile" style="display:none;" onclick="showTabNew('reports')"><div class="mc-icon">&#128202;</div><div class="mc-label">Reports</div><div class="mc-sub">More</div></button>
   </div>
 
   <div class="card"><div class="card-title">&#128276; Today Follow-ups</div><div id="todayFU"></div></div>
@@ -484,9 +487,21 @@ function onExpCatChange(){
       <label>Additional Products</label>
       <div id="saleExtraItems"></div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-      <button type="button" onclick="openStockPicker('sale_extra')" style="padding:10px;background:#f5f3ff;color:#7c3aed;border:1.5px dashed #c4b5fd;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#43; Pick from Stock</button>
-      <button type="button" onclick="addManualExtraItem()" style="padding:10px;background:#f0fdf4;color:#16a34a;border:1.5px dashed #86efac;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#43; Enter Manually</button>
+    <div style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;">&#43; ADD ANOTHER PRODUCT</div>
+      <div style="display:flex;gap:6px;margin-bottom:6px;">
+        <input id="exName" placeholder="Product name" style="flex:1;min-width:0;">
+        <input type="hidden" id="exStockId">
+        <button type="button" onclick="openStockPicker('sale_extra')" style="padding:0 12px;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;font-family:inherit;touch-action:manipulation;flex-shrink:0;">&#128230;</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+        <input id="exQty" type="number" placeholder="Qty" oninput="updateExtraLineTotal()">
+        <input id="exPrice" type="number" placeholder="Price/unit (Rs.)" oninput="updateExtraLineTotal()">
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+        <span id="exLineTotal" style="font-size:12px;color:var(--muted);font-weight:700;">Total: &#8377;0</span>
+        <button type="button" onclick="confirmAddExtraItem()" style="padding:8px 16px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#43; Add</button>
+      </div>
     </div>
     <div class="fg"><label>Total Sale Amount (&#8377;) *</label><input id="sAmt" type="number" placeholder="0"></div>
     <div class="due-box">
@@ -497,10 +512,10 @@ function onExpCatChange(){
       </div>
       <div class="fg"><label>Payment Due Date</label><input id="sDueDate" type="date"></div>
     </div>
-    <div class="fg"><label>Delivery Needed?</label>
+    <div class="fg"><label>Delivery</label>
       <select id="sDelivery">
-        <option value="no">No - Customer Pickup</option>
-        <option value="yes">Yes - Home Delivery</option>
+        <option value="no">Customer Self-Pickup / Self-Delivery</option>
+        <option value="yes">Delivery by SSHN</option>
       </select>
     </div>
     <div id="deliveryFields" style="display:none;">
@@ -518,8 +533,28 @@ function onExpCatChange(){
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchSales" placeholder="Search sales..."></div>
   <div class="sum-row">Showing: <span id="sScount">0</span> &nbsp;|&nbsp; Total: &#8377;<span id="sSamt">0</span> &nbsp;|&nbsp; Due: &#8377;<span id="sSDue">0</span></div>
-  <div style="font-size:11px;color:var(--muted);text-align:center;margin:-4px 0 10px;">Showing today's sales (<b id="sCurMonthLabel"></b>) only &middot; <a href="javascript:void(0)" onclick="showTabNew('overview')" style="color:#2563eb;font-weight:700;">View full sales history in Overview &rsaquo;</a></div>
+  <div style="font-size:11px;color:var(--muted);text-align:center;margin:-4px 0 10px;">Showing today's sales (<b id="sCurMonthLabel"></b>) only</div>
   <div id="salesList"></div>
+
+  <div class="card" style="margin-top:14px;">
+    <div class="card-title">&#128176; Full Sales History</div>
+    <div class="filter-pills">
+      <button class="pill on" data-asr="month">This Month</button>
+      <button class="pill" data-asr="lastmonth">Last Month</button>
+      <button class="pill" data-asr="3m">Last 3 Months</button>
+      <button class="pill" data-asr="6m">Last 6 Months</button>
+      <button class="pill" data-asr="all">All Time</button>
+    </div>
+    <div class="filter-pills">
+      <button class="pill" data-asf="all">All</button>
+      <button class="pill on" data-asf="inprog">In-Progress</button>
+      <button class="pill" data-asf="closed">Closed</button>
+      <button class="pill" data-asf="overdue">Overdue</button>
+    </div>
+    <div class="sw"><span class="si">&#128269;</span><input id="searchAllSales" placeholder="Search all sales..." oninput="renderAllSalesOverview()"></div>
+    <div class="sum-row">Showing: <span id="asCount">0</span> &nbsp;|&nbsp; Total: &#8377;<span id="asAmt">0</span> &nbsp;|&nbsp; Due: &#8377;<span id="asDue">0</span></div>
+    <div id="allSalesList"></div>
+  </div>
 </div>
 
 <!-- LEADS -->
@@ -561,7 +596,7 @@ function onExpCatChange(){
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchLeads" placeholder="Search leads..."></div>
   <div id="leadList"></div>
-  <div id="leadViewAllWrap" style="display:none;text-align:center;padding:10px 0;"><a href="javascript:void(0)" onclick="showTabNew('leadsoverview')" style="color:#2563eb;font-weight:700;font-size:13px;">View All Leads in Overview &rsaquo;</a></div>
+  <div id="leadViewAllWrap" style="display:none;"><button onclick="showTabNew('leadsoverview')" style="width:100%;padding:12px;background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;margin-top:6px;">&#128203; View All Leads in Overview &rsaquo;</button></div>
 </div>
 
 <!-- LEADS OVERVIEW -->
@@ -632,9 +667,10 @@ function onExpCatChange(){
     <button class="btn btn-save" id="btnAP">Save Payment</button>
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchPay" placeholder="Search payments..."></div>
-  <div class="sum-row">Standalone Pending: &#8377;<span id="payPendTot">0</span></div>
-  <div id="payList"></div>
-  <div id="payViewAllWrap" style="display:none;text-align:center;padding:10px 0;"><a href="javascript:void(0)" onclick="showTabNew('paymentsoverview')" style="color:#2563eb;font-weight:700;font-size:13px;">View All Payments in Overview &rsaquo;</a></div>
+  <button onclick="showTabNew('paymentsoverview')" style="width:100%;padding:13px;background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#128184; Standalone Pending List &rsaquo;</button>
+  <span id="payPendTot" style="display:none;">0</span>
+  <div id="payList" style="display:none;"></div>
+  <div id="payViewAllWrap" style="display:none;"></div>
 </div>
 
 <!-- PAYMENTS OVERVIEW -->
@@ -812,7 +848,7 @@ function onExpCatChange(){
     </div>
   </div>
   <div id="stockList"></div>
-  <div id="stockViewAllWrap" style="display:none;text-align:center;padding:10px 0;"><a href="javascript:void(0)" onclick="showTabNew('stockoverview')" style="color:#2563eb;font-weight:700;font-size:13px;">View All Stock in Overview &rsaquo;</a></div>
+  <div id="stockViewAllWrap" style="display:none;"><button onclick="showTabNew('stockoverview')" style="width:100%;padding:12px;background:linear-gradient(135deg,#15803d,#16a34a);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;margin-top:6px;">&#128230; View All Stock in Overview &rsaquo;</button></div>
 </div>
 
 
@@ -820,7 +856,7 @@ function onExpCatChange(){
 <div id="suppliers" class="section">
   <div class="sec-nav">
     <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
-    <div class="sec-nav-title">&#127968; Suppliers / Vendors</div>
+    <div class="sec-nav-title">&#128666; Suppliers / Vendors</div>
     <div style="width:44px;"></div>
   </div>
   <div class="sum-row" style="background:#eff6ff;border-color:#bfdbfe;color:#2563eb;">
@@ -866,14 +902,15 @@ function onExpCatChange(){
       <button onclick="openVoucherFromForm()" style="flex:1;padding:13px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#128196; Save Entry</button>
     </div>
   </div>
-  <div class="sw"><span class="si">&#128269;</span><input id="searchSup" placeholder="Search suppliers..." oninput="if(window.renderSuppliers)window.renderSuppliers()"></div>
-  <div id="supplierList"></div>
-  <div id="supViewAllWrap" style="display:none;text-align:center;padding:10px 0;"><a href="javascript:void(0)" onclick="showTabNew('suppliersoverview')" style="color:#2563eb;font-weight:700;font-size:13px;">View All Suppliers in Overview &rsaquo;</a></div>
+  <button onclick="showTabNew('suppliersoverview')" style="width:100%;padding:13px;background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#128666; View All Suppliers &rsaquo;</button>
+  <input id="searchSup" style="display:none;">
+  <div id="supplierList" style="display:none;"></div>
+  <div id="supViewAllWrap" style="display:none;"></div>
 </div>
 
 <!-- SUPPLIERS OVERVIEW -->
 <div id="suppliersoverview" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('suppliers')">&#8592;</button><div class="sec-nav-title">&#127968; All Suppliers</div><div style="width:44px;"></div></div>
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('suppliers')">&#8592;</button><div class="sec-nav-title">&#128666; All Suppliers</div><div style="width:44px;"></div></div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchSupOv" placeholder="Search all suppliers..." oninput="renderSuppliersOverview()"></div>
   <div class="sum-row">Total: <span id="supOvCount">0</span></div>
   <div id="supplierListFull"></div>
@@ -899,26 +936,6 @@ function onExpCatChange(){
   <div class="card"><div class="card-title">&#128276; Today Follow-ups</div><div id="todayFU2"></div></div>
   <div class="card"><div class="card-title">&#9888;&#65039; Overdue Payments</div><div id="overduePay2"></div></div>
   <button onclick="exportData()" style="width:100%;padding:13px;background:#1e40af;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;">&#128229; Export Full Report</button>
-
-  <div class="card" style="margin-top:14px;">
-    <div class="card-title">&#128176; Sales History</div>
-    <div class="filter-pills">
-      <button class="pill on" data-asr="month">This Month</button>
-      <button class="pill" data-asr="lastmonth">Last Month</button>
-      <button class="pill" data-asr="3m">Last 3 Months</button>
-      <button class="pill" data-asr="6m">Last 6 Months</button>
-      <button class="pill" data-asr="all">All Time</button>
-    </div>
-    <div class="filter-pills">
-      <button class="pill on" data-asf="all">All</button>
-      <button class="pill" data-asf="inprog">In-Progress</button>
-      <button class="pill" data-asf="closed">Closed</button>
-      <button class="pill" data-asf="overdue">Overdue</button>
-    </div>
-    <div class="sw"><span class="si">&#128269;</span><input id="searchAllSales" placeholder="Search all sales..." oninput="renderAllSalesOverview()"></div>
-    <div class="sum-row">Showing: <span id="asCount">0</span> &nbsp;|&nbsp; Total: &#8377;<span id="asAmt">0</span> &nbsp;|&nbsp; Due: &#8377;<span id="asDue">0</span></div>
-    <div id="allSalesList"></div>
-  </div>
 </div>
 
 
@@ -936,7 +953,7 @@ function onExpCatChange(){
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchDirMain" placeholder="Search by name, phone, or bill number..." oninput="renderDirPreview()"></div>
   <div id="dirListPreview"></div>
-  <div id="dirViewAllWrap" style="display:none;text-align:center;padding:10px 0;"><a href="javascript:void(0)" onclick="showTabNew('contactsoverview')" style="color:#2563eb;font-weight:700;font-size:13px;">View All Contacts in Overview &rsaquo;</a></div>
+  <button onclick="showTabNew('contactsoverview')" style="width:100%;padding:13px;background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;margin-top:8px;">&#128101; View All Contacts &rsaquo;</button>
 </div>
 
 <!-- CONTACTS OVERVIEW -->
@@ -1203,7 +1220,7 @@ let voucherCounter = 1;
 let curBillIdx  = -1;
 let curBillType = "cash";
 let saleFilter  = "all";
-let allSalesFilter = "all";
+let allSalesFilter = "inprog";
 let allSalesRange = "month";
 function _salesRangeCutoff(range){
   const now=new Date(TODAY+"T00:00:00");
@@ -1421,8 +1438,9 @@ function addSale(){
   db.sales.push(sale);
   _saleExtraItems=[];
   renderSaleExtraItems();
-  ["sBill","sName","sPhone","sItem","sAmt","sAdv","sDue","sDueDate","sNote","sDelDate","sDelAddr"].forEach(id=>g(id).value="");
+  ["sBill","sName","sPhone","sItem","sAmt","sAdv","sDue","sDueDate","sNote","sDelDate","sDelAddr","exName","exQty","exPrice","exStockId"].forEach(id=>g(id).value="");
   g("sDate").value="";g("sMode").value="Cash";g("sDelivery").value="no";g("deliveryFields").style.display="none";
+  if(window.updateExtraLineTotal)window.updateExtraLineTotal();
   if(window.renderDir)window.renderDir();
   if(window.renderDirPreview)window.renderDirPreview();
   const si=db.sales.length-1;
@@ -1645,11 +1663,6 @@ function showBill(si,billType){
 <div class="bill-row" style="border-top:1px solid var(--border);"><span>${isGst?"Taxable Amount":"Subtotal"}</span><span>Rs.${taxable.toFixed(2)}</span></div>
 ${isGst?`<div class="bill-row"><span>CGST @9%</span><span>Rs.${cgst.toFixed(2)}</span></div>
 <div class="bill-row"><span>SGST @9%</span><span>Rs.${sgst.toFixed(2)}</span></div>`:""}
-<div style="font-size:10px;color:var(--muted);margin:10px 0 6px;">
-  <b>TERMS AND CONDITIONS</b><br>
-  1. Goods once sold will not be taken back or exchanged.<br>
-  2. All disputes are subject to Hyderabad jurisdiction only.
-</div>
 <div class="bill-total"><span>Total Amount</span><span>Rs.${grandTotal.toFixed(2)}</span></div>
 <div class="bill-row"><span>Payment Mode</span><span>${esc(s.mode||"---")}</span></div>
 <div class="bill-row"><span>Advance Paid</span><span>Rs.${(s.adv||0).toFixed(2)}</span></div>
@@ -1659,6 +1672,12 @@ ${balanceDue<=0?`<div style="text-align:center;margin-top:8px;color:var(--green)
 <div style="text-align:right;margin-top:22px;">
   <img src="${SIG_B64}" style="width:100px;height:auto;display:inline-block;">
   <div style="font-size:11px;color:var(--muted);margin-top:-6px;">Authorised Signatory for<br><b>${BIZ.name}</b></div>
+</div>
+<div style="font-size:10px;color:var(--muted);margin:16px 0 6px;border-top:1px solid var(--border);padding-top:8px;">
+  <b>TERMS AND CONDITIONS</b><br>
+  1. Goods once sold will not be taken back or exchanged.<br>
+  2. All disputes are subject to Hyderabad jurisdiction only.<br>
+  3. Transport charges are additional and to be borne by the customer.
 </div>
 <div style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted);">Thank you! Please visit again</div>`;
   g("billContent").innerHTML=h;
@@ -1911,6 +1930,7 @@ ${x.note?`<div class="note-chip">${esc(x.note)}</div>`:""}
   if(window.renderPaymentsEnhanced)window.renderPaymentsEnhanced();
   if(window.renderSuppliers)window.renderSuppliers();
   if(window.updateSupplierSelect)window.updateSupplierSelect();
+  if(window.renderAllSalesOverview)window.renderAllSalesOverview();
 }
 
 function checkRem(){
@@ -2385,22 +2405,19 @@ window.renderDir = renderDir;
 
 function renderDirPreview(){
   var dp=g("dirListPreview");if(!dp)return;
-  var all=buildDirectory();
   var wrap=g("dirViewAllWrap");
   var q=(g("searchDirMain")?g("searchDirMain").value||"":"").trim().toLowerCase();
+  if(!q){dp.innerHTML='<div class="empty"><div class="ei">&#128269;</div><p>Type a name, phone, or bill number to search contacts.</p></div>';if(wrap)wrap.style.display="none";return;}
   var qDigits=q.replace(/[^0-9]/g,"");
-  if(q){
-    all=all.filter(function(c){
-      return c.name.toLowerCase().indexOf(q)>=0 ||
-        (qDigits && c.phone && c.phone.replace(/[^0-9]/g,"").indexOf(qDigits)>=0) ||
-        (c.bills||[]).some(function(b){return b.toLowerCase().indexOf(q)>=0;});
-    });
-  }
-  if(all.length===0){dp.innerHTML=q?'<div class="empty"><div class="ei">&#128101;</div><p>No contacts match "'+q+'".</p></div>':'<div class="empty"><div class="ei">&#128101;</div><p>No contacts yet. Auto-syncs from Sales, Leads, Orders.</p></div>';if(wrap)wrap.style.display="none";return;}
+  var all=buildDirectory().filter(function(c){
+    return c.name.toLowerCase().indexOf(q)>=0 ||
+      (qDigits && c.phone && c.phone.replace(/[^0-9]/g,"").indexOf(qDigits)>=0) ||
+      (c.bills||[]).some(function(b){return b.toLowerCase().indexOf(q)>=0;});
+  });
+  if(all.length===0){dp.innerHTML='<div class="empty"><div class="ei">&#128101;</div><p>No contacts match "'+q+'".</p></div>';if(wrap)wrap.style.display="none";return;}
   var colors = ["#2563eb","#16a34a","#7c3aed","#d97706","#dc2626","#0d9488","#ea580c","#475569"];
   var e = function(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");};
-  var shown=q?all:all.slice(0,5);
-  dp.innerHTML=shown.map(function(c){
+  dp.innerHTML=all.map(function(c){
     var init = c.name.trim().split(" ");
     init = init.length>=2 ? init[0][0]+init[1][0] : c.name.slice(0,2).toUpperCase();
     var color = colors[c.name.charCodeAt(0)%colors.length];
@@ -2421,7 +2438,7 @@ function renderDirPreview(){
         "<div class=\"dir-actions\">" + callBtn + waBtn + "</div>" +
       "</div></div></div>";
   }).join("");
-  if(wrap)wrap.style.display=(!q&&all.length>5)?"block":"none";
+  if(wrap)wrap.style.display="none";
 }
 window.renderDirPreview=renderDirPreview;
 
@@ -2796,31 +2813,38 @@ function pickStockItem(stockId){
     if(info){info.style.display="block";info.style.background=s.qty<=(s.alert||2)?"#fffbeb":"#f0fdf4";info.style.color=s.qty<=(s.alert||2)?"#d97706":"#16a34a";
     info.innerHTML="&#10003; <b>"+esc(s.name)+"</b> | "+s.id+" | Stock: <b>"+s.qty+"</b> <span style='font-weight:400;font-size:10px;'>(enter your selling price above - not the stock cost)</span>";}
   } else if(_pickerTarget==="sale_extra"){
-    var qty=parseInt(prompt("Quantity for "+s.name+":","1"),10);
-    if(!qty||qty<=0)return;
-    var price=parseFloat(prompt("Selling price per unit (Rs.) for "+s.name+":",""));
-    if(isNaN(price)||price<0)return;
-    _saleExtraItems.push({name:s.name,qty:qty,price:price,stockId:s.id});
-    renderSaleExtraItems();
-    var amtEl=g("sAmt");
-    if(amtEl){amtEl.value=((parseFloat(amtEl.value)||0)+qty*price).toFixed(2);}
+    var exN=g("exName");if(exN)exN.value=s.name;
+    var exSid=g("exStockId");if(exSid)exSid.value=s.id;
+    var exQ=g("exQty");if(exQ)exQ.focus();
   }
 }
 window.pickStockItem = pickStockItem;
 
-function addManualExtraItem(){
-  var name=prompt("Product name:","");
-  if(!name||!name.trim())return;
-  var qty=parseInt(prompt("Quantity for "+name+":","1"),10);
-  if(!qty||qty<=0)return;
-  var price=parseFloat(prompt("Selling price per unit (Rs.) for "+name+":",""));
-  if(isNaN(price)||price<0)return;
-  _saleExtraItems.push({name:name.trim(),qty:qty,price:price,stockId:""});
+function updateExtraLineTotal(){
+  var qty=parseFloat(g("exQty")?g("exQty").value:0)||0;
+  var price=parseFloat(g("exPrice")?g("exPrice").value:0)||0;
+  var el=g("exLineTotal");
+  if(el)el.textContent="Total: \u20B9"+(qty*price).toFixed(2);
+}
+window.updateExtraLineTotal=updateExtraLineTotal;
+
+function confirmAddExtraItem(){
+  var name=(g("exName")?g("exName").value:"").trim();
+  var qty=parseInt(g("exQty")?g("exQty").value:0,10);
+  var price=parseFloat(g("exPrice")?g("exPrice").value:0);
+  if(!name){alert("Enter a product name.");return;}
+  if(!qty||qty<=0){alert("Enter a valid quantity.");return;}
+  if(isNaN(price)||price<0){alert("Enter a valid price.");return;}
+  var stockIdEl=g("exStockId");
+  _saleExtraItems.push({name:name,qty:qty,price:price,stockId:stockIdEl?stockIdEl.value:""});
   renderSaleExtraItems();
   var amtEl=g("sAmt");
   if(amtEl){amtEl.value=((parseFloat(amtEl.value)||0)+qty*price).toFixed(2);}
+  g("exName").value="";g("exQty").value="";g("exPrice").value="";
+  if(stockIdEl)stockIdEl.value="";
+  updateExtraLineTotal();
 }
-window.addManualExtraItem=addManualExtraItem;
+window.confirmAddExtraItem=confirmAddExtraItem;
 
 var _saleExtraItems = [];
 function renderSaleExtraItems(){
@@ -3233,7 +3257,7 @@ function renderSuppliers(){
   if(g("supTotalOwed"))g("supTotalOwed").textContent="Rs."+totalOwed.toFixed(0);
   if(g("supOverdue"))g("supOverdue").textContent=all.filter(function(s){return (s.balance||0)>0;}).length;
   var wrap=g("supViewAllWrap");
-  if(filtered.length===0){sl.innerHTML='<div class="empty"><div class="ei">&#127968;</div><p>No suppliers yet. Add one above.</p></div>';if(wrap)wrap.style.display="none";return;}
+  if(filtered.length===0){sl.innerHTML='<div class="empty"><div class="ei">&#128666;</div><p>No suppliers yet. Add one above.</p></div>';if(wrap)wrap.style.display="none";return;}
   sl.innerHTML=filtered.slice(0,5).map(function(s,ri){return _supplierRowHtml(s,ri);}).join("");
   if(wrap)wrap.style.display=filtered.length>5?"block":"none";
 }
@@ -3244,7 +3268,7 @@ function renderSuppliersOverview(){
   var all=db.suppliers||[];
   var filtered=q?all.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0;}):all;
   if(g("supOvCount"))g("supOvCount").textContent=filtered.length;
-  sl.innerHTML=filtered.length?filtered.map(function(s,ri){return _supplierRowHtml(s,ri);}).join(""):'<div class="empty"><div class="ei">&#127968;</div><p>No suppliers found.</p></div>';
+  sl.innerHTML=filtered.length?filtered.map(function(s,ri){return _supplierRowHtml(s,ri);}).join(""):'<div class="empty"><div class="ei">&#128666;</div><p>No suppliers found.</p></div>';
 }
 window.renderSuppliersOverview=renderSuppliersOverview;
 
