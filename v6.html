@@ -248,6 +248,7 @@ function showTabNew(id){
   if(id==="sales"&&window.renderAllSalesOverview)window.renderAllSalesOverview();
   if(id==="stock"&&window.renderStock)window.renderStock();
   if(id==="stockoverview"&&window.renderStockOverview)window.renderStockOverview();
+  if(id==="dailysummary"&&window.renderDailySummaryPreview)window.renderDailySummaryPreview();
   if(id==="stockoverview"&&window.renderStockDetailsOverview)window.renderStockDetailsOverview();
   if(id==="suppliers"){if(window.renderSuppliers)window.renderSuppliers();if(window.updateSupplierSelect)window.updateSupplierSelect();}
   if(id==="paymentsoverview"&&window.renderPaymentsOverview)window.renderPaymentsOverview();
@@ -443,6 +444,7 @@ function onExpCatChange(){
     <button class="menu-card" onclick="showTabNew('stock')" style="position:relative;"><div class="mc-icon">&#128230;</div><div class="mc-label">Stock</div><div class="mc-sub">Inventory</div><div id="stockAlertBadge" style="display:none;position:absolute;top:6px;right:6px;background:#dc2626;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:800;align-items:center;justify-content:center;"></div></button>
     <button class="menu-card" onclick="showTabNew('directory')"><div class="mc-icon">&#128101;</div><div class="mc-label">Contacts</div><div class="mc-sub">Directory</div></button>
     <button class="menu-card" id="reportsMenuTile" style="display:none;" onclick="showTabNew('reports')"><div class="mc-icon">&#128202;</div><div class="mc-label">Reports</div><div class="mc-sub">More</div></button>
+    <button class="menu-card" onclick="showTabNew('dailysummary')"><div class="mc-icon">&#128196;</div><div class="mc-label">Daily Summary</div><div class="mc-sub">Send Report</div></button>
   </div>
 
   <div class="card"><div class="card-title">&#128276; Today Follow-ups</div><div id="todayFU"></div></div>
@@ -704,6 +706,18 @@ function onExpCatChange(){
     <button class="btn btn-clr" id="btnClr">&#128465; Clear ALL Data</button>
   </div>
 </div>
+
+<!-- DAILY SUMMARY -->
+<div id="dailysummary" class="section">
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button><div class="sec-nav-title">&#128196; Daily Summary</div><div style="width:44px;"></div></div>
+  <div class="card">
+    <div class="fg"><label>Select Date</label><input id="dsDate" type="date" onchange="renderDailySummaryPreview()"></div>
+    <div id="dsPreviewBox" style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:6px;"></div>
+    <button onclick="shareDailySummaryPDF()" id="btnDsShare" style="width:100%;padding:13px;margin-top:14px;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#128241; Share via WhatsApp</button>
+    <button onclick="downloadDailySummaryPDF()" id="btnDsDownload" style="width:100%;padding:13px;margin-top:8px;background:#fff;color:#374151;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#128190; Download PDF</button>
+  </div>
+</div>
+<div id="dailySummaryContent" style="position:absolute;left:-9999px;top:0;width:380px;background:#fff;padding:18px;font-family:inherit;"></div>
 
 
 <!-- STOCK PICKER MODAL -->
@@ -1110,6 +1124,7 @@ function onExpCatChange(){
     </div>
     <div class="bill-actions" style="flex-wrap:wrap;">
       <button class="btn" style="flex-basis:100%;background:#0d9488;" id="btnWelcomeMsg">&#128075; Step 1: Send Welcome Message (WhatsApp)</button>
+      <button class="btn" style="flex-basis:100%;background:#7c3aed;" id="btnShareContactCard">&#128196; Share Our Contact Card (VCF)</button>
       <button class="btn btn-teal" id="btnSharePDF" style="flex-basis:100%;">&#128196; Step 2: Share Bill as PDF (WhatsApp)</button>
       <button class="btn btn-blue" id="btnPrint">Print / PDF</button>
       <button class="btn" style="background:var(--muted);" id="btnCB">Close</button>
@@ -1155,7 +1170,7 @@ const TAGLINE_WHITE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAAcCAY
 const BIZ = {
   name:"SRI SAI HOME NEEDS",
   addr:"BR Gas (Indane), Manjeera Road Lane, Chandanagar, Hyderabad, Telangana - 500050",
-  mobile:"9912243300 / 9676353000",
+  mobile:"9912243300 | 9676353000",
   gstin:"36AIEPK3901A1ZX",
   gstRate:0.09,
   mapLink:"https://maps.app.goo.gl/B4bDvsT47zLZvYPt9"
@@ -1774,6 +1789,187 @@ async function shareBillPDF(){
 }
 g("btnSharePDF").addEventListener("click",shareBillPDF);
 window.shareBillPDF=shareBillPDF;
+
+async function shareContactCard(){
+  const btn=g("btnShareContactCard");
+  const origLbl=btn.innerHTML;
+  btn.innerHTML="&#8987; Preparing...";
+  btn.disabled=true;
+  try{
+    const vcard="BEGIN:VCARD\r\nVERSION:3.0\r\nN:Furniture, Chandanagar;Sri Sai Home Needs;;;\r\nFN:Sri Sai Home Needs Furniture, Chandanagar\r\nORG:Sri Sai Home Needs\r\nTEL;TYPE=CELL:+919912243300\r\nTEL;TYPE=CELL:+919676353000\r\nTEL;TYPE=CELL:+919618766904\r\nADR;TYPE=WORK:;;"+BIZ.addr+";;;;\r\nURL:"+BIZ.mapLink+"\r\nEND:VCARD";
+    const fileName="Sri Sai Home Needs.vcf";
+    const file=new File([vcard],fileName,{type:"text/vcard"});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:BIZ.name+" - Contact Card",text:"Save our contact"});
+    } else {
+      const blob=new Blob([vcard],{type:"text/vcard"});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=url;a.download=fileName;
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      alert("Contact card downloaded. Your browser doesn't support direct sharing, so please open WhatsApp and attach the file manually.");
+    }
+  }catch(e){
+    if(e && e.name!=="AbortError") alert("Could not share contact card: "+e.message);
+  }finally{
+    btn.innerHTML=origLbl;btn.disabled=false;
+  }
+}
+g("btnShareContactCard").addEventListener("click",shareContactCard);
+window.shareContactCard=shareContactCard;
+
+function getDailySummaryData(dateStr){
+  var sales=[];
+  (db.sales||[]).forEach(function(s){
+    if(s.date!==dateStr)return;
+    if(s.items&&s.items.length){
+      s.items.forEach(function(it){
+        sales.push({amt:it.qty*it.price,desc:esc(it.name)+" &times;"+it.qty,mode:s.mode||""});
+      });
+    } else {
+      sales.push({amt:s.amt||0,desc:esc(s.item||"Sale"),mode:s.mode||""});
+    }
+  });
+  var payments=[];
+  (db.payments||[]).forEach(function(p){
+    (p.history||[]).forEach(function(h){
+      if(h.date===dateStr)payments.push({amt:h.amt||0,desc:esc(p.n||""),mode:p.mode||""});
+    });
+  });
+  (db.suppliers||[]).forEach(function(sup){
+    (sup.txns||[]).forEach(function(t){
+      if(t.type==="payment"&&t.date===dateStr)payments.push({amt:t.amt||0,desc:esc(sup.name||""),mode:t.mode||""});
+    });
+  });
+  var stockReceived=[];
+  (db.stock||[]).forEach(function(s){
+    (s.history||[]).forEach(function(h){
+      if(h.date===dateStr){
+        var m=/Added (\d+) units/.exec(h.action||"");
+        if(m)stockReceived.push({name:esc(s.name||""),supplier:esc(s.supplier||"---"),qty:parseInt(m[1],10)});
+      }
+    });
+  });
+  var salesTotal=sales.reduce(function(a,x){return a+x.amt;},0);
+  var paymentsTotal=payments.reduce(function(a,x){return a+x.amt;},0);
+  return {sales:sales,payments:payments,stockReceived:stockReceived,salesTotal:salesTotal,paymentsTotal:paymentsTotal,balance:salesTotal-paymentsTotal};
+}
+window.getDailySummaryData=getDailySummaryData;
+
+function renderDailySummaryPreview(){
+  var dateEl=g("dsDate");if(!dateEl)return;
+  if(!dateEl.value)dateEl.value=TODAY;
+  var data=getDailySummaryData(dateEl.value);
+  var box=g("dsPreviewBox");if(!box)return;
+  box.innerHTML=
+    '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--muted);">Sales</span><span style="font-weight:700;">Rs.'+data.salesTotal.toFixed(2)+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;"><span style="color:var(--muted);">Payments</span><span style="font-weight:700;">Rs.'+data.paymentsTotal.toFixed(2)+'</span></div>'+
+    '<div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--muted);">Stock received</span><span style="font-weight:700;">'+data.stockReceived.length+' item(s)</span></div>';
+}
+window.renderDailySummaryPreview=renderDailySummaryPreview;
+
+function buildDailySummaryHTML(dateStr){
+  var data=getDailySummaryData(dateStr);
+  var rowsHtml=function(arr,isPayment){
+    if(!arr.length)return '<tr><td colspan="2" style="padding:6px 4px;color:var(--muted);font-size:11px;">None</td></tr>';
+    return arr.map(function(x){
+      var modeTag=x.mode?' <span style="color:#94a3b8;">('+esc(x.mode)+')</span>':"";
+      return '<tr><td style="padding:3px 4px;white-space:nowrap;vertical-align:top;">Rs.'+x.amt.toFixed(0)+'</td><td style="padding:3px 4px;color:#475569;">'+x.desc+modeTag+'</td></tr>';
+    }).join("");
+  };
+  var stockRowsHtml=data.stockReceived.length?data.stockReceived.map(function(s){
+    return '<tr><td style="padding:4px;">'+s.name+'</td><td style="padding:4px;color:#475569;">'+s.supplier+'</td><td style="padding:4px;text-align:right;">'+s.qty+'</td></tr>';
+  }).join(""):'<tr><td colspan="3" style="padding:6px 4px;color:var(--muted);font-size:11px;">None</td></tr>';
+  return '<div style="text-align:center;margin-bottom:12px;">'+
+      '<p style="font-weight:600;font-size:11px;color:#94a3b8;margin:0;">'+esc(BIZ.name)+'</p>'+
+      '<p style="font-size:14px;font-weight:800;margin:2px 0 0;">Daily Summary &mdash; '+fmtDMY(dateStr)+'</p>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">'+
+      '<div style="border:1px solid #e2e8f0;border-radius:10px;padding:10px;">'+
+        '<div style="font-weight:700;font-size:12px;margin-bottom:6px;">&#128722; Today Sales</div>'+
+        '<table style="width:100%;font-size:11px;border-collapse:collapse;">'+rowsHtml(data.sales)+
+        '<tr style="border-top:1px solid #e2e8f0;"><td style="padding:5px 4px 0;font-weight:700;">Rs.'+data.salesTotal.toFixed(0)+'</td><td style="padding:5px 4px 0;font-weight:700;">Total</td></tr>'+
+        '</table></div>'+
+      '<div style="border:1px solid #e2e8f0;border-radius:10px;padding:10px;">'+
+        '<div style="font-weight:700;font-size:12px;margin-bottom:6px;">&#129534; Today Payments</div>'+
+        '<table style="width:100%;font-size:11px;border-collapse:collapse;">'+rowsHtml(data.payments)+
+        '<tr style="border-top:1px solid #e2e8f0;"><td style="padding:5px 4px 0;font-weight:700;">Rs.'+data.paymentsTotal.toFixed(0)+'</td><td style="padding:5px 4px 0;font-weight:700;">Total</td></tr>'+
+        '</table></div>'+
+    '</div>'+
+    '<div style="border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;margin-bottom:10px;">'+
+      '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span style="color:#64748b;">Sales amount</span><span>Rs.'+data.salesTotal.toFixed(2)+'</span></div>'+
+      '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"><span style="color:#64748b;">Payments amount</span><span>- Rs.'+data.paymentsTotal.toFixed(2)+'</span></div>'+
+      '<div style="border-top:1px solid #e2e8f0;margin-top:4px;padding-top:4px;display:flex;justify-content:space-between;"><span style="font-size:13px;font-weight:700;">Remaining balance</span><span style="font-size:13px;font-weight:700;color:'+(data.balance>=0?"#16a34a":"#dc2626")+';">Rs.'+data.balance.toFixed(2)+'</span></div>'+
+    '</div>'+
+    '<div style="border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;">'+
+      '<div style="font-weight:700;font-size:12px;margin-bottom:8px;">Stock received today:</div>'+
+      '<table style="width:100%;font-size:11px;border-collapse:collapse;">'+
+        '<tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:4px;color:#94a3b8;font-weight:700;">Stock</td><td style="padding:4px;color:#94a3b8;font-weight:700;">Supplier</td><td style="padding:4px;color:#94a3b8;font-weight:700;text-align:right;">Qty</td></tr>'+
+        stockRowsHtml+
+      '</table></div>';
+}
+window.buildDailySummaryHTML=buildDailySummaryHTML;
+
+async function _generateDailySummaryPDFBlob(dateStr){
+  var content=g("dailySummaryContent");
+  content.innerHTML=buildDailySummaryHTML(dateStr);
+  const canvas=await html2canvas(content,{scale:2,backgroundColor:"#ffffff",useCORS:true});
+  const imgData=canvas.toDataURL("image/png");
+  const { jsPDF }=window.jspdf;
+  const pdfW=canvas.width, pdfH=canvas.height;
+  const pdf=new jsPDF({unit:"px",format:[pdfW,pdfH]});
+  pdf.addImage(imgData,"PNG",0,0,pdfW,pdfH);
+  return pdf.output("blob");
+}
+
+async function shareDailySummaryPDF(){
+  var dateEl=g("dsDate");if(!dateEl||!dateEl.value){alert("Select a date.");return;}
+  var dateStr=dateEl.value;
+  var btn=g("btnDsShare");var origLbl=btn.innerHTML;
+  btn.innerHTML="&#8987; Preparing PDF...";btn.disabled=true;
+  try{
+    const pdfBlob=await _generateDailySummaryPDFBlob(dateStr);
+    const fileName="DailySummary_"+dateStr+".pdf";
+    const file=new File([pdfBlob],fileName,{type:"application/pdf"});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file],title:BIZ.name+" - Daily Summary",text:"Daily Summary for "+fmtDMY(dateStr)});
+    } else {
+      const url=URL.createObjectURL(pdfBlob);
+      const a=document.createElement("a");
+      a.href=url;a.download=fileName;
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      alert("PDF downloaded as \""+fileName+"\". Your browser doesn't support direct sharing, so please open WhatsApp and attach the PDF manually.");
+    }
+  }catch(e){
+    if(e && e.name!=="AbortError") alert("Could not generate/share PDF: "+e.message);
+  }finally{
+    btn.innerHTML=origLbl;btn.disabled=false;
+  }
+}
+window.shareDailySummaryPDF=shareDailySummaryPDF;
+
+async function downloadDailySummaryPDF(){
+  var dateEl=g("dsDate");if(!dateEl||!dateEl.value){alert("Select a date.");return;}
+  var dateStr=dateEl.value;
+  var btn=g("btnDsDownload");var origLbl=btn.innerHTML;
+  btn.innerHTML="&#8987; Preparing PDF...";btn.disabled=true;
+  try{
+    const pdfBlob=await _generateDailySummaryPDFBlob(dateStr);
+    const fileName="DailySummary_"+dateStr+".pdf";
+    const url=URL.createObjectURL(pdfBlob);
+    const a=document.createElement("a");
+    a.href=url;a.download=fileName;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }catch(e){
+    alert("Could not generate PDF: "+e.message);
+  }finally{
+    btn.innerHTML=origLbl;btn.disabled=false;
+  }
+}
+window.downloadDailySummaryPDF=downloadDailySummaryPDF;
 
 
 function _saleRowHtml(x,ri){
