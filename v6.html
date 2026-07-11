@@ -480,6 +480,11 @@ function onExpCatChange(){
       <div id="sStockInfo" style="display:none;font-size:12px;font-weight:600;margin-top:6px;padding:6px 10px;border-radius:8px;"></div>
     </div>
     <input type="hidden" id="sStockId">
+    <div class="fg" id="saleExtraItemsWrap" style="display:none;">
+      <label>Additional Products</label>
+      <div id="saleExtraItems"></div>
+    </div>
+    <button type="button" onclick="openStockPicker('sale_extra')" style="width:100%;padding:10px;margin-bottom:10px;background:#f5f3ff;color:#7c3aed;border:1.5px dashed #c4b5fd;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#43; Add Another Product (e.g. Chairs &times; 4)</button>
     <div class="fg"><label>Total Sale Amount (&#8377;) *</label><input id="sAmt" type="number" placeholder="0"></div>
     <div class="due-box">
       <div class="due-title">Advance and Due Details</div>
@@ -1147,6 +1152,7 @@ const BIZ = {
   mapLink:"https://maps.app.goo.gl/B4bDvsT47zLZvYPt9"
 };
 const VCARD_URL = "https://srisaihomeneeds.github.io/srisai/contact.vcf";
+const VCARD_LINE = "\u{1F4C7} Save our number: "+VCARD_URL+"\n(Tap the link, then tap 'Add Contact')";
 function fmtDMY(iso){
   if(!iso)return "---";
   const p=iso.split("-");
@@ -1245,21 +1251,24 @@ onSnapshot(DOC, snap => {
     db.stock    = p.stock    || [];
     db.suppliers = p.suppliers || [];
     if (p.billCounter) billCounter = p.billCounter;
+    if(billCounter<10030) billCounter=10030;
     if (p.voucherCounter) voucherCounter = p.voucherCounter;
     ss("Synced " + new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}), "");
   } else {
     try { const r=localStorage.getItem("srisai_ns2"); if(r){const q=JSON.parse(r);db=q.db;billCounter=q.billCounter||100000;voucherCounter=q.voucherCounter||1;} } catch(e){}
+    if(billCounter<10030) billCounter=10030;
     ss("Ready", "");
   }
   render(); checkRem();
 }, err => {
   try { const r=localStorage.getItem("srisai_ns2"); if(r){const q=JSON.parse(r);db=q.db;billCounter=q.billCounter||100000;voucherCounter=q.voucherCounter||1;} } catch(e){}
+  if(billCounter<10030) billCounter=10030;
   ss("Offline - local data", "err");
   render();
   console.error(err);
 });
 
-function genBill() { return "SSHN" + String(billCounter++); }
+function genBill() { return "SSHN" + String(billCounter++).padStart(5,"0"); }
 function stOf(s) { const t=s.amt||0,a=s.adv||0; if(t<=0||a>=t)return"closed"; if(a>0)return"inprog"; return"pending"; }
 function due(s) { return Math.max(0,(s.amt||0)-(s.adv||0)); }
 function dbadge(d) {
@@ -1373,10 +1382,14 @@ function addSale(){
   const sale={bill,date:g("sDate").value||TODAY,n:name,phone:g("sPhone").value.trim(),mode:g("sMode").value,
     item:g("sItem").value.trim(),amt,adv,dueDate:dd,note:g("sNote").value.trim(),delivery:del,
     delDate:del?g("sDelDate").value:"",delAddr:del?g("sDelAddr").value.trim():"",
-    stockId:window._pendingStockId||""};
+    stockId:window._pendingStockId||"",items:_saleExtraItems.slice()};
   db.sales.push(sale);
+  _saleExtraItems=[];
+  renderSaleExtraItems();
   ["sBill","sName","sPhone","sItem","sAmt","sAdv","sDue","sDueDate","sNote","sDelDate","sDelAddr"].forEach(id=>g(id).value="");
   g("sDate").value="";g("sMode").value="Cash";g("sDelivery").value="no";g("deliveryFields").style.display="none";
+  if(window.renderDir)window.renderDir();
+  if(window.renderDirPreview)window.renderDirPreview();
   const si=db.sales.length-1;
   saveDB();render();checkRem();
   if(confirm("Sale saved! Bill: "+bill+"\n\nShow bill preview?"))showBill(si);
@@ -1464,7 +1477,7 @@ function sendSaleThankYou(phone,name,item){
     +"We hope you love your new purchase, and we'd love to welcome you back again soon.\n\n"
     +"\u{1F4CD} Visit us: "+BIZ.mapLink+"\n"
     +"\u{1F4DE} Call us: "+BIZ.mobile+"\n\n"
-    +"\u{1F4C7} Save our number: "+VCARD_URL;
+    +VCARD_LINE;
   let p=phone.replace(/[^0-9]/g,"");
   if(p.length===10) p="91"+p;
   else if(p.length===11 && p.startsWith("0")) p="91"+p.slice(1);
@@ -1480,21 +1493,21 @@ function waLead(i){
   if(l.item) msg+="Interested In: "+l.item+"\n";
   if(l.budget) msg+="Budget: Rs."+l.budget+"\n";
   if(l.d) msg+="Follow-up Date: "+l.d+"\n";
-  msg+="\n\u{1F4C7} Save our number: "+VCARD_URL+"\n";
+  msg+="\n"+VCARD_LINE+"\n";
   let p=l.phone.replace(/[^0-9]/g,"");
   if(p.length===10)p="91"+p;
   else if(p.length===11&&p.startsWith("0"))p="91"+p.slice(1);
   window.open("https://wa.me/"+p+"?text="+encodeURIComponent(msg),"_blank");
 }
 
-function waPayment(i){const x=db.payments[i];if(!x.phone){alert("No phone number for this payment.");return;}const extra=prompt("Add custom message (optional):","")||"";const amt=x.amt||x.a||0;const msg="*Sri Sai Home Needs - Payment Reminder*\n\nDear "+x.n+",\n\nThis is a reminder that *Rs."+amt.toFixed(2)+"* is due on *"+x.d+"*."+(x.bill?"\n\nReference: "+x.bill:"")+(extra?"\n\n"+extra:"")+"\n\nPlease pay at your earliest. Thank you!\n\nFind us: https://maps.app.goo.gl/B4bDvsT47zLZvYPt9\n\n\u{1F4C7} Save our number: "+VCARD_URL;const p=x.phone.replace(/[^0-9]/g,"");window.open("https://wa.me/"+(p.length===10?"91"+p:p)+"?text="+encodeURIComponent(msg),"_blank");}
+function waPayment(i){const x=db.payments[i];if(!x.phone){alert("No phone number for this payment.");return;}const extra=prompt("Add custom message (optional):","")||"";const amt=x.amt||x.a||0;const msg="*Sri Sai Home Needs - Payment Reminder*\n\nDear "+x.n+",\n\nThis is a reminder that *Rs."+amt.toFixed(2)+"* is due on *"+x.d+"*."+(x.bill?"\n\nReference: "+x.bill:"")+(extra?"\n\n"+extra:"")+"\n\nPlease pay at your earliest. Thank you!\n\nFind us: https://maps.app.goo.gl/B4bDvsT47zLZvYPt9\n\n"+VCARD_LINE;const p=x.phone.replace(/[^0-9]/g,"");window.open("https://wa.me/"+(p.length===10?"91"+p:p)+"?text="+encodeURIComponent(msg),"_blank");}
 function waPaymentMade(i){
   const x=db.payments[i];
   if(!x.phone){alert("No phone number for this payment.");return;}
   const amt=x.paidAmt||x.amt||x.a||0;
   const today=new Date().toISOString().split("T")[0];
   const extra=prompt("Add custom message (optional):","")||"";
-  const msg="*Sri Sai Home Needs - Payment Confirmation*\n\nDear "+x.n+",\n\nThis is to confirm that payment of *Rs."+amt.toFixed(2)+"* has been made"+(x.bill?" towards "+x.bill:x.note?" towards "+x.note:"")+" on *"+today+"*."+(extra?"\n\n"+extra:"")+"\n\nThank you!\n\n\u{1F4C7} Save our number: "+VCARD_URL;
+  const msg="*Sri Sai Home Needs - Payment Confirmation*\n\nDear "+x.n+",\n\nThis is to confirm that payment of *Rs."+amt.toFixed(2)+"* has been made"+(x.bill?" towards "+x.bill:x.note?" towards "+x.note:"")+" on *"+today+"*."+(extra?"\n\n"+extra:"")+"\n\nThank you!\n\n"+VCARD_LINE;
   const p=x.phone.replace(/[^0-9]/g,"");
   window.open("https://wa.me/"+(p.length===10?"91"+p:p)+"?text="+encodeURIComponent(msg),"_blank");
 }
@@ -1554,7 +1567,7 @@ function showBill(si,billType){
   }
   const balanceDue=Math.max(grandTotal-(s.adv||0),0);
   const docLabel=isGst?"TAX INVOICE":"BILL OF SUPPLY";
-  const docTitle=isGst?"Bill Invoice":"Digital Cash Bill";
+  const docTitle="Digital Bill";
   let h=`
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
   <span style="font-size:10px;font-weight:700;border:1px solid var(--border);border-radius:4px;padding:2px 7px;">${docLabel}</span>
@@ -1562,22 +1575,37 @@ function showBill(si,billType){
   <span style="font-size:10px;font-weight:700;border:1px solid var(--border);border-radius:4px;padding:2px 7px;">ORIGINAL FOR RECIPIENT</span>
 </div>
 <img src="${WORDMARK_NAVY}" alt="${BIZ.name}" style="height:20px;width:auto;display:block;margin:0 auto 4px;">
-<div style="font-size:11px;color:var(--muted);line-height:1.5;text-align:center;">BR Gas (Indane), Manjeera Road Lane<br>Chandanagar, Hyderabad, Telangana - 500050<br>Mobile: ${BIZ.mobile}${isGst?" &nbsp; GSTIN: "+BIZ.gstin:""}</div>
+<div style="font-size:11px;color:var(--muted);line-height:1.5;text-align:center;">Chandanagar, Hyderabad, Telangana - 500050<br>Mobile: ${BIZ.mobile}${isGst?" &nbsp; GSTIN: "+BIZ.gstin:""}</div>
 <div style="text-align:center;font-size:12px;font-weight:800;margin:8px 0 4px;letter-spacing:.5px;">${docTitle.toUpperCase()}${isGst?(isExtra?" (GST Extra)":" (GST Inclusive)"):""}</div>
 <div style="display:flex;justify-content:space-between;background:#f1f5f9;border-radius:6px;padding:7px 10px;margin:6px 0 10px;font-size:11px;">
   <span>Invoice No.: <b>${esc(s.bill||"---")}</b></span>
   <span>Invoice Date: <b>${fmtDMY(s.date)}</b></span>
-  <span>Due Date: <b>${fmtDMY(s.dueDate)}</b></span>
+  ${isGst?`<span>Place of Supply: <b>Telangana</b></span>`:""}
 </div>
-<div class="row2" style="margin-bottom:10px;">
-  <div><div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Bill To</div><div style="font-size:13px;font-weight:700;">${esc(s.n)}</div>${s.phone?`<div style="font-size:11px;color:var(--muted);">${esc(s.phone)}</div>`:""}</div>
-  <div><div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Ship To</div><div style="font-size:13px;font-weight:700;">${esc(s.n)}</div>${s.delAddr?`<div style="font-size:11px;color:var(--muted);">${esc(s.delAddr)}</div>`:`<div style="font-size:11px;color:var(--muted);">Place of Supply: Telangana</div>`}</div>
+<div style="margin-bottom:10px;">
+  <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;">Customer</div>
+  <div style="font-size:13px;font-weight:700;">${esc(s.n)}</div>
+  ${s.phone?`<div style="font-size:11px;color:var(--muted);">${esc(s.phone)}</div>`:""}
+  ${s.delAddr?`<div style="font-size:11px;color:var(--muted);">${esc(s.delAddr)}</div>`:""}
 </div>
 <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:6px;">
   <thead><tr style="border-top:1.5px solid #1e293b;border-bottom:1.5px solid #1e293b;">
     <th style="text-align:left;padding:6px 2px;">ITEMS</th><th style="text-align:right;padding:6px 2px;">QTY</th><th style="text-align:right;padding:6px 2px;">RATE</th><th style="text-align:right;padding:6px 2px;">AMOUNT</th>
   </tr></thead>
-  <tbody><tr><td style="padding:6px 2px;">${esc(s.item||"---")}</td><td style="text-align:right;padding:6px 2px;">1</td><td style="text-align:right;padding:6px 2px;">${(isGst?taxable:s.amt).toFixed(2)}</td><td style="text-align:right;padding:6px 2px;">${(isGst?taxable:s.amt).toFixed(2)}</td></tr></tbody>
+  <tbody>
+  ${(function(){
+    var extraFace=(s.items||[]).reduce(function(a,it){return a+it.qty*it.price;},0);
+    var primaryFace=Math.max(0,(s.amt||0)-extraFace);
+    var taxFactor=s.amt>0?(taxable/s.amt):1;
+    var rows='<tr><td style="padding:6px 2px;">'+esc(s.item||"---")+'</td><td style="text-align:right;padding:6px 2px;">1</td><td style="text-align:right;padding:6px 2px;">'+(primaryFace*taxFactor).toFixed(2)+'</td><td style="text-align:right;padding:6px 2px;">'+(primaryFace*taxFactor).toFixed(2)+'</td></tr>';
+    (s.items||[]).forEach(function(it){
+      var lineFace=it.qty*it.price;
+      var rate=(it.price*taxFactor);
+      rows+='<tr><td style="padding:6px 2px;">'+esc(it.name)+'</td><td style="text-align:right;padding:6px 2px;">'+it.qty+'</td><td style="text-align:right;padding:6px 2px;">'+rate.toFixed(2)+'</td><td style="text-align:right;padding:6px 2px;">'+(lineFace*taxFactor).toFixed(2)+'</td></tr>';
+    });
+    return rows;
+  })()}
+  </tbody>
 </table>
 <div class="bill-row" style="border-top:1px solid var(--border);"><span>${isGst?"Taxable Amount":"Subtotal"}</span><span>Rs.${taxable.toFixed(2)}</span></div>
 ${isGst?`<div class="bill-row"><span>CGST @9%</span><span>Rs.${cgst.toFixed(2)}</span></div>
@@ -1640,7 +1668,7 @@ function sendWelcomeMessage(){
     +"\u{1F4CD} Visit us: "+BIZ.mapLink+"\n"
     +"\u{1F4DE} Call us: "+BIZ.mobile+"\n\n"
     +"Thanks for shopping with us today \u2014 your bill will follow shortly. Hope to see you again soon!\n\n"
-    +"\u{1F4C7} Save our number: "+VCARD_URL;
+    +VCARD_LINE;
   let ph=s.phone.replace(/[^0-9]/g,"");
   if(ph.length===10)ph="91"+ph;
   else if(ph.length===11&&ph.startsWith("0"))ph="91"+ph.slice(1);
@@ -1665,7 +1693,7 @@ async function shareBillPDF(){
     const pdf=new jsPDF({unit:"px",format:[pdfW,pdfH]});
     pdf.addImage(imgData,"PNG",0,0,pdfW,pdfH);
     const pdfBlob=pdf.output("blob");
-    const label=curBillType==="gst"?"BillInvoice":"CashBill";
+    const label="DigitalBill";
     const fileName=label+"_"+(s.bill||"SSHN")+"_"+(s.n||"customer").replace(/[^a-zA-Z0-9]/g,"")+".pdf";
     const file=new File([pdfBlob],fileName,{type:"application/pdf"});
     if(navigator.canShare && navigator.canShare({files:[file]})){
@@ -2719,9 +2747,43 @@ function pickStockItem(stockId){
     var info=g("sStockInfo");
     if(info){info.style.display="block";info.style.background=s.qty<=(s.alert||2)?"#fffbeb":"#f0fdf4";info.style.color=s.qty<=(s.alert||2)?"#d97706":"#16a34a";
     info.innerHTML="&#10003; <b>"+esc(s.name)+"</b> | "+s.id+" | Stock: <b>"+s.qty+"</b> | Ref: &#8377;"+(s.buyPrice||0).toFixed(0)+" <span style='font-weight:400;font-size:10px;'>(edit amount above)</span>";}
+  } else if(_pickerTarget==="sale_extra"){
+    var qty=parseInt(prompt("Quantity for "+s.name+":","1"),10);
+    if(!qty||qty<=0)return;
+    var price=parseFloat(prompt("Price per unit (Rs.) for "+s.name+":",(s.buyPrice||0).toString()));
+    if(isNaN(price)||price<0)return;
+    _saleExtraItems.push({name:s.name,qty:qty,price:price,stockId:s.id});
+    renderSaleExtraItems();
+    var amtEl=g("sAmt");
+    if(amtEl){amtEl.value=((parseFloat(amtEl.value)||0)+qty*price).toFixed(2);}
   }
 }
 window.pickStockItem = pickStockItem;
+
+var _saleExtraItems = [];
+function renderSaleExtraItems(){
+  var wrap=g("saleExtraItemsWrap");
+  var box=g("saleExtraItems");
+  if(!wrap||!box)return;
+  if(_saleExtraItems.length===0){wrap.style.display="none";box.innerHTML="";return;}
+  wrap.style.display="block";
+  box.innerHTML=_saleExtraItems.map(function(it,idx){
+    return '<div style="display:flex;justify-content:space-between;align-items:center;background:#f5f3ff;border-radius:8px;padding:8px 10px;margin-bottom:6px;font-size:12px;">'+
+      '<div><b>'+esc(it.name)+'</b> &times; '+it.qty+' @ &#8377;'+it.price.toFixed(0)+' = &#8377;'+(it.qty*it.price).toFixed(0)+'</div>'+
+      '<button type="button" onclick="removeSaleExtraItem('+idx+')" style="background:#fee2e2;color:#dc2626;border:none;border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">&#10005;</button>'+
+    '</div>';
+  }).join("");
+}
+window.renderSaleExtraItems=renderSaleExtraItems;
+function removeSaleExtraItem(idx){
+  var it=_saleExtraItems[idx];
+  if(!it)return;
+  _saleExtraItems.splice(idx,1);
+  var amtEl=g("sAmt");
+  if(amtEl){amtEl.value=Math.max(0,(parseFloat(amtEl.value)||0)-it.qty*it.price).toFixed(2);}
+  renderSaleExtraItems();
+}
+window.removeSaleExtraItem=removeSaleExtraItem;
 
 // SALE STOCK DEDUCTION - wrap original addSale
 var _bAS = g("btnAS");
@@ -2733,6 +2795,16 @@ if(_bAS) {
       if(stock) {
         if(stock.qty<=0){if(!confirm("OUT OF STOCK: "+stock.name+"\nSave sale anyway?"))return;}
         else{stock.qty-=1;if(!stock.history)stock.history=[];stock.history.push({action:"Sold 1 (Sale)",qty:stock.qty,date:new Date().toISOString().split("T")[0]});}
+      }
+    }
+    for(var i=0;i<_saleExtraItems.length;i++){
+      var ex=_saleExtraItems[i];
+      if(!ex.stockId)continue;
+      var exStock=(db.stock||[]).find(function(s){return s.id===ex.stockId;});
+      if(exStock){
+        exStock.qty=Math.max(0,exStock.qty-ex.qty);
+        if(!exStock.history)exStock.history=[];
+        exStock.history.push({action:"Sold "+ex.qty+" (Sale)",qty:exStock.qty,date:new Date().toISOString().split("T")[0]});
       }
     }
     window._pendingStockId=sid;
