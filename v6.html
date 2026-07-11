@@ -342,7 +342,8 @@ function onPayCatChange(){
       suppliers.map(function(s,i){return '<option value="'+i+'">'+s.name.replace(/</g,"&lt;")+(s.balance>0?" (Bal: Rs."+s.balance.toFixed(0)+")":"")+'</option>';}).join("");
     html='<div class="fg"><label>Supplier *</label><select id="pSupplierSelect" onchange="onPaySupplierPick()">'+opts+'</select>'+
       '<div id="pSupplierBalanceInfo" style="font-size:12px;font-weight:700;color:#d97706;margin-top:5px;"></div></div>'+
-      '<div style="font-size:11px;color:var(--muted);margin:-2px 0 8px;">This records a new bill amount owed to the supplier - stays in sync with the Suppliers section automatically.</div>';
+      '<div class="fg"><label>Payment Mode</label><select id="pSupMode"><option value="Cash">Cash</option><option value="UPI">UPI</option><option value="Card">Card</option><option value="Credit/EMI">Credit/EMI</option><option value="Cheque">Cheque</option><option value="Mixed">Mixed</option></select></div>'+
+      '<div style="font-size:11px;color:var(--muted);margin:-2px 0 8px;">This records a payment made to the supplier and reduces their balance - stays in sync with the Suppliers section, and generates a payment voucher automatically.</div>';
   } else if(cat==="loan"){
     if(nameWrap)nameWrap.style.display="";
     if(phoneWrap)phoneWrap.style.display="";
@@ -457,14 +458,6 @@ function onExpCatChange(){
     <div class="sec-nav-title">&#128176; Sales</div>
     <div style="width:44px;"></div>
   </div>
-  <div class="card" style="border:1.5px solid #bfdbfe;">
-    <div class="card-title" style="color:#2563eb;">&#128269; Purchase History Lookup</div>
-    <div style="display:flex;gap:8px;">
-      <input id="lookupQuery" placeholder="Enter phone number or bill no..." style="flex:1;">
-      <button onclick="lookupPurchaseHistory()" style="padding:10px 16px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">Search</button>
-    </div>
-    <div id="lookupResult" style="margin-top:10px;"></div>
-  </div>
   <div class="card">
     <div class="card-title">New Sale</div>
     <div class="row2">
@@ -497,7 +490,7 @@ function onExpCatChange(){
         <div class="fg"><label>Amount Paid (&#8377;)</label><input id="sAdv" type="number" placeholder="0"></div>
         <div class="fg"><label>Balance Due (&#8377;)</label><input id="sDue" type="number" placeholder="0" readonly style="background:#fff3cd;font-weight:800;color:#7d6608;"></div>
       </div>
-      <div class="fg"><label>Payment Due Date</label><input id="sDueDate" type="date"></div>
+      <div class="fg" id="sDueDateWrap"><label>Payment Due Date</label><input id="sDueDate" type="date"></div>
     </div>
     <div class="fg"><label>Delivery</label>
       <select id="sDelivery">
@@ -1416,7 +1409,13 @@ document.querySelectorAll(".pill[data-lf]").forEach(b => {
 });
 ["searchSales","searchLeads","searchPay","searchExp"].forEach(id=>g(id).addEventListener("input",render));
 g("sDelivery").addEventListener("change",()=>{ g("deliveryFields").style.display=g("sDelivery").value==="yes"?"block":"none"; });
-function calcDue(){const t=parseFloat(g("sAmt").value)||0,a=parseFloat(g("sAdv").value)||0;g("sDue").value=Math.max(0,t-a)>0?Math.max(0,t-a).toFixed(2):"";}
+function calcDue(){
+  const t=parseFloat(g("sAmt").value)||0,a=parseFloat(g("sAdv").value)||0;
+  const bal=Math.max(0,t-a);
+  g("sDue").value=bal>0?bal.toFixed(2):"";
+  const ddWrap=g("sDueDateWrap");
+  if(ddWrap)ddWrap.style.display=bal>0?"":"none";
+}
 window.calcDue=calcDue;
 g("sAmt").addEventListener("input",calcDue);
 g("sAdv").addEventListener("input",calcDue);
@@ -1463,14 +1462,18 @@ function addPayment(){
     const si=g("pSupplierSelect")?parseInt(g("pSupplierSelect").value):-1;
     if(isNaN(si)||si<0){alert("Select a supplier.");return;}
     const sup=(db.suppliers||[])[si];if(!sup){alert("Supplier not found.");return;}
+    const mode=g("pSupMode")?g("pSupMode").value:"Cash";
+    const ref=g("pBill").value.trim();
+    const note=g("pNote").value.trim();
     if(!sup.txns)sup.txns=[];
-    sup.txns.push({type:"bill",amt:amt,date:date,ref:g("pBill").value.trim(),note:g("pNote").value.trim()});
-    sup.balance=(sup.balance||0)+amt;
+    sup.txns.push({type:"payment",amt:amt,date:date,ref:ref,note:note,mode:mode});
+    sup.balance=(sup.balance||0)-amt;
     ["pAmt","pBill","pNote"].forEach(id=>{const el=g(id);if(el)el.value="";});
     saveDB();render();checkRem();
     if(window.renderSuppliers)window.renderSuppliers();
     if(window.updateSupplierSelect)window.updateSupplierSelect();
-    alert("Bill added to "+sup.name+"! New Balance: Rs."+sup.balance.toFixed(2)+"\n(This is synced with the Suppliers section.)");
+    curVoucherPhone=sup.phone||"";
+    showVoucher(sup.name,amt,date,note||"Supplier Payment",ref,mode);
     return;
   }
   const name=g("pName").value.trim();
@@ -1793,31 +1796,6 @@ ${st!=="closed"?`<button class="btn btn-done" onclick="collectPay(${ri})">Collec
 ${window._isAdmin?`<button class="btn btn-del" onclick="delItem('sales',${ri})">Del</button>`:""}
 </div></div>`;
 }
-function lookupPurchaseHistory(){
-  const q=(g("lookupQuery").value||"").trim().toLowerCase();
-  const box=g("lookupResult");
-  if(!q){box.innerHTML='<div style="font-size:12px;color:var(--muted);">Enter a phone number or bill number to search.</div>';return;}
-  const digits=q.replace(/[^0-9]/g,"");
-  const matches=db.sales.filter(x=>{
-    const phoneMatch=digits.length>=4 && (x.phone||"").replace(/[^0-9]/g,"").includes(digits);
-    const billMatch=(x.bill||"").toLowerCase().includes(q);
-    return phoneMatch||billMatch;
-  }).slice().sort((a,b)=>(b.date||"").localeCompare(a.date||""));
-  if(!matches.length){
-    box.innerHTML='<div style="font-size:12px;color:var(--red);padding:6px 0;">No purchase history found for "'+esc(q)+'".</div>';
-    return;
-  }
-  let tAmt=0,tDue=0;
-  let html='<div style="font-size:11px;font-weight:700;color:#2563eb;margin-bottom:6px;">'+matches.length+' record(s) found</div>';
-  matches.forEach(x=>{
-    const ri=db.sales.indexOf(x);
-    tAmt+=x.amt;tDue+=due(x);
-    html+=_saleRowHtml(x,ri);
-  });
-  html+='<div class="sum-row">Total Purchased: Rs.'+tAmt.toFixed(2)+' &nbsp;|&nbsp; Total Due: Rs.'+tDue.toFixed(2)+'</div>';
-  box.innerHTML=html;
-}
-window.lookupPurchaseHistory=lookupPurchaseHistory;
 function render(){
   if(window.updateSupplierSelect)window.updateSupplierSelect();
   // SALES - Sales tab shows TODAY ONLY by default; a search query searches ALL history
