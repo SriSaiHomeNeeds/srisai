@@ -79,7 +79,7 @@ header p{font-size:11px;opacity:.7;margin-top:1px;}
 .mc-label{font-size:11px;font-weight:800;color:var(--text);text-align:center;}
 .mc-sub{font-size:10px;color:var(--muted);text-align:center;}
 .sec-nav{display:flex;align-items:center;justify-content:space-between;padding:7px 0;margin-bottom:10px;border-bottom:1px solid var(--border);}
-.sec-back{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);background:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;box-shadow:var(--shadow);font-family:inherit;}
+.sec-back{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);background:#fff;font-size:20px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;touch-action:manipulation;box-shadow:var(--shadow);font-family:inherit;padding:0;}
 .sec-nav-title{font-size:15px;font-weight:800;}
 .fg{margin-bottom:8px;}
 .fg label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px;}
@@ -179,7 +179,7 @@ var _pso = null;
 function pinKey(n) {
   if (_pl) return;
   _pl = true;
-  setTimeout(function(){ _pl = false; }, 350);
+  setTimeout(function(){ _pl = false; }, 120);
   if (_pe.length >= 4) return;
   _pe += String(n);
   for (var i = 0; i < 4; i++)
@@ -190,7 +190,7 @@ function pinKey(n) {
 function pinDel() {
   if (_pl) return;
   _pl = true;
-  setTimeout(function(){ _pl = false; }, 350);
+  setTimeout(function(){ _pl = false; }, 120);
   _pe = _pe.slice(0, -1);
   for (var i = 0; i < 4; i++)
     document.getElementById("d"+i).className = "pin-dot" + (i < _pe.length ? " filled" : "");
@@ -329,6 +329,8 @@ function onPayCatChange(){
   if(pNameEl){
     var ph={rent:"e.g. Shop Rent - July",loan:"e.g. Home Loan, Car Loan",other:"Description of this payment"};
     pNameEl.placeholder=ph[cat]||"e.g. Shop Rent, Home Loan, Electricity Bill";
+    if(cat==="rent"&&!pNameEl.value.trim())pNameEl.value="Shop Rent";
+    else if(cat!=="rent"&&pNameEl.value.trim()==="Shop Rent")pNameEl.value="";
   }
   var html="";
   if(cat==="supplier"){
@@ -451,7 +453,7 @@ function onExpCatChange(){
 <!-- SALES -->
 <div id="sales" class="section">
   <div class="sec-nav">
-    <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
+    <button class="sec-back" onclick="showTabNew('home')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button>
     <div class="sec-nav-title">&#128176; Sales</div>
     <div style="width:44px;"></div>
   </div>
@@ -492,7 +494,7 @@ function onExpCatChange(){
     <div class="due-box">
       <div class="due-title">Advance and Due Details</div>
       <div class="row2">
-        <div class="fg"><label>Advance Paid (&#8377;)</label><input id="sAdv" type="number" placeholder="0"></div>
+        <div class="fg"><label>Amount Paid (&#8377;)</label><input id="sAdv" type="number" placeholder="0"></div>
         <div class="fg"><label>Balance Due (&#8377;)</label><input id="sDue" type="number" placeholder="0" readonly style="background:#fff3cd;font-weight:800;color:#7d6608;"></div>
       </div>
       <div class="fg"><label>Payment Due Date</label><input id="sDueDate" type="date"></div>
@@ -546,7 +548,7 @@ function onExpCatChange(){
 <!-- LEADS -->
 <div id="leads" class="section">
   <div class="sec-nav">
-    <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
+    <button class="sec-back" onclick="showTabNew('home')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button>
     <div class="sec-nav-title">&#128203; Leads</div>
     <div style="width:44px;"></div>
   </div>
@@ -587,7 +589,7 @@ function onExpCatChange(){
 
 <!-- LEADS OVERVIEW -->
 <div id="leadsoverview" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('leads')">&#8592;</button><div class="sec-nav-title">&#128203; All Leads</div><div style="width:44px;"></div></div>
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('leads')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button><div class="sec-nav-title">&#128203; All Leads</div><div style="width:44px;"></div></div>
   <div class="filter-pills">
     <button class="pill on" onclick="setLeadOvFilter('all',this)">All</button>
     <button class="pill" onclick="setLeadOvFilter('Hot',this)">&#128293; Serious</button>
@@ -604,7 +606,7 @@ function onExpCatChange(){
 <!-- PAYMENTS -->
 <div id="payments" class="section">
   <div class="sec-nav">
-    <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
+    <button class="sec-back" onclick="showTabNew('home')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button>
     <div class="sec-nav-title">&#128184; Payments</div>
     <div style="width:44px;"></div>
   </div>
@@ -614,7 +616,7 @@ function onExpCatChange(){
     <div id="autoDueList"></div>
   </div>
   <div class="card">
-    <div class="card-title">Add Standalone Payment Due</div>
+    <div class="card-title">Add Payment</div>
     <div class="row2">
       <div class="fg"><label>Category *</label>
         <select id="pCategory" onchange="onPayCatChange()">
@@ -653,7 +655,7 @@ function onExpCatChange(){
     <button class="btn btn-save" id="btnAP">Save Payment</button>
   </div>
   <div class="sw" style="display:none;"><span class="si">&#128269;</span><input id="searchPay" placeholder="Search payments..."></div>
-  <button onclick="showTabNew('paymentsoverview')" style="width:100%;padding:13px;background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#128184; Standalone Pending List &rsaquo;</button>
+  <button onclick="showTabNew('paymentsoverview')" style="width:100%;padding:13px;background:linear-gradient(135deg,#1e40af,#2563eb);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#128184; Payment List &rsaquo;</button>
   <span id="payPendTot" style="display:none;">0</span>
   <div id="payList" style="display:none;"></div>
   <div id="payViewAllWrap" style="display:none;"></div>
@@ -661,7 +663,7 @@ function onExpCatChange(){
 
 <!-- PAYMENTS OVERVIEW -->
 <div id="paymentsoverview" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('payments')">&#8592;</button><div class="sec-nav-title">&#128184; All Payments</div><div style="width:44px;"></div></div>
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('payments')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button><div class="sec-nav-title">&#128184; All Payments</div><div style="width:44px;"></div></div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchPayOv" placeholder="Search all payments..." oninput="renderPaymentsOverview()"></div>
   <div class="sum-row">Total: <span id="payOvCount">0</span> &nbsp;|&nbsp; Pending: &#8377;<span id="payOvPend">0</span></div>
   <div id="payListFull"></div>
@@ -683,7 +685,7 @@ function onExpCatChange(){
 <!-- REPORTS -->
 <div id="reports" class="section">
   <div class="sec-nav">
-    <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
+    <button class="sec-back" onclick="showTabNew('home')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button>
     <div class="sec-nav-title">&#128202; Reports</div>
     <div style="width:44px;"></div>
   </div>
@@ -746,7 +748,7 @@ function onExpCatChange(){
 <!-- STOCK SECTION -->
 <div id="stock" class="section">
   <div class="sec-nav">
-    <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
+    <button class="sec-back" onclick="showTabNew('home')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button>
     <div class="sec-nav-title">&#128230; Stock Details</div>
     <div style="width:44px;"></div>
   </div>
@@ -841,7 +843,7 @@ function onExpCatChange(){
 <!-- SUPPLIERS -->
 <div id="suppliers" class="section">
   <div class="sec-nav">
-    <button class="sec-back" onclick="showTabNew('home')">&#8592;</button>
+    <button class="sec-back" onclick="showTabNew('home')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button>
     <div class="sec-nav-title">&#128666; Suppliers / Vendors</div>
     <div style="width:44px;"></div>
   </div>
@@ -896,7 +898,7 @@ function onExpCatChange(){
 
 <!-- SUPPLIERS OVERVIEW -->
 <div id="suppliersoverview" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('suppliers')">&#8592;</button><div class="sec-nav-title">&#128666; All Suppliers</div><div style="width:44px;"></div></div>
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('suppliers')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button><div class="sec-nav-title">&#128666; All Suppliers</div><div style="width:44px;"></div></div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchSupOv" placeholder="Search all suppliers..." oninput="renderSuppliersOverview()"></div>
   <div class="sum-row">Total: <span id="supOvCount">0</span></div>
   <div id="supplierListFull"></div>
@@ -907,7 +909,7 @@ function onExpCatChange(){
 
 <!-- OVERVIEW -->
 <div id="overview" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#128200; Business Overview</div><div style="width:44px;"></div></div>
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button><div class="sec-nav-title">&#128200; Business Overview</div><div style="width:44px;"></div></div>
   <div id="profitPill2" class="profit-pill">Net Profit: &#8377;0</div>
   <div class="dash-grid">
     <div class="tile t2"><span class="ti">&#128197;</span><span class="tv">&#8377;<span id="dTodaySales">0</span></span><span class="tl">Today Sales</span></div>
@@ -927,7 +929,7 @@ function onExpCatChange(){
 
 <!-- DIRECTORY -->
 <div id="directory" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')">&#8592;</button><div class="sec-nav-title">&#128101; Customer Directory</div><div style="width:44px;"></div></div>
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('home')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button><div class="sec-nav-title">&#128101; Customer Directory</div><div style="width:44px;"></div></div>
   <div class="sum-row" style="background:#f0fdfa;border-color:#99f6e4;color:#0d9488;">Total: <b id="dirTotal">0</b> &nbsp;|&nbsp; Customers: <b id="dirCusts">0</b> &nbsp;|&nbsp; Leads: <b id="dirLeads">0</b> &nbsp;|&nbsp; With Phone: <b id="dirWithPhone">0</b></div>
   <div class="card" style="margin-bottom:8px;">
     <div class="card-title">&#43; Add Manually</div>
@@ -944,7 +946,7 @@ function onExpCatChange(){
 
 <!-- CONTACTS OVERVIEW -->
 <div id="contactsoverview" class="section">
-  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('directory')">&#8592;</button><div class="sec-nav-title">&#128101; All Contacts</div><div style="width:44px;"></div></div>
+  <div class="sec-nav"><button class="sec-back" onclick="showTabNew('directory')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button><div class="sec-nav-title">&#128101; All Contacts</div><div style="width:44px;"></div></div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchDir" placeholder="Search by name or phone..." oninput="renderDir()"></div>
   <div class="filter-pills">
     <button class="pill on" onclick="setDirFilter('all',this)">All</button>
@@ -974,7 +976,7 @@ function onExpCatChange(){
 <!-- STOCK OVERVIEW -->
 <div id="stockoverview" class="section">
   <div class="sec-nav">
-    <button class="sec-back" onclick="showTabNew('stock')">&#8592;</button>
+    <button class="sec-back" onclick="showTabNew('stock')"><span style="font-size:16px;line-height:1;">&#11013;</span><span style="font-size:7px;font-weight:700;line-height:1.4;letter-spacing:.3px;">BACK</span></button>
     <div class="sec-nav-title">&#128230; Stock Overview</div>
     <div style="width:44px;"></div>
   </div>
@@ -1071,7 +1073,7 @@ function onExpCatChange(){
 </div>
 
 <!-- TABS -->
-<button id="backBtn" onclick="showTabNew('home')" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;background:#1e40af;color:#fff;border:none;border-radius:30px;padding:12px 28px;font-size:14px;font-weight:700;font-family:inherit;box-shadow:0 4px 16px rgba(30,64,175,.4);cursor:pointer;touch-action:manipulation;align-items:center;gap:8px;">&#8592; Back to Menu</button>
+<button id="backBtn" onclick="showTabNew('home')" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:100;background:#1e40af;color:#fff;border:none;border-radius:30px;padding:12px 28px;font-size:14px;font-weight:700;font-family:inherit;box-shadow:0 4px 16px rgba(30,64,175,.4);cursor:pointer;touch-action:manipulation;align-items:center;gap:8px;">&#11013; Back to Menu</button>
 
 <!-- REMINDER -->
 <div id="remOv">
@@ -1427,7 +1429,6 @@ function addSale(){
   const amt=validLines.reduce(function(sum,l){return sum+parseFloat(l.qty)*parseFloat(l.price);},0);
   if(amt<=0){alert("Sale Amount must be greater than 0.");return;}
   const adv=parseFloat(g("sAdv").value)||0,d=Math.max(0,amt-adv),dd=g("sDueDate").value,del=g("sDelivery").value==="yes";
-  if(d>0&&!dd){if(!confirm("Balance due Rs."+d.toFixed(2)+" but no Due Date. Continue?"))return;}
   const bill=g("sBill").value.trim()||genBill();
   const items=validLines.map(function(l){return {name:l.name.trim(),qty:parseFloat(l.qty),price:parseFloat(l.price),stockId:l.stockId||""};});
   const sale={bill,date:g("sDate").value||TODAY,n:name,phone:g("sPhone").value.trim(),mode:g("sMode").value,
@@ -1584,7 +1585,7 @@ function _gef(id){return(document.getElementById("ef_"+id)||{value:""}).value||"
 function openEdit(type,idx){
   _editCtx={type,idx};let h="";
   const ttl=g("editTitle"),flds=g("editFields");
-  if(type==="sales"){const s=db.sales[idx];ttl.innerText="Edit Sale";h=_ef("Customer Name","n",s.n)+`<div class="edit-row">`+_ef("Phone","phone",s.phone,"tel")+_ef("Sale Date","date",s.date,"date")+`</div>`+_ef("Item / Product","item",s.item)+`<div class="edit-row">`+_ef("Total Amount","amt",s.amt,"number")+_ef("Advance Paid","adv",s.adv||0,"number")+`</div>`+`<div class="edit-row">`+_ef("Due Date","dueDate",s.dueDate,"date")+_efs("Mode","mode",s.mode,["Cash","UPI","Card","Credit/EMI","Cheque","Mixed"])+`</div>`+_efta("Note","note",s.note);}
+  if(type==="sales"){const s=db.sales[idx];ttl.innerText="Edit Sale";h=_ef("Customer Name","n",s.n)+`<div class="edit-row">`+_ef("Phone","phone",s.phone,"tel")+_ef("Sale Date","date",s.date,"date")+`</div>`+_ef("Item / Product","item",s.item)+`<div class="edit-row">`+_ef("Total Amount","amt",s.amt,"number")+_ef("Amount Paid","adv",s.adv||0,"number")+`</div>`+`<div class="edit-row">`+_ef("Due Date","dueDate",s.dueDate,"date")+_efs("Mode","mode",s.mode,["Cash","UPI","Card","Credit/EMI","Cheque","Mixed"])+`</div>`+_efta("Note","note",s.note);}
   else if(type==="leads"){const l=db.leads[idx];ttl.innerText="Edit Lead";h=_ef("Customer Name","n",l.n)+`<div class="edit-row">`+_ef("Phone","phone",l.phone,"tel")+_ef("Follow-up Date","d",l.d,"date")+`</div>`+_ef("Interested In","item",l.item)+`<div class="edit-row">`+_ef("Budget","budget",l.budget||0,"number")+_efs("Priority","priority",l.priority,["Hot","Warm","Cold"])+`</div>`+_efs("Source","source",l.source,["Walk-in","Referral","Social Media","Phone Enquiry","IM Lead","Other"])+_efta("Note","note",l.note);}
   else if(type==="payments"){const x=db.payments[idx];ttl.innerText="Edit Payment";h=_ef("Customer Name","n",x.n)+`<div class="edit-row">`+_ef("Phone","phone",x.phone,"tel")+_ef("Amount","amt",x.a,"number")+`</div>`+`<div class="edit-row">`+_ef("Due Date","d",x.d,"date")+_ef("Ref No.","bill",x.bill)+`</div>`+_efta("Note","note",x.note);}
   else if(type==="expenses"){const x=db.expenses[idx];ttl.innerText="Edit Expense";h=_efs("Category","cat",x.cat,["Transport","Salary","Rent","Electricity","Stock Purchase","Maintenance","Marketing","Other"])+_ef("Amount","amt",x.a,"number")+_ef("Description","desc",x.desc)+_efta("Note","note",x.note);}
@@ -1662,7 +1663,7 @@ ${isGst?`<div class="bill-row"><span>CGST @9%</span><span>Rs.${cgst.toFixed(2)}<
 <div class="bill-row"><span>SGST @9%</span><span>Rs.${sgst.toFixed(2)}</span></div>`:""}
 <div class="bill-total"><span>Total Amount</span><span>Rs.${grandTotal.toFixed(2)}</span></div>
 <div class="bill-row"><span>Payment Mode</span><span>${esc(s.mode||"---")}</span></div>
-<div class="bill-row"><span>Advance Paid</span><span>Rs.${(s.adv||0).toFixed(2)}</span></div>
+<div class="bill-row"><span>Amount Paid</span><span>Rs.${(s.adv||0).toFixed(2)}</span></div>
 <div class="bill-row" style="${balanceDue>0?'color:var(--red);':''}"><span>Balance Due</span><span><b>Rs.${balanceDue.toFixed(2)}</b></span></div>
 ${balanceDue<=0?`<div style="text-align:center;margin-top:8px;color:var(--green);font-weight:900;">PAID IN FULL</div>`:""}
 <div style="font-size:11px;color:var(--muted);margin-top:8px;">Total Amount (in words): <i>${numToWordsIN(grandTotal)}</i></div>
@@ -2017,7 +2018,7 @@ function waSaleMsg(i) {
   msg += "Dear " + s.n + ",\n\nThank you for shopping with us!\n\n";
   if(s.item) msg += "*Item:* " + s.item + "\n";
   msg += "*Total:* Rs." + s.amt.toFixed(2) + "\n";
-  if((s.adv||0) > 0) msg += "*Advance Paid:* Rs." + (s.adv||0).toFixed(2) + "\n";
+  if((s.adv||0) > 0) msg += "*Amount Paid:* Rs." + (s.adv||0).toFixed(2) + "\n";
   var d = due(s);
   if(d > 0) msg += "*Balance Due:* Rs." + d.toFixed(2) + (s.dueDate ? " (by " + s.dueDate + ")" : "") + "\n";
   else msg += "*Status:* Fully Paid\n";
