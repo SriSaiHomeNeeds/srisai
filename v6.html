@@ -475,35 +475,16 @@ function onExpCatChange(){
         </select>
       </div>
     </div>
-    <div class="fg"><label>Item / Product</label>
-      <div style="display:flex;gap:8px;">
-        <input id="sItem" placeholder="Type or pick from stock..." style="flex:1;">
-        <button type="button" onclick="openStockPicker('sale')" style="padding:10px 12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;touch-action:manipulation;">&#128230; Pick</button>
-      </div>
-      <div id="sStockInfo" style="display:none;font-size:12px;font-weight:600;margin-top:6px;padding:6px 10px;border-radius:8px;"></div>
+    <div class="fg"><label>Products</label>
+      <div id="saleLinesContainer"></div>
+      <button type="button" onclick="addSaleLine()" style="width:100%;padding:10px;background:#eff6ff;color:#2563eb;border:1.5px dashed #93c5fd;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;margin-top:4px;">&#43; Add Product Line</button>
     </div>
-    <input type="hidden" id="sStockId">
-    <div class="fg" id="saleExtraItemsWrap" style="display:none;">
-      <label>Additional Products</label>
-      <div id="saleExtraItems"></div>
+    <input type="hidden" id="sItem"><input type="hidden" id="sStockId">
+    <div style="display:flex;justify-content:space-between;align-items:center;background:#f0fdf4;border-radius:10px;padding:12px 14px;margin-bottom:10px;">
+      <span style="font-size:13px;font-weight:700;color:#15803d;">Grand Total</span>
+      <span style="font-size:18px;font-weight:900;color:#15803d;">&#8377;<span id="saleGrandTotal">0</span></span>
     </div>
-    <div style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:10px;">
-      <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;">&#43; ADD ANOTHER PRODUCT</div>
-      <div style="display:flex;gap:6px;margin-bottom:6px;">
-        <input id="exName" placeholder="Product name" style="flex:1;min-width:0;">
-        <input type="hidden" id="exStockId">
-        <button type="button" onclick="openStockPicker('sale_extra')" style="padding:0 12px;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;font-family:inherit;touch-action:manipulation;flex-shrink:0;">&#128230;</button>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-        <input id="exQty" type="number" placeholder="Qty" oninput="updateExtraLineTotal()">
-        <input id="exPrice" type="number" placeholder="Price/unit (Rs.)" oninput="updateExtraLineTotal()">
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
-        <span id="exLineTotal" style="font-size:12px;color:var(--muted);font-weight:700;">Total: &#8377;0</span>
-        <button type="button" onclick="confirmAddExtraItem()" style="padding:8px 16px;background:#16a34a;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#43; Add</button>
-      </div>
-    </div>
-    <div class="fg"><label>Total Sale Amount (&#8377;) *</label><input id="sAmt" type="number" placeholder="0"></div>
+    <input type="hidden" id="sAmt" value="0">
     <div class="due-box">
       <div class="due-title">Advance and Due Details</div>
       <div class="row2">
@@ -1419,28 +1400,30 @@ document.querySelectorAll(".pill[data-lf]").forEach(b => {
 ["searchSales","searchLeads","searchPay","searchExp"].forEach(id=>g(id).addEventListener("input",render));
 g("sDelivery").addEventListener("change",()=>{ g("deliveryFields").style.display=g("sDelivery").value==="yes"?"block":"none"; });
 function calcDue(){const t=parseFloat(g("sAmt").value)||0,a=parseFloat(g("sAdv").value)||0;g("sDue").value=Math.max(0,t-a)>0?Math.max(0,t-a).toFixed(2):"";}
+window.calcDue=calcDue;
 g("sAmt").addEventListener("input",calcDue);
 g("sAdv").addEventListener("input",calcDue);
 
 function addSale(){
-  const name=g("sName").value.trim(),amt=parseFloat(g("sAmt").value)||0;
-  const item=g("sItem").value.trim();
+  const name=g("sName").value.trim();
+  const validLines=_saleLines.filter(function(l){return l.name&&l.name.trim()&&parseFloat(l.qty)>0&&parseFloat(l.price)>=0;});
   if(!name){alert("Customer Name required.");return;}
-  if(!item){alert("Item / Product is required.");return;}
-  if(amt<=0){alert("Sale Amount required.");return;}
+  if(validLines.length===0){alert("Add at least one product with name, qty, and price.");return;}
+  const amt=validLines.reduce(function(sum,l){return sum+parseFloat(l.qty)*parseFloat(l.price);},0);
+  if(amt<=0){alert("Sale Amount must be greater than 0.");return;}
   const adv=parseFloat(g("sAdv").value)||0,d=Math.max(0,amt-adv),dd=g("sDueDate").value,del=g("sDelivery").value==="yes";
   if(d>0&&!dd){if(!confirm("Balance due Rs."+d.toFixed(2)+" but no Due Date. Continue?"))return;}
   const bill=g("sBill").value.trim()||genBill();
+  const items=validLines.map(function(l){return {name:l.name.trim(),qty:parseFloat(l.qty),price:parseFloat(l.price),stockId:l.stockId||""};});
   const sale={bill,date:g("sDate").value||TODAY,n:name,phone:g("sPhone").value.trim(),mode:g("sMode").value,
-    item:g("sItem").value.trim(),amt,adv,dueDate:dd,note:g("sNote").value.trim(),delivery:del,
+    item:items[0].name+(items.length>1?" +"+(items.length-1)+" more":""),amt,adv,dueDate:dd,note:g("sNote").value.trim(),delivery:del,
     delDate:del?g("sDelDate").value:"",delAddr:del?g("sDelAddr").value.trim():"",
-    stockId:window._pendingStockId||"",items:_saleExtraItems.slice()};
+    stockId:items[0].stockId,items:items};
   db.sales.push(sale);
-  _saleExtraItems=[];
-  renderSaleExtraItems();
-  ["sBill","sName","sPhone","sItem","sAmt","sAdv","sDue","sDueDate","sNote","sDelDate","sDelAddr","exName","exQty","exPrice","exStockId"].forEach(id=>g(id).value="");
+  _saleLines=[{name:"",qty:"",price:"",stockId:""}];
+  renderSaleLines();
+  ["sBill","sName","sPhone","sAdv","sDue","sDueDate","sNote","sDelDate","sDelAddr"].forEach(id=>g(id).value="");
   g("sDate").value="";g("sMode").value="Cash";g("sDelivery").value="no";g("deliveryFields").style.display="none";
-  if(window.updateExtraLineTotal)window.updateExtraLineTotal();
   if(window.renderDir)window.renderDir();
   if(window.renderDirPreview)window.renderDirPreview();
   const si=db.sales.length-1;
@@ -1647,16 +1630,15 @@ function showBill(si,billType){
   </tr></thead>
   <tbody>
   ${(function(){
-    var extraFace=(s.items||[]).reduce(function(a,it){return a+it.qty*it.price;},0);
-    var primaryFace=Math.max(0,(s.amt||0)-extraFace);
     var taxFactor=s.amt>0?(taxable/s.amt):1;
-    var rows='<tr><td style="padding:6px 2px;">'+esc(s.item||"---")+'</td><td style="text-align:right;padding:6px 2px;">1</td><td style="text-align:right;padding:6px 2px;">'+(primaryFace*taxFactor).toFixed(2)+'</td><td style="text-align:right;padding:6px 2px;">'+(primaryFace*taxFactor).toFixed(2)+'</td></tr>';
-    (s.items||[]).forEach(function(it){
-      var lineFace=it.qty*it.price;
-      var rate=(it.price*taxFactor);
-      rows+='<tr><td style="padding:6px 2px;">'+esc(it.name)+'</td><td style="text-align:right;padding:6px 2px;">'+it.qty+'</td><td style="text-align:right;padding:6px 2px;">'+rate.toFixed(2)+'</td><td style="text-align:right;padding:6px 2px;">'+(lineFace*taxFactor).toFixed(2)+'</td></tr>';
-    });
-    return rows;
+    if(s.items&&s.items.length>0){
+      return s.items.map(function(it){
+        var lineFace=it.qty*it.price;
+        var rate=(it.price*taxFactor);
+        return '<tr><td style="padding:6px 2px;">'+esc(it.name)+'</td><td style="text-align:right;padding:6px 2px;">'+it.qty+'</td><td style="text-align:right;padding:6px 2px;">'+rate.toFixed(2)+'</td><td style="text-align:right;padding:6px 2px;">'+(lineFace*taxFactor).toFixed(2)+'</td></tr>';
+      }).join("");
+    }
+    return '<tr><td style="padding:6px 2px;">'+esc(s.item||"---")+'</td><td style="text-align:right;padding:6px 2px;">1</td><td style="text-align:right;padding:6px 2px;">'+taxable.toFixed(2)+'</td><td style="text-align:right;padding:6px 2px;">'+taxable.toFixed(2)+'</td></tr>';
   })()}
   </tbody>
 </table>
@@ -1931,6 +1913,7 @@ ${x.note?`<div class="note-chip">${esc(x.note)}</div>`:""}
   if(window.renderSuppliers)window.renderSuppliers();
   if(window.updateSupplierSelect)window.updateSupplierSelect();
   if(window.renderAllSalesOverview)window.renderAllSalesOverview();
+  if(window.renderSaleLines&&!window._saleLinesInit){window._saleLinesInit=true;window.renderSaleLines();}
 }
 
 function checkRem(){
@@ -2753,8 +2736,9 @@ function deleteStockItem(ri) {
 window.deleteStockItem = deleteStockItem;
 
 // STOCK PICKER MODAL
-function openStockPicker(target) {
+function openStockPicker(target, lineIndex) {
   _pickerTarget=target||"sale";
+  _pickerLineIndex=(lineIndex!=null)?lineIndex:null;
   _pickerCatFilter="ALL";
   document.querySelectorAll("#stockPickerOv .pill").forEach(function(p){p.classList.remove("on");});
   var fp=document.querySelector("#stockPickerOv .pill");if(fp)fp.classList.add("on");
@@ -2805,99 +2789,95 @@ function pickStockItem(stockId){
   var s=(db.stock||[]).find(function(x){return x.id===stockId;});
   if(!s)return;
   closeStockPicker();
-  if(_pickerTarget==="sale"){
-    var si=g("sItem");if(si)si.value=s.name;
-    var sid=g("sStockId");if(sid)sid.value=s.id;
-    var amt=g("sAmt");if(amt){amt.value="";amt.focus();}
-    var info=g("sStockInfo");
-    if(info){info.style.display="block";info.style.background=s.qty<=(s.alert||2)?"#fffbeb":"#f0fdf4";info.style.color=s.qty<=(s.alert||2)?"#d97706":"#16a34a";
-    info.innerHTML="&#10003; <b>"+esc(s.name)+"</b> | "+s.id+" | Stock: <b>"+s.qty+"</b> <span style='font-weight:400;font-size:10px;'>(enter your selling price above - not the stock cost)</span>";}
-  } else if(_pickerTarget==="sale_extra"){
-    var exN=g("exName");if(exN)exN.value=s.name;
-    var exSid=g("exStockId");if(exSid)exSid.value=s.id;
-    var exQ=g("exQty");if(exQ)exQ.focus();
+  if(_pickerLineIndex!=null && _saleLines[_pickerLineIndex]){
+    _saleLines[_pickerLineIndex].name=s.name;
+    _saleLines[_pickerLineIndex].stockId=s.id;
+    renderSaleLines();
   }
 }
 window.pickStockItem = pickStockItem;
 
-function updateExtraLineTotal(){
-  var qty=parseFloat(g("exQty")?g("exQty").value:0)||0;
-  var price=parseFloat(g("exPrice")?g("exPrice").value:0)||0;
-  var el=g("exLineTotal");
-  if(el)el.textContent="Total: \u20B9"+(qty*price).toFixed(2);
-}
-window.updateExtraLineTotal=updateExtraLineTotal;
+var _saleLines = [{name:"",qty:"",price:"",stockId:""}];
+var _pickerLineIndex = null;
 
-function confirmAddExtraItem(){
-  var name=(g("exName")?g("exName").value:"").trim();
-  var qty=parseInt(g("exQty")?g("exQty").value:0,10);
-  var price=parseFloat(g("exPrice")?g("exPrice").value:0);
-  if(!name){alert("Enter a product name.");return;}
-  if(!qty||qty<=0){alert("Enter a valid quantity.");return;}
-  if(isNaN(price)||price<0){alert("Enter a valid price.");return;}
-  var stockIdEl=g("exStockId");
-  _saleExtraItems.push({name:name,qty:qty,price:price,stockId:stockIdEl?stockIdEl.value:""});
-  renderSaleExtraItems();
-  var amtEl=g("sAmt");
-  if(amtEl){amtEl.value=((parseFloat(amtEl.value)||0)+qty*price).toFixed(2);}
-  g("exName").value="";g("exQty").value="";g("exPrice").value="";
-  if(stockIdEl)stockIdEl.value="";
-  updateExtraLineTotal();
-}
-window.confirmAddExtraItem=confirmAddExtraItem;
-
-var _saleExtraItems = [];
-function renderSaleExtraItems(){
-  var wrap=g("saleExtraItemsWrap");
-  var box=g("saleExtraItems");
-  if(!wrap||!box)return;
-  if(_saleExtraItems.length===0){wrap.style.display="none";box.innerHTML="";return;}
-  wrap.style.display="block";
-  box.innerHTML=_saleExtraItems.map(function(it,idx){
-    return '<div style="display:flex;justify-content:space-between;align-items:center;background:#f5f3ff;border-radius:8px;padding:8px 10px;margin-bottom:6px;font-size:12px;">'+
-      '<div><b>'+esc(it.name)+'</b> &times; '+it.qty+' @ &#8377;'+it.price.toFixed(0)+' = &#8377;'+(it.qty*it.price).toFixed(0)+'</div>'+
-      '<button type="button" onclick="removeSaleExtraItem('+idx+')" style="background:#fee2e2;color:#dc2626;border:none;border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">&#10005;</button>'+
+function renderSaleLines(){
+  var box=g("saleLinesContainer");if(!box)return;
+  var escAttr=function(s){return esc(s).replace(/"/g,"&quot;");};
+  box.innerHTML=_saleLines.map(function(line,i){
+    var lineTotal=(parseFloat(line.qty)||0)*(parseFloat(line.price)||0);
+    return '<div style="background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px;">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'+
+        '<span style="font-size:11px;font-weight:700;color:var(--muted);">PRODUCT '+(i+1)+'</span>'+
+        (_saleLines.length>1?'<button type="button" onclick="removeSaleLine('+i+')" style="background:#fee2e2;color:#dc2626;border:none;border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">&#10005; Remove</button>':'')+
+      '</div>'+
+      '<div style="display:flex;gap:6px;margin-bottom:6px;">'+
+        '<input placeholder="Product name" value="'+escAttr(line.name)+'" oninput="updateSaleLine('+i+',\'name\',this.value)" style="flex:1;min-width:0;">'+
+        '<button type="button" onclick="openStockPicker(\'sale_line\','+i+')" style="padding:0 12px;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;font-family:inherit;touch-action:manipulation;flex-shrink:0;">&#128230;</button>'+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">'+
+        '<input type="number" placeholder="Qty" value="'+escAttr(line.qty)+'" oninput="updateSaleLine('+i+',\'qty\',this.value)">'+
+        '<input type="number" placeholder="Price/unit (Rs.)" value="'+escAttr(line.price)+'" oninput="updateSaleLine('+i+',\'price\',this.value)">'+
+      '</div>'+
+      '<div style="text-align:right;font-size:11px;color:var(--muted);font-weight:700;margin-top:6px;">Line Total: &#8377;'+lineTotal.toFixed(2)+'</div>'+
     '</div>';
   }).join("");
+  recalcSaleTotal();
 }
-window.renderSaleExtraItems=renderSaleExtraItems;
-function removeSaleExtraItem(idx){
-  var it=_saleExtraItems[idx];
-  if(!it)return;
-  _saleExtraItems.splice(idx,1);
-  var amtEl=g("sAmt");
-  if(amtEl){amtEl.value=Math.max(0,(parseFloat(amtEl.value)||0)-it.qty*it.price).toFixed(2);}
-  renderSaleExtraItems();
+window.renderSaleLines=renderSaleLines;
+
+function updateSaleLine(i,field,value){
+  if(!_saleLines[i])return;
+  _saleLines[i][field]=value;
+  if(field==="name")_saleLines[i].stockId=""; // manual edit clears stock link
+  recalcSaleTotal();
 }
-window.removeSaleExtraItem=removeSaleExtraItem;
+window.updateSaleLine=updateSaleLine;
+
+function addSaleLine(){
+  _saleLines.push({name:"",qty:"",price:"",stockId:""});
+  renderSaleLines();
+}
+window.addSaleLine=addSaleLine;
+
+function removeSaleLine(i){
+  if(_saleLines.length<=1)return;
+  _saleLines.splice(i,1);
+  renderSaleLines();
+}
+window.removeSaleLine=removeSaleLine;
+
+function recalcSaleTotal(){
+  var total=_saleLines.reduce(function(sum,l){return sum+(parseFloat(l.qty)||0)*(parseFloat(l.price)||0);},0);
+  var el=g("saleGrandTotal");if(el)el.textContent=total.toFixed(2);
+  var amtEl=g("sAmt");if(amtEl)amtEl.value=total.toFixed(2);
+  if(window.calcDue)window.calcDue();
+}
+window.recalcSaleTotal=recalcSaleTotal;
 
 // SALE STOCK DEDUCTION - wrap original addSale
 var _bAS = g("btnAS");
 if(_bAS) {
   _bAS.onclick = function() {
-    var sid = g("sStockId")?g("sStockId").value.trim().toUpperCase():"";
-    if(sid) {
-      var stock=(db.stock||[]).find(function(s){return s.id===sid;});
-      if(stock) {
-        if(stock.qty<=0){if(!confirm("OUT OF STOCK: "+stock.name+"\nSave sale anyway?"))return;}
-        else{stock.qty-=1;if(!stock.history)stock.history=[];stock.history.push({action:"Sold 1 (Sale)",qty:stock.qty,date:new Date().toISOString().split("T")[0]});}
+    var validLines=_saleLines.filter(function(l){return l.name&&l.name.trim()&&parseFloat(l.qty)>0&&parseFloat(l.price)>=0;});
+    var outOfStockNames=[];
+    for(var i=0;i<validLines.length;i++){
+      var ln=validLines[i];
+      if(!ln.stockId)continue;
+      var stock=(db.stock||[]).find(function(s){return s.id===ln.stockId;});
+      if(stock&&stock.qty<parseFloat(ln.qty))outOfStockNames.push(stock.name+" (have "+stock.qty+", need "+ln.qty+")");
+    }
+    if(outOfStockNames.length&&!confirm("Not enough stock for:\n"+outOfStockNames.join("\n")+"\n\nSave sale anyway?"))return;
+    for(var j=0;j<validLines.length;j++){
+      var l2=validLines[j];
+      if(!l2.stockId)continue;
+      var s2=(db.stock||[]).find(function(s){return s.id===l2.stockId;});
+      if(s2){
+        s2.qty=Math.max(0,s2.qty-parseFloat(l2.qty));
+        if(!s2.history)s2.history=[];
+        s2.history.push({action:"Sold "+l2.qty+" (Sale)",qty:s2.qty,date:new Date().toISOString().split("T")[0]});
       }
     }
-    for(var i=0;i<_saleExtraItems.length;i++){
-      var ex=_saleExtraItems[i];
-      if(!ex.stockId)continue;
-      var exStock=(db.stock||[]).find(function(s){return s.id===ex.stockId;});
-      if(exStock){
-        exStock.qty=Math.max(0,exStock.qty-ex.qty);
-        if(!exStock.history)exStock.history=[];
-        exStock.history.push({action:"Sold "+ex.qty+" (Sale)",qty:exStock.qty,date:new Date().toISOString().split("T")[0]});
-      }
-    }
-    window._pendingStockId=sid;
     addSale();
-    window._pendingStockId="";
-    var si=g("sStockId");if(si)si.value="";
-    var info=g("sStockInfo");if(info)info.style.display="none";
     renderStock();
   };
 }
