@@ -484,7 +484,10 @@ function onExpCatChange(){
       <label>Additional Products</label>
       <div id="saleExtraItems"></div>
     </div>
-    <button type="button" onclick="openStockPicker('sale_extra')" style="width:100%;padding:10px;margin-bottom:10px;background:#f5f3ff;color:#7c3aed;border:1.5px dashed #c4b5fd;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#43; Add Another Product (e.g. Chairs &times; 4)</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+      <button type="button" onclick="openStockPicker('sale_extra')" style="padding:10px;background:#f5f3ff;color:#7c3aed;border:1.5px dashed #c4b5fd;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#43; Pick from Stock</button>
+      <button type="button" onclick="addManualExtraItem()" style="padding:10px;background:#f0fdf4;color:#16a34a;border:1.5px dashed #86efac;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;touch-action:manipulation;">&#43; Enter Manually</button>
+    </div>
     <div class="fg"><label>Total Sale Amount (&#8377;) *</label><input id="sAmt" type="number" placeholder="0"></div>
     <div class="due-box">
       <div class="due-title">Advance and Due Details</div>
@@ -515,7 +518,7 @@ function onExpCatChange(){
   </div>
   <div class="sw"><span class="si">&#128269;</span><input id="searchSales" placeholder="Search sales..."></div>
   <div class="sum-row">Showing: <span id="sScount">0</span> &nbsp;|&nbsp; Total: &#8377;<span id="sSamt">0</span> &nbsp;|&nbsp; Due: &#8377;<span id="sSDue">0</span></div>
-  <div style="font-size:11px;color:var(--muted);text-align:center;margin:-4px 0 10px;">Showing <b id="sCurMonthLabel"></b> sales only &middot; <a href="javascript:void(0)" onclick="showTabNew('overview')" style="color:#2563eb;font-weight:700;">View full sales history in Overview &rsaquo;</a></div>
+  <div style="font-size:11px;color:var(--muted);text-align:center;margin:-4px 0 10px;">Showing today's sales (<b id="sCurMonthLabel"></b>) only &middot; <a href="javascript:void(0)" onclick="showTabNew('overview')" style="color:#2563eb;font-weight:700;">View full sales history in Overview &rsaquo;</a></div>
   <div id="salesList"></div>
 </div>
 
@@ -898,7 +901,14 @@ function onExpCatChange(){
   <button onclick="exportData()" style="width:100%;padding:13px;background:#1e40af;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;">&#128229; Export Full Report</button>
 
   <div class="card" style="margin-top:14px;">
-    <div class="card-title">&#128176; All Sales History (All Months)</div>
+    <div class="card-title">&#128176; Sales History</div>
+    <div class="filter-pills">
+      <button class="pill on" data-asr="month">This Month</button>
+      <button class="pill" data-asr="lastmonth">Last Month</button>
+      <button class="pill" data-asr="3m">Last 3 Months</button>
+      <button class="pill" data-asr="6m">Last 6 Months</button>
+      <button class="pill" data-asr="all">All Time</button>
+    </div>
     <div class="filter-pills">
       <button class="pill on" data-asf="all">All</button>
       <button class="pill" data-asf="inprog">In-Progress</button>
@@ -924,6 +934,7 @@ function onExpCatChange(){
     </div>
     <button onclick="addDirContact()" style="width:100%;padding:12px;margin-top:10px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Add Contact</button>
   </div>
+  <div class="sw"><span class="si">&#128269;</span><input id="searchDirMain" placeholder="Search by name, phone, or bill number..." oninput="renderDirPreview()"></div>
   <div id="dirListPreview"></div>
   <div id="dirViewAllWrap" style="display:none;text-align:center;padding:10px 0;"><a href="javascript:void(0)" onclick="showTabNew('contactsoverview')" style="color:#2563eb;font-weight:700;font-size:13px;">View All Contacts in Overview &rsaquo;</a></div>
 </div>
@@ -1193,10 +1204,27 @@ let curBillIdx  = -1;
 let curBillType = "cash";
 let saleFilter  = "all";
 let allSalesFilter = "all";
+let allSalesRange = "month";
+function _salesRangeCutoff(range){
+  const now=new Date(TODAY+"T00:00:00");
+  if(range==="month")return {from:TODAY.slice(0,7)+"-01",to:null};
+  if(range==="lastmonth"){
+    const lm=new Date(now.getFullYear(),now.getMonth()-1,1);
+    const ly=lm.getFullYear(),lmo=String(lm.getMonth()+1).padStart(2,"0");
+    const lastDay=new Date(lm.getFullYear(),lm.getMonth()+1,0).getDate();
+    return {from:ly+"-"+lmo+"-01",to:ly+"-"+lmo+"-"+String(lastDay).padStart(2,"0")};
+  }
+  if(range==="3m"){const d=new Date(now);d.setMonth(d.getMonth()-3);return {from:d.toISOString().split("T")[0],to:null};}
+  if(range==="6m"){const d=new Date(now);d.setMonth(d.getMonth()-6);return {from:d.toISOString().split("T")[0],to:null};}
+  return {from:null,to:null};
+}
 function renderAllSalesOverview(){
   const box=g("allSalesList");
   if(!box)return;
+  const range=_salesRangeCutoff(allSalesRange);
   let arr=filt(db.sales,"searchAllSales").filter(x=>{
+    if(range.from&&(!x.date||x.date<range.from))return false;
+    if(range.to&&(!x.date||x.date>range.to))return false;
     const st=stOf(x);
     if(allSalesFilter==="all")return true;
     if(allSalesFilter==="closed")return st==="closed";
@@ -1354,6 +1382,13 @@ document.querySelectorAll(".pill[data-asf]").forEach(b => {
   b.addEventListener("click", () => {
     allSalesFilter=b.dataset.asf;
     document.querySelectorAll(".pill[data-asf]").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on"); renderAllSalesOverview();
+  });
+});
+document.querySelectorAll(".pill[data-asr]").forEach(b => {
+  b.addEventListener("click", () => {
+    allSalesRange=b.dataset.asr;
+    document.querySelectorAll(".pill[data-asr]").forEach(x=>x.classList.remove("on"));
     b.classList.add("on"); renderAllSalesOverview();
   });
 });
@@ -1768,14 +1803,12 @@ function lookupPurchaseHistory(){
 window.lookupPurchaseHistory=lookupPurchaseHistory;
 function render(){
   if(window.updateSupplierSelect)window.updateSupplierSelect();
-  // SALES - Sales tab shows CURRENT MONTH ONLY by default; a search query searches ALL history
-  const curMonth=TODAY.slice(0,7);
-  const monthNames=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  // SALES - Sales tab shows TODAY ONLY by default; a search query searches ALL history
   const mLbl=g("sCurMonthLabel");
-  if(mLbl)mLbl.textContent=monthNames[parseInt(curMonth.split("-")[1],10)-1]+" "+curMonth.split("-")[0];
+  if(mLbl)mLbl.textContent=fmtDMY(TODAY);
   const salesSearchQ=(g("searchSales")?g("searchSales").value||"":"").trim();
   let arr=filt(db.sales,"searchSales").filter(x=>{
-    if(!salesSearchQ&&(!x.date||x.date.slice(0,7)!==curMonth))return false;
+    if(!salesSearchQ&&x.date!==TODAY)return false;
     const st=stOf(x);
     if(saleFilter==="all")return true;
     if(saleFilter==="closed")return st==="closed";
@@ -1875,6 +1908,9 @@ ${x.note?`<div class="note-chip">${esc(x.note)}</div>`:""}
   g("overduePay").innerHTML=odu.length?odu.join(""):'<div style="font-size:12px;color:var(--green);padding:5px 0;">No overdue payments!</div>';
 
   if(window.renderDir)window.renderDir();
+  if(window.renderPaymentsEnhanced)window.renderPaymentsEnhanced();
+  if(window.renderSuppliers)window.renderSuppliers();
+  if(window.updateSupplierSelect)window.updateSupplierSelect();
 }
 
 function checkRem(){
@@ -2273,16 +2309,17 @@ function buildDirectory() {
   var map = {};
   function add(phone, name, tags, meta) {
     var key = _dirKey(phone, name);
-    if(!map[key]) map[key] = {key:key, name:name||"Unknown", phone:phone||"", tags:[], totalPurchase:0, lastDate:"", deletable:false};
+    if(!map[key]) map[key] = {key:key, name:name||"Unknown", phone:phone||"", tags:[], totalPurchase:0, lastDate:"", deletable:false, bills:[]};
     var c = map[key];
     if(name && name.length > c.name.length) c.name = name;
     tags.forEach(function(t){ if(c.tags.indexOf(t)<0) c.tags.push(t); });
     if(meta && meta.date && meta.date > c.lastDate) c.lastDate = meta.date;
     if(meta && meta.purchase) c.totalPurchase += meta.purchase;
+    if(meta && meta.bill && c.bills.indexOf(meta.bill)<0) c.bills.push(meta.bill);
   }
-  db.sales.forEach(function(s){add(s.phone,s.n,["customer"],{date:s.date,purchase:s.amt});});
+  db.sales.forEach(function(s){add(s.phone,s.n,["customer"],{date:s.date,purchase:s.amt,bill:s.bill});});
   db.leads.filter(function(x){return !x.done;}).forEach(function(l){add(l.phone,l.n,["lead"],{date:l.d});});
-  db.payments.forEach(function(p){add(p.phone,p.n,["payment"],{date:p.d});});
+  db.payments.forEach(function(p){add(p.phone,p.n,["payment"],{date:p.d,bill:p.bill});});
   _dirImported.forEach(function(m){add(m.phone,m.name,["imported"],{});var k=_dirKey(m.phone,m.name);if(map[k])map[k].deletable=true;});
   _dirManual.forEach(function(m){add(m.phone,m.name,["manual"],{});var k=_dirKey(m.phone,m.name);if(map[k])map[k].deletable=true;});
   return Object.values(map).sort(function(a,b){return a.name.localeCompare(b.name);});
@@ -2350,10 +2387,20 @@ function renderDirPreview(){
   var dp=g("dirListPreview");if(!dp)return;
   var all=buildDirectory();
   var wrap=g("dirViewAllWrap");
-  if(all.length===0){dp.innerHTML='<div class="empty"><div class="ei">&#128101;</div><p>No contacts yet. Auto-syncs from Sales, Leads, Orders.</p></div>';if(wrap)wrap.style.display="none";return;}
+  var q=(g("searchDirMain")?g("searchDirMain").value||"":"").trim().toLowerCase();
+  var qDigits=q.replace(/[^0-9]/g,"");
+  if(q){
+    all=all.filter(function(c){
+      return c.name.toLowerCase().indexOf(q)>=0 ||
+        (qDigits && c.phone && c.phone.replace(/[^0-9]/g,"").indexOf(qDigits)>=0) ||
+        (c.bills||[]).some(function(b){return b.toLowerCase().indexOf(q)>=0;});
+    });
+  }
+  if(all.length===0){dp.innerHTML=q?'<div class="empty"><div class="ei">&#128101;</div><p>No contacts match "'+q+'".</p></div>':'<div class="empty"><div class="ei">&#128101;</div><p>No contacts yet. Auto-syncs from Sales, Leads, Orders.</p></div>';if(wrap)wrap.style.display="none";return;}
   var colors = ["#2563eb","#16a34a","#7c3aed","#d97706","#dc2626","#0d9488","#ea580c","#475569"];
   var e = function(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");};
-  dp.innerHTML=all.slice(0,5).map(function(c){
+  var shown=q?all:all.slice(0,5);
+  dp.innerHTML=shown.map(function(c){
     var init = c.name.trim().split(" ");
     init = init.length>=2 ? init[0][0]+init[1][0] : c.name.slice(0,2).toUpperCase();
     var color = colors[c.name.charCodeAt(0)%colors.length];
@@ -2369,11 +2416,12 @@ function renderDirPreview(){
       "<div class=\"dir-info\">" +
         "<div class=\"dir-name\">" + e(c.name) + "</div>" +
         (c.phone ? "<div class=\"dir-phone\">&#128222; "+e(c.phone)+"</div>" : "<div class=\"dir-phone\" style=\"color:var(--muted);\">No phone</div>") +
+        (c.bills&&c.bills.length ? "<div style=\"font-size:11px;color:var(--muted);\">Bills: "+c.bills.map(e).join(", ")+"</div>" : "") +
         "<div class=\"dir-tags\">" + tags + "</div>" +
         "<div class=\"dir-actions\">" + callBtn + waBtn + "</div>" +
       "</div></div></div>";
   }).join("");
-  if(wrap)wrap.style.display=all.length>5?"block":"none";
+  if(wrap)wrap.style.display=(!q&&all.length>5)?"block":"none";
 }
 window.renderDirPreview=renderDirPreview;
 
@@ -2743,14 +2791,14 @@ function pickStockItem(stockId){
   if(_pickerTarget==="sale"){
     var si=g("sItem");if(si)si.value=s.name;
     var sid=g("sStockId");if(sid)sid.value=s.id;
-    var amt=g("sAmt");if(amt){amt.value=s.buyPrice||"";amt.focus();amt.select();}
+    var amt=g("sAmt");if(amt){amt.value="";amt.focus();}
     var info=g("sStockInfo");
     if(info){info.style.display="block";info.style.background=s.qty<=(s.alert||2)?"#fffbeb":"#f0fdf4";info.style.color=s.qty<=(s.alert||2)?"#d97706":"#16a34a";
-    info.innerHTML="&#10003; <b>"+esc(s.name)+"</b> | "+s.id+" | Stock: <b>"+s.qty+"</b> | Ref: &#8377;"+(s.buyPrice||0).toFixed(0)+" <span style='font-weight:400;font-size:10px;'>(edit amount above)</span>";}
+    info.innerHTML="&#10003; <b>"+esc(s.name)+"</b> | "+s.id+" | Stock: <b>"+s.qty+"</b> <span style='font-weight:400;font-size:10px;'>(enter your selling price above - not the stock cost)</span>";}
   } else if(_pickerTarget==="sale_extra"){
     var qty=parseInt(prompt("Quantity for "+s.name+":","1"),10);
     if(!qty||qty<=0)return;
-    var price=parseFloat(prompt("Price per unit (Rs.) for "+s.name+":",(s.buyPrice||0).toString()));
+    var price=parseFloat(prompt("Selling price per unit (Rs.) for "+s.name+":",""));
     if(isNaN(price)||price<0)return;
     _saleExtraItems.push({name:s.name,qty:qty,price:price,stockId:s.id});
     renderSaleExtraItems();
@@ -2759,6 +2807,20 @@ function pickStockItem(stockId){
   }
 }
 window.pickStockItem = pickStockItem;
+
+function addManualExtraItem(){
+  var name=prompt("Product name:","");
+  if(!name||!name.trim())return;
+  var qty=parseInt(prompt("Quantity for "+name+":","1"),10);
+  if(!qty||qty<=0)return;
+  var price=parseFloat(prompt("Selling price per unit (Rs.) for "+name+":",""));
+  if(isNaN(price)||price<0)return;
+  _saleExtraItems.push({name:name.trim(),qty:qty,price:price,stockId:""});
+  renderSaleExtraItems();
+  var amtEl=g("sAmt");
+  if(amtEl){amtEl.value=((parseFloat(amtEl.value)||0)+qty*price).toFixed(2);}
+}
+window.addManualExtraItem=addManualExtraItem;
 
 var _saleExtraItems = [];
 function renderSaleExtraItems(){
