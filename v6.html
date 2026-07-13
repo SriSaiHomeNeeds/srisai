@@ -1772,19 +1772,28 @@ async function shareBillPDF(){
     const label="DigitalBill";
     const fileName=label+"_"+(s.bill||"SSHN")+"_"+(s.n||"customer").replace(/[^a-zA-Z0-9]/g,"")+".pdf";
     const file=new File([pdfBlob],fileName,{type:"application/pdf"});
-    if(navigator.canShare && navigator.canShare({files:[file]})){
-      await navigator.share({
-        files:[file],
-        title:BIZ.name+" - Bill",
-        text:"Bill for "+s.n+(s.bill?" (#"+s.bill+")":"")
-      });
-    } else {
+    function downloadFallback(msg){
       const url=URL.createObjectURL(pdfBlob);
       const a=document.createElement("a");
       a.href=url;a.download=fileName;
       document.body.appendChild(a);a.click();document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      alert("PDF downloaded as \""+fileName+"\". Your browser doesn't support direct sharing, so please open WhatsApp and attach the PDF manually from your Downloads/Files.");
+      alert(msg);
+    }
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      try{
+        await navigator.share({
+          files:[file],
+          title:BIZ.name+" - Bill",
+          text:"Bill for "+s.n+(s.bill?" (#"+s.bill+")":"")
+        });
+      }catch(shareErr){
+        if(!shareErr || shareErr.name!=="AbortError"){
+          downloadFallback("Couldn't open the share sheet on your device, so the PDF has been downloaded as \""+fileName+"\" instead. Please open WhatsApp and attach it manually.");
+        }
+      }
+    } else {
+      downloadFallback("PDF downloaded as \""+fileName+"\". Your browser doesn't support direct sharing, so please open WhatsApp and attach the PDF manually from your Downloads/Files.");
     }
   }catch(e){
     if(e && e.name!=="AbortError") alert("Could not generate/share PDF: "+e.message);
@@ -1801,23 +1810,34 @@ async function shareContactCard(){
   const origLbl=btn.innerHTML;
   btn.innerHTML="&#8987; Preparing...";
   btn.disabled=true;
+  const vcard="BEGIN:VCARD\r\nVERSION:3.0\r\nN:Furniture, Chandanagar;Sri Sai Home Needs;;;\r\nFN:Sri Sai Home Needs Furniture, Chandanagar\r\nORG:Sri Sai Home Needs\r\nTEL;TYPE=CELL:+919912243300\r\nTEL;TYPE=CELL:+919676353000\r\nTEL;TYPE=CELL:+919618766904\r\nADR;TYPE=WORK:;;"+BIZ.addr+";;;;\r\nURL:"+BIZ.mapLink+"\r\nEND:VCARD";
+  const fileName="Sri Sai Home Needs.vcf";
+  function downloadFallback(msg){
+    const blob=new Blob([vcard],{type:"text/vcard"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;a.download=fileName;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert(msg||"Contact card downloaded. Please open WhatsApp and attach the file manually from your Downloads/Files.");
+  }
   try{
-    const vcard="BEGIN:VCARD\r\nVERSION:3.0\r\nN:Furniture, Chandanagar;Sri Sai Home Needs;;;\r\nFN:Sri Sai Home Needs Furniture, Chandanagar\r\nORG:Sri Sai Home Needs\r\nTEL;TYPE=CELL:+919912243300\r\nTEL;TYPE=CELL:+919676353000\r\nTEL;TYPE=CELL:+919618766904\r\nADR;TYPE=WORK:;;"+BIZ.addr+";;;;\r\nURL:"+BIZ.mapLink+"\r\nEND:VCARD";
-    const fileName="Sri Sai Home Needs.vcf";
     const file=new File([vcard],fileName,{type:"text/vcard"});
     if(navigator.canShare && navigator.canShare({files:[file]})){
-      await navigator.share({files:[file],title:BIZ.name+" - Contact Card",text:"Save our contact"});
+      try{
+        await navigator.share({files:[file],title:BIZ.name+" - Contact Card",text:"Save our contact"});
+      }catch(shareErr){
+        if(shareErr && shareErr.name==="AbortError"){
+          // user cancelled the share sheet, do nothing
+        } else {
+          downloadFallback("Couldn't open the share sheet for this file type on your device, so the contact card has been downloaded instead. Please open WhatsApp and attach it manually.");
+        }
+      }
     } else {
-      const blob=new Blob([vcard],{type:"text/vcard"});
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement("a");
-      a.href=url;a.download=fileName;
-      document.body.appendChild(a);a.click();document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      alert("Contact card downloaded. Your browser doesn't support direct sharing, so please open WhatsApp and attach the file manually.");
+      downloadFallback();
     }
   }catch(e){
-    if(e && e.name!=="AbortError") alert("Could not share contact card: "+e.message);
+    downloadFallback("Something went wrong preparing the share, so the contact card has been downloaded instead. Please open WhatsApp and attach it manually.");
   }finally{
     btn.innerHTML=origLbl;btn.disabled=false;
   }
@@ -1938,15 +1958,24 @@ async function shareDailySummaryPDF(){
     const pdfBlob=await _generateDailySummaryPDFBlob(dateStr);
     const fileName="DailySummary_"+dateStr+".pdf";
     const file=new File([pdfBlob],fileName,{type:"application/pdf"});
-    if(navigator.canShare && navigator.canShare({files:[file]})){
-      await navigator.share({files:[file],title:BIZ.name+" - Daily Summary",text:"Daily Summary for "+fmtDMY(dateStr)});
-    } else {
+    function downloadFallback(msg){
       const url=URL.createObjectURL(pdfBlob);
       const a=document.createElement("a");
       a.href=url;a.download=fileName;
       document.body.appendChild(a);a.click();document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      alert("PDF downloaded as \""+fileName+"\". Your browser doesn't support direct sharing, so please open WhatsApp and attach the PDF manually.");
+      alert(msg);
+    }
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      try{
+        await navigator.share({files:[file],title:BIZ.name+" - Daily Summary",text:"Daily Summary for "+fmtDMY(dateStr)});
+      }catch(shareErr){
+        if(!shareErr || shareErr.name!=="AbortError"){
+          downloadFallback("Couldn't open the share sheet on your device, so the PDF has been downloaded instead. Please open WhatsApp and attach it manually.");
+        }
+      }
+    } else {
+      downloadFallback("PDF downloaded as \""+fileName+"\". Your browser doesn't support direct sharing, so please open WhatsApp and attach the PDF manually.");
     }
   }catch(e){
     if(e && e.name!=="AbortError") alert("Could not generate/share PDF: "+e.message);
@@ -3380,15 +3409,24 @@ async function shareVoucherPDF(){
     const pdfBlob=pdf.output("blob");
     const fileName="PaymentVoucher_"+TODAY+".pdf";
     const file=new File([pdfBlob],fileName,{type:"application/pdf"});
-    if(navigator.canShare && navigator.canShare({files:[file]})){
-      await navigator.share({files:[file],title:BIZ.name+" - Payment Voucher",text:"Payment Voucher"});
-    } else {
+    function downloadFallback(msg){
       const url=URL.createObjectURL(pdfBlob);
       const a=document.createElement("a");
       a.href=url;a.download=fileName;
       document.body.appendChild(a);a.click();document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      alert("PDF downloaded as \""+fileName+"\". Please attach it manually in WhatsApp.");
+      alert(msg);
+    }
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      try{
+        await navigator.share({files:[file],title:BIZ.name+" - Payment Voucher",text:"Payment Voucher"});
+      }catch(shareErr){
+        if(!shareErr || shareErr.name!=="AbortError"){
+          downloadFallback("Couldn't open the share sheet on your device, so the PDF has been downloaded instead. Please attach it manually in WhatsApp.");
+        }
+      }
+    } else {
+      downloadFallback("PDF downloaded as \""+fileName+"\". Please attach it manually in WhatsApp.");
     }
   }catch(e){
     if(e && e.name!=="AbortError") alert("Could not generate/share voucher PDF: "+e.message);
