@@ -212,6 +212,7 @@ function _chk() {
     if (ap) ap.style.display = "block";
     var bc=document.getElementById("btnClr");if(bc)bc.style.display="block";
     var rmt=document.getElementById("reportsMenuTile");if(rmt)rmt.style.display="";
+    var dat=document.getElementById("dirAdminTools");if(dat)dat.style.display="";
     var efr=document.getElementById("btnExportFullReport");if(efr)efr.style.display="";
     if(window._fbStart)window._fbStart();
   } else if (_pe === sp) {
@@ -223,6 +224,7 @@ function _chk() {
     if (ap) ap.style.display = "none";
     var bc=document.getElementById("btnClr");if(bc)bc.style.display="none";
     var rmt=document.getElementById("reportsMenuTile");if(rmt)rmt.style.display="none";
+    var dat=document.getElementById("dirAdminTools");if(dat)dat.style.display="none";
     var efr=document.getElementById("btnExportFullReport");if(efr)efr.style.display="none";
   } else {
     document.getElementById("pinErr").innerText = "Wrong PIN. Try again.";
@@ -961,12 +963,14 @@ function onExpCatChange(){
     <button class="pill" onclick="setDirFilter('lead',this)">&#128203; Leads</button>
     <button class="pill" onclick="setDirFilter('imported',this)">&#128229; Imported</button>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-    <button onclick="exportDirVCF()" style="padding:12px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128222; Export VCF</button>
-    <button onclick="exportDirCSV()" style="padding:12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128229; Export CSV</button>
+  <div id="dirAdminTools" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+      <button onclick="exportDirVCF()" style="padding:12px;background:#0d9488;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128222; Export VCF</button>
+      <button onclick="exportDirCSV()" style="padding:12px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">&#128229; Export CSV</button>
+    </div>
+    <button onclick="document.getElementById('dirCSVFile').click()" style="width:100%;padding:13px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;">&#128229; Import from CSV</button>
+    <input type="file" id="dirCSVFile" accept=".csv,.txt" style="display:none;" onchange="importDirCSV(this)">
   </div>
-  <button onclick="document.getElementById('dirCSVFile').click()" style="width:100%;padding:13px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;">&#128229; Import from CSV</button>
-  <input type="file" id="dirCSVFile" accept=".csv,.txt" style="display:none;" onchange="importDirCSV(this)">
   <div id="dirImportResult" style="font-size:13px;font-weight:600;text-align:center;min-height:20px;margin-bottom:8px;"></div>
   <div id="dirBulkBar" style="display:none;background:#fef2f2;border:1.5px solid #fecaca;border-radius:10px;padding:10px 14px;margin-bottom:8px;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
     <div style="font-size:13px;font-weight:700;color:#dc2626;"><span id="dirSelCount">0</span> selected</div>
@@ -1639,15 +1643,17 @@ function showBill(si,billType){
   const docLabel=isGst?"TAX INVOICE":"BILL OF SUPPLY";
   const docTitle="Digital Bill";
   let h=`
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-  <span style="font-size:10px;font-weight:700;border:1px solid var(--border);border-radius:4px;padding:2px 7px;">${docLabel}</span>
-  <img src="${LOGO_B64}" style="width:70px;height:70px;object-fit:contain;">
-  <span style="font-size:10px;font-weight:700;border:1px solid var(--border);border-radius:4px;padding:2px 7px;">ORIGINAL FOR RECIPIENT</span>
+<div style="background:#0a0a0a;margin:-20px -20px 14px;padding:16px 18px 14px;border-bottom:2px solid #c9a227;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;">
+    <span style="font-size:9px;font-weight:700;border:1px solid #555;border-radius:4px;padding:2px 7px;color:#ccc;letter-spacing:.3px;">${docLabel}</span>
+    <img src="${LOGO_B64}" style="width:52px;height:52px;object-fit:contain;">
+    <span style="font-size:9px;font-weight:700;border:1px solid #555;border-radius:4px;padding:2px 7px;color:#ccc;letter-spacing:.3px;">ORIGINAL FOR RECIPIENT</span>
+  </div>
+  <div style="text-align:center;font-size:19px;font-weight:800;color:#fff;letter-spacing:.5px;">${esc(BIZ.name)}</div>
+  <div style="font-size:10.5px;color:#ddd;line-height:1.5;text-align:center;margin-top:2px;">Chandanagar, Hyderabad, Telangana - 500050<br>Mobile: ${BIZ.mobile}${isGst?" &nbsp; GSTIN: "+BIZ.gstin:""}</div>
 </div>
-<img src="${WORDMARK_NAVY}" alt="${BIZ.name}" style="height:20px;width:auto;display:block;margin:0 auto 4px;">
-<div style="font-size:11px;color:var(--muted);line-height:1.5;text-align:center;">Chandanagar, Hyderabad, Telangana - 500050<br>Mobile: ${BIZ.mobile}${isGst?" &nbsp; GSTIN: "+BIZ.gstin:""}</div>
 <div style="text-align:center;font-size:12px;font-weight:800;margin:8px 0 4px;letter-spacing:.5px;">${docTitle.toUpperCase()}${isGst?(isExtra?" (GST Extra)":" (GST Inclusive)"):""}</div>
-<div style="display:flex;justify-content:space-between;background:#f1f5f9;border-radius:6px;padding:7px 10px;margin:6px 0 10px;font-size:11px;">
+<div style="display:flex;justify-content:space-between;background:#f8f6ee;border:1px solid #eee0b8;border-radius:6px;padding:7px 10px;margin:6px 0 10px;font-size:11px;">
   <span>Invoice No.: <b>${esc(s.bill||"---")}</b></span>
   <span>Invoice Date: <b>${fmtDMY(s.date)}</b></span>
   ${isGst?`<span>Place of Supply: <b>Telangana</b></span>`:""}
@@ -1659,7 +1665,7 @@ function showBill(si,billType){
   ${s.delAddr?`<div style="font-size:11px;color:var(--muted);">${esc(s.delAddr)}</div>`:""}
 </div>
 <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:6px;">
-  <thead><tr style="border-top:1.5px solid #1e293b;border-bottom:1.5px solid #1e293b;">
+  <thead><tr style="border-top:1.5px solid #111;border-bottom:1.5px solid #111;">
     <th style="text-align:left;padding:6px 2px;">ITEMS</th><th style="text-align:right;padding:6px 2px;">QTY</th><th style="text-align:right;padding:6px 2px;">RATE</th><th style="text-align:right;padding:6px 2px;">AMOUNT</th>
   </tr></thead>
   <tbody>
