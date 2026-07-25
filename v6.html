@@ -3311,6 +3311,70 @@ function onStockSupplierPick(){
 }
 window.onStockSupplierPick=onStockSupplierPick;
 
+function _supplierTxnRowsHtml(si){
+  var sup=(db.suppliers||[])[si];if(!sup)return '';
+  var txns=sup.txns||[];
+  if(!txns.length)return '<div style="font-size:11px;color:var(--muted);">No transaction history yet.</div>';
+  var modes=["Cash","UPI","Card","Bank Transfer","Credit/EMI","Cheque","Mixed"];
+  var rows=txns.map(function(t,idx){return {t:t,idx:idx};}).reverse();
+  return rows.map(function(r){
+    var t=r.t,idx=r.idx;
+    var isBill=t.type==="bill";
+    var isEditing=_editingSupTxn&&_editingSupTxn.si===si&&_editingSupTxn.idx===idx;
+    if(isEditing){
+      return '<div style="padding:8px;margin:4px 0;background:#f8fafc;border:1px solid #dbeafe;border-radius:8px;">'+
+        '<div style="font-size:10px;color:var(--muted);margin-bottom:6px;">'+fmtDMY(t.date)+' - '+(isBill?"Bill":"Payment")+'</div>'+
+        '<div style="display:flex;gap:6px;margin-bottom:6px;">'+
+          '<input type="number" id="editTxnAmt_'+si+'_'+idx+'" value="'+t.amt+'" style="flex:1;padding:7px;font-size:12px;border:1px solid var(--border);border-radius:6px;">'+
+          '<select id="editTxnMode_'+si+'_'+idx+'" style="flex:1;padding:7px;font-size:12px;border:1px solid var(--border);border-radius:6px;">'+
+            modes.map(function(m){return '<option value="'+m+'"'+(m===t.mode?' selected':'')+'>'+m+'</option>';}).join("")+
+          '</select>'+
+        '</div>'+
+        '<div style="display:flex;gap:6px;">'+
+          '<button type="button" onclick="saveEditSupplierTxn('+si+','+idx+')" style="flex:1;padding:7px;background:#16a34a;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Save</button>'+
+          '<button type="button" onclick="cancelEditSupplierTxn('+si+')" style="flex:1;padding:7px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>'+
+        '</div>'+
+      '</div>';
+    }
+    return '<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;">'+
+      '<div style="display:flex;justify-content:space-between;">'+
+        '<span>'+fmtDMY(t.date)+' - '+(isBill?"Bill":"Payment")+(t.mode?' ['+esc(t.mode)+']':'')+(t.ref?' ('+esc(t.ref)+')':'')+'</span>'+
+        '<span style="font-weight:700;color:'+(isBill?"#dc2626":"#15803d")+';">'+(isBill?"+":"-")+'Rs.'+t.amt.toFixed(2)+'</span>'+
+      '</div>'+
+      '<div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">'+
+        '<button type="button" onclick="startEditSupplierTxn('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#9998; Edit</button>'+
+        (isBill?"":'<button type="button" onclick="regenerateSupplierVoucher('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#f5f3ff;color:#7c3aed;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#128196; Reprint Voucher</button>')+
+        '<button type="button" onclick="deleteSupplierTxn('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#128465; Delete</button>'+
+      '</div>'+
+    '</div>';
+  }).join("");
+}
+
+function deleteSupplierTxn(si,idx){
+  var sup=(db.suppliers||[])[si];if(!sup||!sup.txns||!sup.txns[idx])return;
+  if(!confirm("Delete this transaction? This cannot be undone."))return;
+  var t=sup.txns[idx];
+  var effect=t.type==="bill"?t.amt:-t.amt;
+  sup.balance=(sup.balance||0)-effect;
+  if(t.type==="payment"){
+    var pi=-1;
+    for(var k=(db.payments||[]).length-1;k>=0;k--){
+      var p=db.payments[k];
+      if(p.category==="supplier"&&p.supplierIdx===si&&p.bill===t.ref&&p.d===t.date&&Math.abs(p.amt-t.amt)<0.01){pi=k;break;}
+    }
+    if(pi>=0)db.payments.splice(pi,1);
+  }
+  sup.txns.splice(idx,1);
+  saveDB();render();
+  if(window.renderSuppliers)window.renderSuppliers();
+  if(window.renderSuppliersOverview)window.renderSuppliersOverview();
+  updateSupplierPrevBalance();
+  renderSupplierTxnHistoryBox(si);
+  alert("Transaction deleted. New Balance: "+fmtBal(sup.balance));
+}
+window.deleteSupplierTxn=deleteSupplierTxn;
+window._supplierTxnRowsHtml=_supplierTxnRowsHtml;
+
 function updateSupplierPrevBalance(){
   var box=g("supPrevBalance");
   var histBox=g("supHistoryList");
@@ -3333,22 +3397,7 @@ function updateSupplierPrevBalance(){
     if(!txns.length){
       histBox.innerHTML='<div style="font-size:11px;color:var(--muted);">No transaction history yet.</div>';
     } else {
-      var rows=txns.map(function(t,idx){return {t:t,idx:idx};}).reverse();
-      histBox.innerHTML='<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Transaction History</div>'+
-        rows.map(function(r){
-          var t=r.t,idx=r.idx;
-          var isBill=t.type==="bill";
-          return '<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;">'+
-            '<div style="display:flex;justify-content:space-between;">'+
-              '<span>'+fmtDMY(t.date)+' - '+(isBill?"Bill":"Payment")+(t.mode?' ['+esc(t.mode)+']':'')+(t.ref?' ('+esc(t.ref)+')':'')+'</span>'+
-              '<span style="font-weight:700;color:'+(isBill?"#dc2626":"#15803d")+';">'+(isBill?"+":"-")+'Rs.'+t.amt.toFixed(2)+'</span>'+
-            '</div>'+
-            '<div style="display:flex;gap:6px;margin-top:4px;">'+
-              '<button type="button" onclick="editSupplierTxn('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#9998; Edit</button>'+
-              (isBill?"":'<button type="button" onclick="regenerateSupplierVoucher('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#f5f3ff;color:#7c3aed;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#128196; Reprint Voucher</button>')+
-            '</div>'+
-          '</div>';
-        }).join("");
+      histBox.innerHTML='<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Transaction History</div>'+_supplierTxnRowsHtml(si);
     }
   }
 }
@@ -3358,12 +3407,14 @@ var _editingSupTxn=null;
 function startEditSupplierTxn(si,idx){
   _editingSupTxn={si:si,idx:idx};
   renderSupplierTxnHistoryBox(si);
+  updateSupplierPrevBalance();
 }
 window.startEditSupplierTxn=startEditSupplierTxn;
 
 function cancelEditSupplierTxn(si){
   _editingSupTxn=null;
   renderSupplierTxnHistoryBox(si);
+  updateSupplierPrevBalance();
 }
 window.cancelEditSupplierTxn=cancelEditSupplierTxn;
 
@@ -3602,40 +3653,7 @@ window.toggleSupplierTxnHistory=toggleSupplierTxnHistory;
 function renderSupplierTxnHistoryBox(ri){
   var box=g("supTxnHist_"+ri);if(!box)return;
   var sup=(db.suppliers||[])[ri];if(!sup)return;
-  var txns=sup.txns||[];
-  if(!txns.length){box.innerHTML='<div style="font-size:11px;color:var(--muted);">No transaction history yet.</div>';return;}
-  var modes=["Cash","UPI","Card","Bank Transfer","Credit/EMI","Cheque","Mixed"];
-  var rows=txns.map(function(t,idx){return {t:t,idx:idx};}).reverse();
-  box.innerHTML=rows.map(function(r){
-    var t=r.t,idx=r.idx;
-    var isBill=t.type==="bill";
-    var isEditing=_editingSupTxn&&_editingSupTxn.si===ri&&_editingSupTxn.idx===idx;
-    if(isEditing){
-      return '<div style="padding:8px;margin:4px 0;background:#f8fafc;border:1px solid #dbeafe;border-radius:8px;">'+
-        '<div style="font-size:10px;color:var(--muted);margin-bottom:6px;">'+fmtDMY(t.date)+' - '+(isBill?"Bill":"Payment")+'</div>'+
-        '<div style="display:flex;gap:6px;margin-bottom:6px;">'+
-          '<input type="number" id="editTxnAmt_'+ri+'_'+idx+'" value="'+t.amt+'" style="flex:1;padding:7px;font-size:12px;border:1px solid var(--border);border-radius:6px;">'+
-          '<select id="editTxnMode_'+ri+'_'+idx+'" style="flex:1;padding:7px;font-size:12px;border:1px solid var(--border);border-radius:6px;">'+
-            modes.map(function(m){return '<option value="'+m+'"'+(m===t.mode?' selected':'')+'>'+m+'</option>';}).join("")+
-          '</select>'+
-        '</div>'+
-        '<div style="display:flex;gap:6px;">'+
-          '<button type="button" onclick="saveEditSupplierTxn('+ri+','+idx+')" style="flex:1;padding:7px;background:#16a34a;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Save</button>'+
-          '<button type="button" onclick="cancelEditSupplierTxn('+ri+')" style="flex:1;padding:7px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>'+
-        '</div>'+
-      '</div>';
-    }
-    return '<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;">'+
-      '<div style="display:flex;justify-content:space-between;">'+
-        '<span>'+fmtDMY(t.date)+' - '+(isBill?"Bill":"Payment")+(t.mode?' ['+esc(t.mode)+']':'')+(t.ref?' ('+esc(t.ref)+')':'')+'</span>'+
-        '<span style="font-weight:700;color:'+(isBill?"#dc2626":"#15803d")+';">'+(isBill?"+":"-")+'Rs.'+t.amt.toFixed(2)+'</span>'+
-      '</div>'+
-      '<div style="display:flex;gap:6px;margin-top:4px;">'+
-        '<button type="button" onclick="startEditSupplierTxn('+ri+','+idx+')" style="font-size:10px;padding:3px 8px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#9998; Edit</button>'+
-        (isBill?"":'<button type="button" onclick="regenerateSupplierVoucher('+ri+','+idx+')" style="font-size:10px;padding:3px 8px;background:#f5f3ff;color:#7c3aed;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#128196; Reprint Voucher</button>')+
-      '</div>'+
-    '</div>';
-  }).join("");
+  box.innerHTML=_supplierTxnRowsHtml(ri);
 }
 window.renderSupplierTxnHistoryBox=renderSupplierTxnHistoryBox;
 function renderSuppliers(){
