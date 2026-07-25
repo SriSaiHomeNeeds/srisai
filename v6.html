@@ -345,7 +345,7 @@ function onPayCatChange(){
       suppliers.map(function(s,i){return '<option value="'+i+'">'+s.name.replace(/</g,"&lt;")+(s.balance>0?" (Bal: Rs."+s.balance.toFixed(0)+")":"")+'</option>';}).join("");
     html='<div class="fg"><label>Supplier *</label><select id="pSupplierSelect" onchange="onPaySupplierPick()">'+opts+'</select>'+
       '<div id="pSupplierBalanceInfo" style="font-size:12px;font-weight:700;color:#d97706;margin-top:5px;"></div></div>'+
-      '<div class="fg"><label>Payment Mode</label><select id="pSupMode"><option value="Cash">Cash</option><option value="UPI">UPI</option><option value="Card">Card</option><option value="Credit/EMI">Credit/EMI</option><option value="Cheque">Cheque</option><option value="Mixed">Mixed</option></select></div>'+
+      '<div class="fg"><label>Payment Mode</label><select id="pSupMode"><option value="Cash">Cash</option><option value="UPI">UPI</option><option value="Card">Card</option><option value="Bank Transfer">Bank Transfer</option><option value="Credit/EMI">Credit/EMI</option><option value="Cheque">Cheque</option><option value="Mixed">Mixed</option></select></div>'+
       '<div style="font-size:11px;color:var(--muted);margin:-2px 0 8px;">This records a payment made to the supplier and reduces their balance - stays in sync with the Suppliers section, and generates a payment voucher automatically.</div>';
   } else if(cat==="loan"){
     if(nameWrap)nameWrap.style.display="";
@@ -475,7 +475,7 @@ function onExpCatChange(){
       <div class="fg"><label>Payment Mode</label>
         <select id="sMode">
           <option value="Cash">Cash</option><option value="UPI">UPI</option><option value="Card">Card</option>
-          <option value="Credit/EMI">Credit/EMI</option><option value="Cheque">Cheque</option><option value="Mixed">Mixed</option>
+          <option value="Bank Transfer">Bank Transfer</option><option value="Credit/EMI">Credit/EMI</option><option value="Cheque">Cheque</option><option value="Mixed">Mixed</option>
         </select>
       </div>
     </div>
@@ -891,7 +891,7 @@ function onExpCatChange(){
     <div class="fg" id="supModeWrap" style="display:none;"><label>Payment Mode</label>
       <select id="supMode">
         <option value="Cash">Cash</option><option value="UPI">UPI</option><option value="Card">Card</option>
-        <option value="Credit/EMI">Credit/EMI</option><option value="Cheque">Cheque</option><option value="Mixed">Mixed</option>
+        <option value="Bank Transfer">Bank Transfer</option><option value="Credit/EMI">Credit/EMI</option><option value="Cheque">Cheque</option><option value="Mixed">Mixed</option>
       </select>
     </div>
     <div class="fg"><label>Note</label><input id="supNote" placeholder="Description"></div>
@@ -1454,7 +1454,8 @@ function addSale(){
   const sale={bill,date:g("sDate").value||TODAY,n:name,phone:g("sPhone").value.trim(),mode:g("sMode").value,
     item:items[0].name+(items.length>1?" +"+(items.length-1)+" more":""),amt,adv,dueDate:dd,note:g("sNote").value.trim(),delivery:del,
     delDate:del?g("sDelDate").value:"",delAddr:del?g("sDelAddr").value.trim():"",
-    stockId:items[0].stockId,items:items};
+    stockId:items[0].stockId,items:items,
+    history:adv>0?[{amt:adv,date:g("sDate").value||TODAY}]:[]};
   db.sales.push(sale);
   _saleLines=[{name:"",qty:"",price:"",stockId:""}];
   renderSaleLines();
@@ -1489,6 +1490,7 @@ function addPayment(){
     if(!sup.txns)sup.txns=[];
     sup.txns.push({type:"payment",amt:amt,date:date,ref:ref,note:note,mode:mode});
     sup.balance=(sup.balance||0)-amt;
+    db.payments.push({n:sup.name,phone:sup.phone||"",amt:amt,paidAmt:amt,d:date,bill:ref,note:note||"Supplier Payment",done:true,category:"supplier",mode:mode,supplierIdx:si});
     ["pAmt","pBill","pNote"].forEach(id=>{const el=g(id);if(el)el.value="";});
     saveDB();render();checkRem();
     if(window.renderSuppliers)window.renderSuppliers();
@@ -1499,7 +1501,7 @@ function addPayment(){
   }
   const name=g("pName").value.trim();
   if(!name){alert("Name / Description required.");return;}
-  db.payments.push({n:name,phone:g("pPhone").value.trim(),a:amt,d:date,bill:g("pBill").value.trim(),note:g("pNote").value.trim(),done:false,category:cat});
+  db.payments.push({n:name,phone:g("pPhone").value.trim(),amt:amt,paidAmt:0,d:date,bill:g("pBill").value.trim(),note:g("pNote").value.trim(),done:false,category:cat,mode:g("pMode")?g("pMode").value:""});
   ["pName","pPhone","pAmt","pDate","pBill","pNote"].forEach(id=>g(id).value="");
   saveDB();render();checkRem();alert("Payment due saved!");
 }
@@ -1524,7 +1526,12 @@ function collectPay(i){
   const s=db.sales[i],d=due(s);
   const col=parseFloat(prompt("Collecting from "+s.n+"?\n(Due: Rs."+d.toFixed(2)+")",d.toFixed(2)));
   if(isNaN(col)||col<=0)return;
+  const collDate=prompt("Date of this payment (YYYY-MM-DD):",TODAY);
+  if(collDate===null)return;
+  const useDate=(collDate.trim()&&/^\d{4}-\d{2}-\d{2}$/.test(collDate.trim()))?collDate.trim():TODAY;
   s.adv=Math.min((s.adv||0)+col,s.amt);
+  if(!s.history)s.history=[];
+  s.history.push({amt:col,date:useDate});
   saveDB();render();checkRem();
   const rem=due(s);
   alert(rem>0?"Rs."+col.toFixed(2)+" collected. Still due: Rs."+rem.toFixed(2):"Full payment! Sale CLOSED.");
@@ -1609,9 +1616,9 @@ function _gef(id){return(document.getElementById("ef_"+id)||{value:""}).value||"
 function openEdit(type,idx){
   _editCtx={type,idx};let h="";
   const ttl=g("editTitle"),flds=g("editFields");
-  if(type==="sales"){const s=db.sales[idx];ttl.innerText="Edit Sale";h=_ef("Customer Name","n",s.n)+`<div class="edit-row">`+_ef("Phone","phone",s.phone,"tel")+_ef("Sale Date","date",s.date,"date")+`</div>`+_ef("Item / Product","item",s.item)+`<div class="edit-row">`+_ef("Total Amount","amt",s.amt,"number")+_ef("Amount Paid","adv",s.adv||0,"number")+`</div>`+`<div class="edit-row">`+_ef("Due Date","dueDate",s.dueDate,"date")+_efs("Mode","mode",s.mode,["Cash","UPI","Card","Credit/EMI","Cheque","Mixed"])+`</div>`+_efta("Note","note",s.note);}
+  if(type==="sales"){const s=db.sales[idx];ttl.innerText="Edit Sale";h=_ef("Customer Name","n",s.n)+`<div class="edit-row">`+_ef("Phone","phone",s.phone,"tel")+_ef("Sale Date","date",s.date,"date")+`</div>`+_ef("Item / Product","item",s.item)+`<div class="edit-row">`+_ef("Total Amount","amt",s.amt,"number")+_ef("Amount Paid","adv",s.adv||0,"number")+`</div>`+`<div class="edit-row">`+_ef("Due Date","dueDate",s.dueDate,"date")+_efs("Mode","mode",s.mode,["Cash","UPI","Card","Bank Transfer","Credit/EMI","Cheque","Mixed"])+`</div>`+_efta("Note","note",s.note);}
   else if(type==="leads"){const l=db.leads[idx];ttl.innerText="Edit Lead";h=_ef("Customer Name","n",l.n)+`<div class="edit-row">`+_ef("Phone","phone",l.phone,"tel")+_ef("Follow-up Date","d",l.d,"date")+`</div>`+_ef("Interested In","item",l.item)+`<div class="edit-row">`+_ef("Budget","budget",l.budget||0,"number")+_efs("Priority","priority",l.priority,["Hot","Warm","Cold"])+`</div>`+_efs("Source","source",l.source,["Walk-in","Referral","Social Media","Phone Enquiry","IM Lead","Other"])+_efta("Note","note",l.note);}
-  else if(type==="payments"){const x=db.payments[idx];ttl.innerText="Edit Payment";h=_ef("Customer Name","n",x.n)+`<div class="edit-row">`+_ef("Phone","phone",x.phone,"tel")+_ef("Amount","amt",x.a,"number")+`</div>`+`<div class="edit-row">`+_ef("Due Date","d",x.d,"date")+_ef("Ref No.","bill",x.bill)+`</div>`+_efta("Note","note",x.note);}
+  else if(type==="payments"){const x=db.payments[idx];ttl.innerText="Edit Payment";h=_ef("Customer Name","n",x.n)+`<div class="edit-row">`+_ef("Phone","phone",x.phone,"tel")+_ef("Amount","amt",x.amt!=null?x.amt:x.a,"number")+`</div>`+`<div class="edit-row">`+_ef("Due Date","d",x.d,"date")+_ef("Ref No.","bill",x.bill)+`</div>`+_efta("Note","note",x.note);}
   else if(type==="expenses"){const x=db.expenses[idx];ttl.innerText="Edit Expense";h=_efs("Category","cat",x.cat,["Transport","Salary","Rent","Electricity","Stock Purchase","Maintenance","Marketing","Other"])+_ef("Amount","amt",x.a,"number")+_ef("Description","desc",x.desc)+_efta("Note","note",x.note);}
   flds.innerHTML=h;g("editOv").style.display="block";
 }
@@ -1619,7 +1626,7 @@ function saveEdit(){
   if(!_editCtx)return;const{type,idx}=_editCtx;
   if(type==="sales"){const s=db.sales[idx];const n=_gef("n");if(n)s.n=n;s.phone=_gef("phone");const it=_gef("item");if(it)s.item=it;const am=parseFloat(_gef("amt"));if(am>0)s.amt=am;const ad=parseFloat(_gef("adv"));if(!isNaN(ad))s.adv=ad;const dt=_gef("date");if(dt)s.date=dt;s.dueDate=_gef("dueDate");s.mode=_gef("mode");s.note=_gef("note");}
   else if(type==="leads"){const l=db.leads[idx];const n=_gef("n");if(n)l.n=n;l.phone=_gef("phone");l.item=_gef("item");const d=_gef("d");if(d)l.d=d;const b=parseFloat(_gef("budget"));if(!isNaN(b))l.budget=b;l.priority=_gef("priority");l.source=_gef("source");l.note=_gef("note");}
-  else if(type==="payments"){const x=db.payments[idx];const n=_gef("n");if(n)x.n=n;x.phone=_gef("phone");const am=parseFloat(_gef("amt"));if(am>0)x.a=am;const d=_gef("d");if(d)x.d=d;x.bill=_gef("bill");x.note=_gef("note");}
+  else if(type==="payments"){const x=db.payments[idx];const n=_gef("n");if(n)x.n=n;x.phone=_gef("phone");const am=parseFloat(_gef("amt"));if(am>0){x.amt=am;delete x.a;}const d=_gef("d");if(d)x.d=d;x.bill=_gef("bill");x.note=_gef("note");}
   else if(type==="expenses"){const x=db.expenses[idx];x.cat=_gef("cat");const am=parseFloat(_gef("amt"));if(am>0)x.a=am;const ds=_gef("desc");if(ds)x.desc=ds;x.note=_gef("note");}
   closeEdit();saveDB();render();checkRem();
 }
@@ -1640,7 +1647,7 @@ function generateQRDataURL(text, size){
   }catch(e){return "";}
 }
 function bizQRVCard(){
-  return "BEGIN:VCARD\nVERSION:3.0\nN:Furniture, Chandanagar;Sri Sai Home Needs;;;\nFN:Sri Sai Home Needs Furniture, Chandanagar\nORG:Sri Sai Home Needs\nTEL;TYPE=CELL:+919912243300\nTEL;TYPE=CELL:+919676353000\nADR;TYPE=WORK:;;"+BIZ.addr+";;;;\nURL:"+BIZ.mapLink+"\nEND:VCARD";
+  return "BEGIN:VCARD\r\nVERSION:3.0\r\nN:Furniture, Chandanagar;Sri Sai Home Needs;;;\r\nFN:Sri Sai Home Needs Furniture, Chandanagar\r\nORG:Sri Sai Home Needs\r\nTEL;TYPE=CELL:+919912243300\r\nTEL;TYPE=CELL:+919676353000\r\nADR;TYPE=WORK:;;"+BIZ.addr+";;;;\r\nURL:"+BIZ.mapLink+"\r\nEND:VCARD";
 }
 function showBill(si,billType){
   curBillIdx=si;
@@ -1664,7 +1671,7 @@ function showBill(si,billType){
 <div style="background:#0a0a0a;margin:-20px -20px 14px;padding:16px 18px 14px;border-bottom:2px solid #c9a227;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;">
     <span style="font-size:9px;font-weight:700;border:1px solid #555;border-radius:4px;padding:2px 7px;color:#ccc;letter-spacing:.3px;">${docLabel}</span>
-    <img src="${LOGO_B64}" style="width:52px;height:52px;object-fit:contain;">
+    <img src="${LOGO_B64}" style="width:62px;height:auto;object-fit:contain;">
     <span style="font-size:9px;font-weight:700;border:1px solid #555;border-radius:4px;padding:2px 7px;color:#ccc;letter-spacing:.3px;">ORIGINAL FOR RECIPIENT</span>
   </div>
   <div style="text-align:center;font-size:19px;font-weight:800;color:#fff;letter-spacing:.5px;">${esc(BIZ.name)}</div>
@@ -1867,16 +1874,21 @@ window.shareContactCard=shareContactCard;
 function getDailySummaryData(dateStr){
   var sales=[];
   (db.sales||[]).forEach(function(s){
-    if(s.date!==dateStr)return;
-    var received=s.adv||0;
     var desc;
     if(s.items&&s.items.length){
       desc=s.items.map(function(it){return esc(it.name)+" &times;"+it.qty;}).join(", ");
     } else {
       desc=esc(s.item||"Sale");
     }
-    if(received<(s.amt||0)) desc+=" (partial payment, order total Rs."+(s.amt||0).toFixed(0)+")";
-    sales.push({amt:received,desc:desc,mode:s.mode||""});
+    var partialNote=((s.adv||0)<(s.amt||0))?" (order total Rs."+(s.amt||0).toFixed(0)+")":"";
+    if(s.history&&s.history.length){
+      s.history.forEach(function(h){
+        if(h.date===dateStr)sales.push({amt:h.amt||0,desc:desc+partialNote,mode:s.mode||""});
+      });
+    } else if(s.date===dateStr){
+      var received=s.adv||0;
+      sales.push({amt:received,desc:desc+(received<(s.amt||0)?" (partial payment, order total Rs."+(s.amt||0).toFixed(0)+")":""),mode:s.mode||""});
+    }
   });
   var payments=[];
   (db.payments||[]).forEach(function(p){
@@ -1929,7 +1941,7 @@ function buildDailySummaryHTML(dateStr){
     return '<tr><td style="padding:4px;">'+s.name+'</td><td style="padding:4px;color:#475569;">'+s.supplier+'</td><td style="padding:4px;text-align:right;">'+s.qty+'</td></tr>';
   }).join(""):'<tr><td colspan="3" style="padding:6px 4px;color:var(--muted);font-size:11px;">None</td></tr>';
   return '<div style="background:#0a0a0a;margin:-18px -18px 14px;padding:14px 16px 12px;border-bottom:2px solid #c9a227;display:flex;align-items:center;gap:10px;">'+
-      '<img src="'+LOGO_B64+'" style="width:40px;height:40px;object-fit:contain;">'+
+      '<img src="'+LOGO_B64+'" style="width:50px;height:auto;object-fit:contain;">'+
       '<div><div style="font-size:13px;font-weight:800;color:#fff;letter-spacing:.3px;">'+esc(BIZ.name)+'</div>'+
       '<div style="font-size:11px;font-weight:700;color:#e8c766;margin-top:2px;">Daily Summary &mdash; '+fmtDMY(dateStr)+'</div></div>'+
     '</div>'+
@@ -3190,6 +3202,7 @@ function renderPaymentsEnhanced(){
 }
 window.renderPaymentsEnhanced=renderPaymentsEnhanced;
 function _payRowHtml(p,ri){
+    if(p.amt==null&&p.a!=null)p.amt=p.a;
     var paidAmt=p.paidAmt||0;
     var bal=(p.amt||0)-paidAmt;
     var pct=p.amt>0?Math.min(100,Math.round(paidAmt/p.amt*100)):0;
@@ -3288,22 +3301,69 @@ function updateSupplierPrevBalance(){
   var bal=sup.balance||0;
   if(box)box.textContent="Previous Balance: "+fmtBal(bal);
   if(histBox){
-    var txns=(sup.txns||[]).slice().reverse();
+    var txns=sup.txns||[];
     if(!txns.length){
       histBox.innerHTML='<div style="font-size:11px;color:var(--muted);">No transaction history yet.</div>';
     } else {
+      var rows=txns.map(function(t,idx){return {t:t,idx:idx};}).reverse();
       histBox.innerHTML='<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Transaction History</div>'+
-        txns.map(function(t){
+        rows.map(function(r){
+          var t=r.t,idx=r.idx;
           var isBill=t.type==="bill";
-          return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px;">'+
-            '<span>'+fmtDMY(t.date)+' - '+(isBill?"Bill":"Payment")+(t.mode?' ['+esc(t.mode)+']':'')+(t.ref?' ('+esc(t.ref)+')':'')+'</span>'+
-            '<span style="font-weight:700;color:'+(isBill?"#dc2626":"#15803d")+';">'+(isBill?"+":"-")+'Rs.'+t.amt.toFixed(2)+'</span>'+
+          return '<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;">'+
+            '<div style="display:flex;justify-content:space-between;">'+
+              '<span>'+fmtDMY(t.date)+' - '+(isBill?"Bill":"Payment")+(t.mode?' ['+esc(t.mode)+']':'')+(t.ref?' ('+esc(t.ref)+')':'')+'</span>'+
+              '<span style="font-weight:700;color:'+(isBill?"#dc2626":"#15803d")+';">'+(isBill?"+":"-")+'Rs.'+t.amt.toFixed(2)+'</span>'+
+            '</div>'+
+            '<div style="display:flex;gap:6px;margin-top:4px;">'+
+              '<button type="button" onclick="editSupplierTxn('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#9998; Edit</button>'+
+              (isBill?"":'<button type="button" onclick="regenerateSupplierVoucher('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#f5f3ff;color:#7c3aed;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#128196; Reprint Voucher</button>')+
+            '</div>'+
           '</div>';
         }).join("");
     }
   }
 }
 window.updateSupplierPrevBalance=updateSupplierPrevBalance;
+
+function editSupplierTxn(si,idx){
+  var sup=(db.suppliers||[])[si];if(!sup||!sup.txns||!sup.txns[idx])return;
+  var t=sup.txns[idx];
+  var newAmtStr=prompt("Edit amount (Rs.):",t.amt);
+  if(newAmtStr===null)return;
+  var newAmt=parseFloat(newAmtStr);
+  if(isNaN(newAmt)||newAmt<=0){alert("Enter a valid amount.");return;}
+  var modes=["Cash","UPI","Card","Bank Transfer","Credit/EMI","Cheque","Mixed"];
+  var newMode=prompt("Payment Mode ("+modes.join("/")+"):",t.mode||"Cash");
+  if(newMode===null)return;
+  newMode=newMode.trim();
+  if(modes.indexOf(newMode)<0){alert("Please enter one of: "+modes.join(", "));return;}
+  // Reverse old effect on balance, then apply new
+  var oldEffect=t.type==="bill"?t.amt:-t.amt;
+  sup.balance=(sup.balance||0)-oldEffect;
+  var newEffect=t.type==="bill"?newAmt:-newAmt;
+  sup.balance=(sup.balance||0)+newEffect;
+  t.amt=newAmt;
+  t.mode=newMode;
+  // Keep the linked db.payments entry (if any) in sync too
+  (db.payments||[]).forEach(function(p){
+    if(p.category==="supplier"&&p.supplierIdx===si&&p.bill===t.ref&&p.d===t.date&&Math.abs(p.amt-oldEffect*-1)<0.01){
+      p.amt=newAmt;p.paidAmt=newAmt;p.mode=newMode;
+    }
+  });
+  saveDB();renderSuppliers();updateSupplierPrevBalance();
+  alert("Transaction updated. New Balance: "+fmtBal(sup.balance));
+}
+window.editSupplierTxn=editSupplierTxn;
+
+function regenerateSupplierVoucher(si,idx){
+  var sup=(db.suppliers||[])[si];if(!sup||!sup.txns||!sup.txns[idx])return;
+  var t=sup.txns[idx];
+  if(t.type!=="payment"){alert("Vouchers are only available for payment entries.");return;}
+  curVoucherPhone=sup.phone||"";
+  showVoucher(sup.name,t.amt,t.date,t.note||"Supplier Payment",t.ref,t.mode);
+}
+window.regenerateSupplierVoucher=regenerateSupplierVoucher;
 
 function addSupplierTxn(){
   var si=g("supSelect")?parseInt(g("supSelect").value):-1;
@@ -3374,6 +3434,8 @@ function openVoucherFromForm(){
     alert("Bill added for "+sup.name+"! New Balance: "+fmtBal(newBalance));
     return;
   }
+  db.payments.push({n:sup.name,phone:sup.phone||"",amt:amt,paidAmt:amt,d:date,bill:ref,note:note||"Supplier Payment",done:true,category:"supplier",mode:mode,supplierIdx:si});
+  saveDB();
   curVoucherPhone=sup.phone||"";
   showVoucher(sup.name,amt,date,note||"Supplier Payment",ref,mode);
 }
@@ -3385,7 +3447,7 @@ function showVoucher(paidTo,amt,date,onAccountOf,ref,mode){
   let h=`
 <div style="background:#0a0a0a;margin:-20px -20px 14px;padding:14px 16px 12px;border-bottom:2px solid #c9a227;">
   <div style="display:flex;align-items:center;gap:10px;">
-    <img src="${LOGO_B64}" style="width:46px;height:46px;object-fit:contain;">
+    <img src="${LOGO_B64}" style="width:56px;height:auto;object-fit:contain;">
     <div><div style="font-size:15px;font-weight:800;color:#fff;letter-spacing:.3px;">${esc(BIZ.name)}</div><div style="font-size:9.5px;color:#ddd;margin-top:2px;">${BIZ.addr}</div></div>
   </div>
 </div>
