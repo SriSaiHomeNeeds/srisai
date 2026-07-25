@@ -3593,7 +3593,7 @@ function renderSuppliers(){
   if(g("supOverdue"))g("supOverdue").textContent=all.filter(function(s){return (s.balance||0)>0;}).length;
   var wrap=g("supViewAllWrap");
   if(filtered.length===0){sl.innerHTML='<div class="empty"><div class="ei">&#128666;</div><p>No suppliers yet. Add one above.</p></div>';if(wrap)wrap.style.display="none";return;}
-  sl.innerHTML=filtered.slice(0,5).map(function(s,ri){return _supplierRowHtml(s,ri);}).join("");
+  sl.innerHTML=filtered.slice(0,5).map(function(s){return _supplierRowHtml(s,db.suppliers.indexOf(s));}).join("");
   if(wrap)wrap.style.display=filtered.length>5?"block":"none";
 }
 window.renderSuppliers=renderSuppliers;
@@ -3603,7 +3603,7 @@ function renderSuppliersOverview(){
   var all=db.suppliers||[];
   var filtered=q?all.filter(function(s){return s.name.toLowerCase().indexOf(q)>=0;}):all;
   if(g("supOvCount"))g("supOvCount").textContent=filtered.length;
-  sl.innerHTML=filtered.length?filtered.map(function(s,ri){return _supplierRowHtml(s,ri);}).join(""):'<div class="empty"><div class="ei">&#128666;</div><p>No suppliers found.</p></div>';
+  sl.innerHTML=filtered.length?filtered.map(function(s){return _supplierRowHtml(s,db.suppliers.indexOf(s));}).join(""):'<div class="empty"><div class="ei">&#128666;</div><p>No suppliers found.</p></div>';
 }
 window.renderSuppliersOverview=renderSuppliersOverview;
 
