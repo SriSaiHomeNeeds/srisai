@@ -3546,10 +3546,42 @@ function _supplierRowHtml(s,ri){
     (recent.length>0?'<div style="font-size:11px;color:var(--muted);margin-top:5px;">'+recent.map(function(t){return t.date+': '+(t.type==="bill"?"Bill":"Paid")+' Rs.'+t.amt.toFixed(0)+(t.ref?' ('+t.ref+')':'');}).join(' | ')+'</div>':'')+
     '<div class="row-btn">'+
       '<button class="btn btn-sm" style="background:var(--muted);" onclick="editSupplier('+ri+')">&#9998; Edit</button>'+
+      '<button class="btn btn-sm" style="background:#f5f3ff;color:#7c3aed;" onclick="toggleSupplierTxnHistory('+ri+')" id="supTxnToggle_'+ri+'">&#128203; Transactions</button>'+
       '<button class="btn btn-teal btn-sm" onclick="selectSupplierInForm('+ri+')">&#128196; Generate Voucher (PDF)</button>'+
       '<button class="btn btn-del btn-sm" onclick="deleteSupplier('+ri+')">&#128465;</button></div>'+
+    '<div id="supTxnHist_'+ri+'" style="display:none;margin-top:8px;border-top:1px solid var(--border);padding-top:8px;"></div>'+
   '</div>';
 }
+function toggleSupplierTxnHistory(ri){
+  var box=g("supTxnHist_"+ri);if(!box)return;
+  var showing=box.style.display!=="none";
+  if(showing){box.style.display="none";return;}
+  box.style.display="block";
+  renderSupplierTxnHistoryBox(ri);
+}
+window.toggleSupplierTxnHistory=toggleSupplierTxnHistory;
+function renderSupplierTxnHistoryBox(ri){
+  var box=g("supTxnHist_"+ri);if(!box)return;
+  var sup=(db.suppliers||[])[ri];if(!sup)return;
+  var txns=sup.txns||[];
+  if(!txns.length){box.innerHTML='<div style="font-size:11px;color:var(--muted);">No transaction history yet.</div>';return;}
+  var rows=txns.map(function(t,idx){return {t:t,idx:idx};}).reverse();
+  box.innerHTML=rows.map(function(r){
+    var t=r.t,idx=r.idx;
+    var isBill=t.type==="bill";
+    return '<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;">'+
+      '<div style="display:flex;justify-content:space-between;">'+
+        '<span>'+fmtDMY(t.date)+' - '+(isBill?"Bill":"Payment")+(t.mode?' ['+esc(t.mode)+']':'')+(t.ref?' ('+esc(t.ref)+')':'')+'</span>'+
+        '<span style="font-weight:700;color:'+(isBill?"#dc2626":"#15803d")+';">'+(isBill?"+":"-")+'Rs.'+t.amt.toFixed(2)+'</span>'+
+      '</div>'+
+      '<div style="display:flex;gap:6px;margin-top:4px;">'+
+        '<button type="button" onclick="editSupplierTxn('+ri+','+idx+');renderSupplierTxnHistoryBox('+ri+');renderSuppliers();renderSuppliersOverview();" style="font-size:10px;padding:3px 8px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#9998; Edit</button>'+
+        (isBill?"":'<button type="button" onclick="regenerateSupplierVoucher('+ri+','+idx+')" style="font-size:10px;padding:3px 8px;background:#f5f3ff;color:#7c3aed;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#128196; Reprint Voucher</button>')+
+      '</div>'+
+    '</div>';
+  }).join("");
+}
+window.renderSupplierTxnHistoryBox=renderSupplierTxnHistoryBox;
 function renderSuppliers(){
   var sl=g("supplierList");if(!sl)return;
   var q=(g("searchSup")?g("searchSup").value||"":"").toLowerCase();
