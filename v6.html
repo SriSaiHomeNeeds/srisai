@@ -1520,7 +1520,28 @@ g("btnAE").addEventListener("click",addExpense);
 function delItem(type,i){
   if(type==="sales"&&!window._isAdmin){alert("Only Admin (PIN 1978) can delete sales records.");return;}
   if(type==="leads"&&!window._isAdmin){alert("Only Admin (PIN 1978) can delete lead records.");return;}
-  if(confirm("Delete?")){db[type].splice(i,1);saveDB();render();}
+  if(confirm("Delete?")){
+    if(type==="payments"){
+      var p=db.payments[i];
+      if(p&&p.category==="supplier"&&p.supplierIdx!=null){
+        var sup=(db.suppliers||[])[p.supplierIdx];
+        if(sup&&sup.txns){
+          var txnIdx=-1;
+          for(var j=sup.txns.length-1;j>=0;j--){
+            var t=sup.txns[j];
+            if(t.type==="payment"&&t.date===p.d&&t.ref===p.bill&&Math.abs(t.amt-p.amt)<0.01){txnIdx=j;break;}
+          }
+          if(txnIdx>=0){
+            sup.balance=(sup.balance||0)+sup.txns[txnIdx].amt;
+            sup.txns.splice(txnIdx,1);
+          }
+        }
+      }
+    }
+    db[type].splice(i,1);saveDB();render();
+    if(window.renderSuppliers)window.renderSuppliers();
+    if(window.renderSuppliersOverview)window.renderSuppliersOverview();
+  }
 }
 function collectPay(i){
   const s=db.sales[i],d=due(s);
@@ -3229,9 +3250,16 @@ function _payRowHtml(p,ri){
         '<div style="font-size:10px;color:var(--muted);text-align:right;">'+pct+'% paid'+(isDone?' \u{2705} Complete':'')+' </div>'+
       '</div>'+
       (!isDone?'<div class="row-btn"><button class="btn btn-done btn-sm" onclick="collectPartialPay('+ri+')">&#128184; Pay</button>'+(p.phone?'<button class="btn btn-wa btn-sm" onclick="waPayment('+ri+')">&#128245; WA</button>':"")+' <button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="openEdit(\'payments\','+ri+')">Edit</button><button class="btn btn-del btn-sm" onclick="delItem(\'payments\','+ri+')">&#128465;</button></div>':
-       '<div class="row-btn">'+(p.phone?'<button class="btn btn-wa btn-sm" onclick="waPaymentMade('+ri+')">&#128245; Send Payment Made</button>':"")+' <button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="openEdit(\'payments\','+ri+')">Edit</button><button class="btn btn-del btn-sm" onclick="delItem(\'payments\','+ri+')">&#128465;</button></div>')+
+       '<div class="row-btn">'+(p.category==="supplier"?'<button class="btn btn-sm" style="background:#f5f3ff;color:#7c3aed;" onclick="reprintPaymentVoucher('+ri+')">&#128196; Voucher</button>':"")+(p.phone?'<button class="btn btn-wa btn-sm" onclick="waPaymentMade('+ri+')">&#128245; Send Payment Made</button>':"")+' <button class="btn btn-sm" style="background:#e5e7eb;color:#374151;" onclick="openEdit(\'payments\','+ri+')">Edit</button><button class="btn btn-del btn-sm" onclick="delItem(\'payments\','+ri+')">&#128465;</button></div>')+
     '</div>';
 }
+function reprintPaymentVoucher(ri){
+  var p=db.payments[ri];if(!p)return;
+  var sup=(p.supplierIdx!=null)?(db.suppliers||[])[p.supplierIdx]:null;
+  curVoucherPhone=(sup&&sup.phone)||p.phone||"";
+  showVoucher(p.n,p.amt,p.d,p.note||"Supplier Payment",p.bill,p.mode);
+}
+window.reprintPaymentVoucher=reprintPaymentVoucher;
 function renderPaymentsOverview(){
   var pl=g("payListFull");if(!pl)return;
   var q=(g("searchPayOv")?g("searchPayOv").value||"":"").toLowerCase();
@@ -3326,35 +3354,46 @@ function updateSupplierPrevBalance(){
 }
 window.updateSupplierPrevBalance=updateSupplierPrevBalance;
 
-function editSupplierTxn(si,idx){
+var _editingSupTxn=null;
+function startEditSupplierTxn(si,idx){
+  _editingSupTxn={si:si,idx:idx};
+  renderSupplierTxnHistoryBox(si);
+}
+window.startEditSupplierTxn=startEditSupplierTxn;
+
+function cancelEditSupplierTxn(si){
+  _editingSupTxn=null;
+  renderSupplierTxnHistoryBox(si);
+}
+window.cancelEditSupplierTxn=cancelEditSupplierTxn;
+
+function saveEditSupplierTxn(si,idx){
   var sup=(db.suppliers||[])[si];if(!sup||!sup.txns||!sup.txns[idx])return;
   var t=sup.txns[idx];
-  var newAmtStr=prompt("Edit amount (Rs.):",t.amt);
-  if(newAmtStr===null)return;
-  var newAmt=parseFloat(newAmtStr);
+  var amtEl=g("editTxnAmt_"+si+"_"+idx);
+  var modeEl=g("editTxnMode_"+si+"_"+idx);
+  var newAmt=amtEl?parseFloat(amtEl.value):NaN;
   if(isNaN(newAmt)||newAmt<=0){alert("Enter a valid amount.");return;}
-  var modes=["Cash","UPI","Card","Bank Transfer","Credit/EMI","Cheque","Mixed"];
-  var newMode=prompt("Payment Mode ("+modes.join("/")+"):",t.mode||"Cash");
-  if(newMode===null)return;
-  newMode=newMode.trim();
-  if(modes.indexOf(newMode)<0){alert("Please enter one of: "+modes.join(", "));return;}
+  var newMode=modeEl?modeEl.value:(t.mode||"Cash");
   // Reverse old effect on balance, then apply new
   var oldEffect=t.type==="bill"?t.amt:-t.amt;
   sup.balance=(sup.balance||0)-oldEffect;
   var newEffect=t.type==="bill"?newAmt:-newAmt;
   sup.balance=(sup.balance||0)+newEffect;
+  var oldAmt=t.amt;
   t.amt=newAmt;
   t.mode=newMode;
   // Keep the linked db.payments entry (if any) in sync too
   (db.payments||[]).forEach(function(p){
-    if(p.category==="supplier"&&p.supplierIdx===si&&p.bill===t.ref&&p.d===t.date&&Math.abs(p.amt-oldEffect*-1)<0.01){
+    if(p.category==="supplier"&&p.supplierIdx===si&&p.bill===t.ref&&p.d===t.date&&Math.abs(p.amt-oldAmt)<0.01){
       p.amt=newAmt;p.paidAmt=newAmt;p.mode=newMode;
     }
   });
-  saveDB();renderSuppliers();updateSupplierPrevBalance();
+  _editingSupTxn=null;
+  saveDB();renderSuppliers();renderSuppliersOverview();updateSupplierPrevBalance();renderSupplierTxnHistoryBox(si);
   alert("Transaction updated. New Balance: "+fmtBal(sup.balance));
 }
-window.editSupplierTxn=editSupplierTxn;
+window.saveEditSupplierTxn=saveEditSupplierTxn;
 
 function regenerateSupplierVoucher(si,idx){
   var sup=(db.suppliers||[])[si];if(!sup||!sup.txns||!sup.txns[idx])return;
@@ -3565,17 +3604,34 @@ function renderSupplierTxnHistoryBox(ri){
   var sup=(db.suppliers||[])[ri];if(!sup)return;
   var txns=sup.txns||[];
   if(!txns.length){box.innerHTML='<div style="font-size:11px;color:var(--muted);">No transaction history yet.</div>';return;}
+  var modes=["Cash","UPI","Card","Bank Transfer","Credit/EMI","Cheque","Mixed"];
   var rows=txns.map(function(t,idx){return {t:t,idx:idx};}).reverse();
   box.innerHTML=rows.map(function(r){
     var t=r.t,idx=r.idx;
     var isBill=t.type==="bill";
+    var isEditing=_editingSupTxn&&_editingSupTxn.si===ri&&_editingSupTxn.idx===idx;
+    if(isEditing){
+      return '<div style="padding:8px;margin:4px 0;background:#f8fafc;border:1px solid #dbeafe;border-radius:8px;">'+
+        '<div style="font-size:10px;color:var(--muted);margin-bottom:6px;">'+fmtDMY(t.date)+' - '+(isBill?"Bill":"Payment")+'</div>'+
+        '<div style="display:flex;gap:6px;margin-bottom:6px;">'+
+          '<input type="number" id="editTxnAmt_'+ri+'_'+idx+'" value="'+t.amt+'" style="flex:1;padding:7px;font-size:12px;border:1px solid var(--border);border-radius:6px;">'+
+          '<select id="editTxnMode_'+ri+'_'+idx+'" style="flex:1;padding:7px;font-size:12px;border:1px solid var(--border);border-radius:6px;">'+
+            modes.map(function(m){return '<option value="'+m+'"'+(m===t.mode?' selected':'')+'>'+m+'</option>';}).join("")+
+          '</select>'+
+        '</div>'+
+        '<div style="display:flex;gap:6px;">'+
+          '<button type="button" onclick="saveEditSupplierTxn('+ri+','+idx+')" style="flex:1;padding:7px;background:#16a34a;color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">&#10003; Save</button>'+
+          '<button type="button" onclick="cancelEditSupplierTxn('+ri+')" style="flex:1;padding:7px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">Cancel</button>'+
+        '</div>'+
+      '</div>';
+    }
     return '<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;">'+
       '<div style="display:flex;justify-content:space-between;">'+
         '<span>'+fmtDMY(t.date)+' - '+(isBill?"Bill":"Payment")+(t.mode?' ['+esc(t.mode)+']':'')+(t.ref?' ('+esc(t.ref)+')':'')+'</span>'+
         '<span style="font-weight:700;color:'+(isBill?"#dc2626":"#15803d")+';">'+(isBill?"+":"-")+'Rs.'+t.amt.toFixed(2)+'</span>'+
       '</div>'+
       '<div style="display:flex;gap:6px;margin-top:4px;">'+
-        '<button type="button" onclick="editSupplierTxn('+ri+','+idx+');renderSupplierTxnHistoryBox('+ri+');renderSuppliers();renderSuppliersOverview();" style="font-size:10px;padding:3px 8px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#9998; Edit</button>'+
+        '<button type="button" onclick="startEditSupplierTxn('+ri+','+idx+')" style="font-size:10px;padding:3px 8px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#9998; Edit</button>'+
         (isBill?"":'<button type="button" onclick="regenerateSupplierVoucher('+ri+','+idx+')" style="font-size:10px;padding:3px 8px;background:#f5f3ff;color:#7c3aed;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#128196; Reprint Voucher</button>')+
       '</div>'+
     '</div>';
