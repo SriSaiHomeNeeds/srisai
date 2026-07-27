@@ -1176,7 +1176,7 @@ const TAGLINE_WHITE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAAcCAY
 const BIZ = {
   name:"SRI SAI HOME NEEDS",
   addr:"BR Gas (Indane), Manjeera Road Lane, Chandanagar, Hyderabad, Telangana - 500050",
-  mobile:"9912243300 | 9676353000",
+  mobile:"9676353000 | 9912243300",
   gstin:"36AIEPK3901A1ZX",
   gstRate:0.09,
   mapLink:"https://maps.app.goo.gl/B4bDvsT47zLZvYPt9"
@@ -3344,13 +3344,14 @@ function _supplierTxnRowsHtml(si){
       '<div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">'+
         '<button type="button" onclick="startEditSupplierTxn('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#9998; Edit</button>'+
         (isBill?"":'<button type="button" onclick="regenerateSupplierVoucher('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#f5f3ff;color:#7c3aed;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#128196; Reprint Voucher</button>')+
-        '<button type="button" onclick="deleteSupplierTxn('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#128465; Delete</button>'+
+        (window._isAdmin?'<button type="button" onclick="deleteSupplierTxn('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#128465; Delete</button>':'')+
       '</div>'+
     '</div>';
   }).join("");
 }
 
 function deleteSupplierTxn(si,idx){
+  if(!window._isAdmin){alert("Only Admin (PIN 1978) can delete transactions.");return;}
   var sup=(db.suppliers||[])[si];if(!sup||!sup.txns||!sup.txns[idx])return;
   if(!confirm("Delete this transaction? This cannot be undone."))return;
   var t=sup.txns[idx];
