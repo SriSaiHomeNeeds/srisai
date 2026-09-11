@@ -336,18 +336,7 @@ function onPayCatChange(){
     else if(cat!=="rent"&&pNameEl.value.trim()==="Shop Rent")pNameEl.value="";
   }
   var html="";
-  if(cat==="supplier"){
-    // Synced with Suppliers section: pick an existing supplier instead of free text.
-    if(nameWrap)nameWrap.style.display="none";
-    if(phoneWrap)phoneWrap.style.display="none";
-    var suppliers=(window._getDb?window._getDb():{suppliers:[]}).suppliers||[];
-    var opts='<option value="">Select supplier...</option>'+
-      suppliers.map(function(s,i){return '<option value="'+i+'">'+s.name.replace(/</g,"&lt;")+(s.balance>0?" (Bal: Rs."+s.balance.toFixed(0)+")":"")+'</option>';}).join("");
-    html='<div class="fg"><label>Supplier *</label><select id="pSupplierSelect" onchange="onPaySupplierPick()">'+opts+'</select>'+
-      '<div id="pSupplierBalanceInfo" style="font-size:12px;font-weight:700;color:#d97706;margin-top:5px;"></div></div>'+
-      '<div class="fg"><label>Payment Mode</label><select id="pSupMode"><option value="Cash">Cash</option><option value="UPI">UPI</option><option value="Card">Card</option><option value="Bank Transfer">Bank Transfer</option><option value="Credit/EMI">Credit/EMI</option><option value="Cheque">Cheque</option><option value="Mixed">Mixed</option></select></div>'+
-      '<div style="font-size:11px;color:var(--muted);margin:-2px 0 8px;">This records a payment made to the supplier and reduces their balance - stays in sync with the Suppliers section, and generates a payment voucher automatically.</div>';
-  } else if(cat==="loan"){
+  if(cat==="loan"){
     if(nameWrap)nameWrap.style.display="";
     if(phoneWrap)phoneWrap.style.display="";
     html='<div class="row2"><div class="fg"><label>Lender</label><input id="pLender" placeholder="Bank / Person"></div><div class="fg"><label>Remaining EMIs</label><input id="pEmiLeft" type="number" placeholder="24"></div></div>';
@@ -620,7 +609,6 @@ function onExpCatChange(){
         <select id="pCategory" onchange="onPayCatChange()">
           <option value="rent">&#127978; Shop Rent</option>
           <option value="loan">&#127984; Loan / EMI</option>
-          <option value="supplier">&#128230; Supplier Payment</option>
           <option value="other">&#128221; Other</option>
         </select>
       </div>
@@ -650,6 +638,10 @@ function onExpCatChange(){
     </div>
     <div id="pExtraFields"></div>
     <div class="fg"><label>Note</label><textarea id="pNote" placeholder="Any remarks..."></textarea></div>
+    <div class="fg" style="display:flex;align-items:center;gap:8px;">
+      <input type="checkbox" id="pAlreadyPaid" style="width:18px;height:18px;">
+      <label for="pAlreadyPaid" style="margin:0;">This payment is already made (not a pending due)</label>
+    </div>
     <button class="btn btn-save" id="btnAP">Save Payment</button>
   </div>
   <div class="sw" style="display:none;"><span class="si">&#128269;</span><input id="searchPay" placeholder="Search payments..."></div>
@@ -1480,30 +1472,15 @@ function addPayment(){
   const date=g("pDate").value;
   const amt=parseFloat(g("pAmt").value)||0;
   if(!amt||!date){alert("Amount and Due Date required.");return;}
-  if(cat==="supplier"){
-    const si=g("pSupplierSelect")?parseInt(g("pSupplierSelect").value):-1;
-    if(isNaN(si)||si<0){alert("Select a supplier.");return;}
-    const sup=(db.suppliers||[])[si];if(!sup){alert("Supplier not found.");return;}
-    const mode=g("pSupMode")?g("pSupMode").value:"Cash";
-    const ref=g("pBill").value.trim();
-    const note=g("pNote").value.trim();
-    if(!sup.txns)sup.txns=[];
-    sup.txns.push({type:"payment",amt:amt,date:date,ref:ref,note:note,mode:mode});
-    sup.balance=(sup.balance||0)-amt;
-    db.payments.push({n:sup.name,phone:sup.phone||"",amt:amt,paidAmt:amt,d:date,bill:ref,note:note||"Supplier Payment",done:true,category:"supplier",mode:mode,supplierIdx:si});
-    ["pAmt","pBill","pNote"].forEach(id=>{const el=g(id);if(el)el.value="";});
-    saveDB();render();checkRem();
-    if(window.renderSuppliers)window.renderSuppliers();
-    if(window.updateSupplierSelect)window.updateSupplierSelect();
-    curVoucherPhone=sup.phone||"";
-    showVoucher(sup.name,amt,date,note||"Supplier Payment",ref,mode);
-    return;
-  }
   const name=g("pName").value.trim();
   if(!name){alert("Name / Description required.");return;}
-  db.payments.push({n:name,phone:g("pPhone").value.trim(),amt:amt,paidAmt:0,d:date,bill:g("pBill").value.trim(),note:g("pNote").value.trim(),done:false,category:cat,mode:g("pMode")?g("pMode").value:""});
+  const alreadyPaid=g("pAlreadyPaid")?g("pAlreadyPaid").checked:false;
+  const entry={n:name,phone:g("pPhone").value.trim(),amt:amt,paidAmt:alreadyPaid?amt:0,d:date,bill:g("pBill").value.trim(),note:g("pNote").value.trim(),done:alreadyPaid,category:cat,mode:g("pMode")?g("pMode").value:""};
+  if(alreadyPaid)entry.history=[{amt:amt,date:date}];
+  db.payments.push(entry);
   ["pName","pPhone","pAmt","pDate","pBill","pNote"].forEach(id=>g(id).value="");
-  saveDB();render();checkRem();alert("Payment due saved!");
+  if(g("pAlreadyPaid"))g("pAlreadyPaid").checked=false;
+  saveDB();render();checkRem();alert(alreadyPaid?"Payment saved as already paid!":"Payment due saved!");
 }
 function addExpense(){
   const desc=g("eDesc").value.trim(),amt=parseFloat(g("eAmt").value)||0;
@@ -2133,10 +2110,11 @@ ${x.phone?`<button class="btn btn-wa" style="padding:4px 7px;font-size:11px;" on
   let pArr=filt(db.payments,"searchPay"),pPend=0,pH="";
   pArr.forEach(x=>{
     const ri=db.payments.indexOf(x);
-    if(!x.done)pPend+=x.a;
+    const xAmt=x.amt!=null?x.amt:(x.a||0);
+    if(!x.done)pPend+=xAmt;
     pH+=`<div class="rec pay-r${x.done?" closed-r":""}">
 <div class="rec-name">${esc(x.n)}${x.done?'<span class="badge b-closed">Paid</span>':'<span class="badge b-pending">Unpaid</span>'}${!x.done?dbadge(x.d):""}</div>
-<div class="rec-sub">Rs.${x.a.toFixed(2)} | Due: ${fmtDMY(x.d)}${x.bill?" | #"+esc(x.bill):""}${x.phone?" | "+esc(x.phone):""}</div>
+<div class="rec-sub">Rs.${xAmt.toFixed(2)} | Due: ${fmtDMY(x.d)}${x.bill?" | #"+esc(x.bill):""}${x.phone?" | "+esc(x.phone):""}</div>
 ${x.note?`<div class="note-chip">${esc(x.note)}</div>`:""}
 <div class="row-btn">
 ${x.phone?`<button class="btn btn-call" onclick="callCust(this.dataset.p)" data-p="${esc(x.phone)}">Call</button>`:""}
@@ -2591,6 +2569,7 @@ function _dirKey(phone, name) {
 function buildDirectory() {
   var map = {};
   function add(phone, name, tags, meta) {
+    if(!phone) return;
     var key = _dirKey(phone, name);
     if(!map[key]) map[key] = {key:key, name:name||"Unknown", phone:phone||"", tags:[], totalPurchase:0, lastDate:"", deletable:false, bills:[]};
     var c = map[key];
@@ -2603,8 +2582,8 @@ function buildDirectory() {
   db.sales.forEach(function(s){add(s.phone,s.n,["customer"],{date:s.date,purchase:s.amt,bill:s.bill});});
   db.leads.filter(function(x){return !x.done;}).forEach(function(l){add(l.phone,l.n,["lead"],{date:l.d});});
   db.payments.forEach(function(p){add(p.phone,p.n,["payment"],{date:p.d,bill:p.bill});});
-  _dirImported.forEach(function(m){add(m.phone,m.name,["imported"],{});var k=_dirKey(m.phone,m.name);if(map[k])map[k].deletable=true;});
-  _dirManual.forEach(function(m){add(m.phone,m.name,["manual"],{});var k=_dirKey(m.phone,m.name);if(map[k])map[k].deletable=true;});
+  _dirImported.forEach(function(m){if(m.phone){add(m.phone,m.name,["imported"],{});var k=_dirKey(m.phone,m.name);if(map[k])map[k].deletable=true;}});
+  _dirManual.forEach(function(m){if(m.phone){add(m.phone,m.name,["manual"],{});var k=_dirKey(m.phone,m.name);if(map[k])map[k].deletable=true;}});
   return Object.values(map).sort(function(a,b){return a.name.localeCompare(b.name);});
 }
 
@@ -3342,7 +3321,7 @@ function _supplierTxnRowsHtml(si){
         '<span style="font-weight:700;color:'+(isBill?"#dc2626":"#15803d")+';">'+(isBill?"+":"-")+'Rs.'+t.amt.toFixed(2)+'</span>'+
       '</div>'+
       '<div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">'+
-        '<button type="button" onclick="startEditSupplierTxn('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#9998; Edit</button>'+
+        (window._isAdmin?'<button type="button" onclick="startEditSupplierTxn('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#e5e7eb;color:#374151;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#9998; Edit</button>':'')+
         (isBill?"":'<button type="button" onclick="regenerateSupplierVoucher('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#f5f3ff;color:#7c3aed;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#128196; Reprint Voucher</button>')+
         (window._isAdmin?'<button type="button" onclick="deleteSupplierTxn('+si+','+idx+')" style="font-size:10px;padding:3px 8px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;font-family:inherit;">&#128465; Delete</button>':'')+
       '</div>'+
@@ -3406,6 +3385,7 @@ window.updateSupplierPrevBalance=updateSupplierPrevBalance;
 
 var _editingSupTxn=null;
 function startEditSupplierTxn(si,idx){
+  if(!window._isAdmin){alert("Only Admin (PIN 1978) can edit transaction amounts.");return;}
   _editingSupTxn={si:si,idx:idx};
   renderSupplierTxnHistoryBox(si);
   updateSupplierPrevBalance();
