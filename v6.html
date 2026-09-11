@@ -459,6 +459,15 @@ function onExpCatChange(){
       <div class="fg"><label>Sale Date</label><input id="sDate" type="date"></div>
     </div>
     <div class="fg"><label>Customer Name *</label><input id="sName" placeholder="Customer name"></div>
+    <div class="fg"><label>Sale Source *</label>
+      <select id="sSource">
+        <option value="">Select source...</option>
+        <option value="IM">IM</option>
+        <option value="Walk-in">Walk-in</option>
+        <option value="Referral">Referral</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
     <div class="row2">
       <div class="fg"><label>Phone</label><input id="sPhone" type="tel" placeholder="Mobile number"></div>
       <div class="fg"><label>Payment Mode</label>
@@ -1435,15 +1444,17 @@ g("sAdv").addEventListener("input",calcDue);
 
 function addSale(){
   const name=g("sName").value.trim();
+  const source=g("sSource")?g("sSource").value:"";
   const validLines=_saleLines.filter(function(l){return l.name&&l.name.trim()&&parseFloat(l.qty)>0&&parseFloat(l.price)>=0;});
   if(!name){alert("Customer Name required.");return;}
+  if(!source){alert("Sale Source is required (IM, Walk-in, Referral, or Other).");return;}
   if(validLines.length===0){alert("Add at least one product with name, qty, and price.");return;}
   const amt=validLines.reduce(function(sum,l){return sum+parseFloat(l.qty)*parseFloat(l.price);},0);
   if(amt<=0){alert("Sale Amount must be greater than 0.");return;}
   const adv=parseFloat(g("sAdv").value)||0,d=Math.max(0,amt-adv),dd=g("sDueDate").value,del=g("sDelivery").value==="yes";
   const bill=g("sBill").value.trim()||genBill();
   const items=validLines.map(function(l){return {name:l.name.trim(),qty:parseFloat(l.qty),price:parseFloat(l.price),stockId:l.stockId||""};});
-  const sale={bill,date:g("sDate").value||TODAY,n:name,phone:g("sPhone").value.trim(),mode:g("sMode").value,
+  const sale={bill,date:g("sDate").value||TODAY,n:name,phone:g("sPhone").value.trim(),mode:g("sMode").value,source:source,
     item:items[0].name+(items.length>1?" +"+(items.length-1)+" more":""),amt,adv,dueDate:dd,note:g("sNote").value.trim(),delivery:del,
     delDate:del?g("sDelDate").value:"",delAddr:del?g("sDelAddr").value.trim():"",
     stockId:items[0].stockId,items:items,
@@ -1453,6 +1464,7 @@ function addSale(){
   renderSaleLines();
   ["sBill","sName","sPhone","sAdv","sDue","sDueDate","sNote","sDelDate","sDelAddr"].forEach(id=>g(id).value="");
   g("sDate").value="";g("sMode").value="Cash";g("sDelivery").value="no";g("deliveryFields").style.display="none";
+  if(g("sSource"))g("sSource").value="";
   if(window.renderDir)window.renderDir();
   if(window.renderDirPreview)window.renderDirPreview();
   const si=db.sales.length-1;
@@ -2188,21 +2200,27 @@ g("btnRep").addEventListener("click",()=>{
   const sales=db.sales.filter(x=>x.date>=from&&x.date<=to);
   const exps=db.expenses.filter(x=>x.date>=from&&x.date<=to);
   const sA=sales.reduce((s,x)=>s+x.amt,0),sD=sales.reduce((s,x)=>s+due(x),0),eA=exps.reduce((s,x)=>s+x.a,0),pr=sA-eA;
+  const srcMap={};
+  sales.forEach(x=>{const src=x.source||"Not Recorded";if(!srcMap[src])srcMap[src]={count:0,amt:0};srcMap[src].count++;srcMap[src].amt+=x.amt;});
+  const srcRows=Object.keys(srcMap).sort((a,b)=>srcMap[b].amt-srcMap[a].amt).map(src=>
+    `<div class="bill-row"><span>${esc(src)} (${srcMap[src].count})</span><span>Rs.${srcMap[src].amt.toFixed(2)}</span></div>`
+  ).join("");
   g("reportOut").innerHTML=`<div class="card"><div class="card-title">Report: ${from} to ${to}</div>
 <div class="dash-grid">
 <div class="tile t1"><div class="ti">&#128176;</div><div class="tv">Rs.${sA.toFixed(2)}</div><div class="tl">Sales (${sales.length})</div></div>
 <div class="tile t5"><div class="ti">&#8987;</div><div class="tv">Rs.${sD.toFixed(2)}</div><div class="tl">Still Due</div></div>
 <div class="tile t6"><div class="ti">&#129534;</div><div class="tv">Rs.${eA.toFixed(2)}</div><div class="tl">Expenses</div></div>
 <div class="tile ${pr>=0?"t1":"t5"}"><div class="ti">${pr>=0?"&#128200;":"&#128201;"}</div><div class="tv">Rs.${pr.toFixed(2)}</div><div class="tl">Net Profit</div></div>
-</div></div>`;
+</div></div>
+<div class="card"><div class="card-title">Sales by Source</div>${srcRows||'<div style="font-size:12px;color:var(--muted);">No sales in this range.</div>'}</div>`;
 });
 
 function exportData(){
-  const rows=[["Type","Bill","Date","Customer","Phone","Item","Total","Paid","Due","Due Date","Mode","Status","Note"]];
-  db.sales.forEach(x=>rows.push(["Sale",x.bill||"",x.date,x.n,x.phone||"",x.item||"",x.amt,(x.adv||0),due(x),x.dueDate||"",x.mode,stOf(x),x.note||""]));
-  db.leads.forEach(x=>rows.push(["Lead","","",x.n,x.phone||"",x.item||"","","","",x.d,x.source,x.done?"Done":x.priority,x.note||""]));
-  db.payments.forEach(x=>rows.push(["Payment",x.bill||"","",x.n,x.phone||"","",x.a,"",x.a,x.d,"",x.done?"Paid":"Unpaid",x.note||""]));
-  db.expenses.forEach(x=>rows.push(["Expense","",x.date,"","",x.desc,x.a,"","","",x.cat,"",x.note||""]));
+  const rows=[["Type","Bill","Date","Customer","Phone","Item","Total","Paid","Due","Due Date","Mode","Source","Status","Note"]];
+  db.sales.forEach(x=>rows.push(["Sale",x.bill||"",x.date,x.n,x.phone||"",x.item||"",x.amt,(x.adv||0),due(x),x.dueDate||"",x.mode,x.source||"",stOf(x),x.note||""]));
+  db.leads.forEach(x=>rows.push(["Lead","","",x.n,x.phone||"",x.item||"","","","",x.d,x.source,"",x.done?"Done":x.priority,x.note||""]));
+  db.payments.forEach(x=>rows.push(["Payment",x.bill||"","",x.n,x.phone||"","",x.a,"",x.a,x.d,"","",x.done?"Paid":"Unpaid",x.note||""]));
+  db.expenses.forEach(x=>rows.push(["Expense","",x.date,"","",x.desc,x.a,"","","",x.cat,"","",x.note||""]));
   const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n");
   const blob=new Blob([csv],{type:"text/csv"});
   const url=URL.createObjectURL(blob);
