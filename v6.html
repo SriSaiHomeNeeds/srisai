@@ -1650,18 +1650,62 @@ function _ef(lbl,id,val,type="text"){return `<div class="fg"><label>${lbl}</labe
 function _efs(lbl,id,val,opts){let s=`<div class="fg"><label>${lbl}</label><select id="ef_${id}">`;opts.forEach(o=>s+=`<option${o===val?" selected":""}>${o}</option>`);return s+"</select></div>";}
 function _efta(lbl,id,val){return `<div class="fg"><label>${lbl}</label><textarea id="ef_${id}" style="min-height:50px;width:100%;padding:9px;border:1.5px solid #dce1e8;border-radius:8px;font-size:14px;font-family:inherit;">${String(val||"")}</textarea></div>`;}
 function _gef(id){return(document.getElementById("ef_"+id)||{value:""}).value||"";}
+var _editSaleItems=[];
+function _renderEditSaleItems(){
+  var box=g("editSaleItemsBox");if(!box)return;
+  box.innerHTML=_editSaleItems.map(function(it,i){
+    return '<div style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:8px;margin-bottom:6px;">'+
+      '<div style="display:flex;gap:6px;margin-bottom:6px;">'+
+        '<input placeholder="Product name" value="'+String(it.name||"").replace(/"/g,"&quot;")+'" oninput="_updateEditSaleItem('+i+',\'name\',this.value)" style="flex:1;min-width:0;padding:8px;border:1.5px solid #dce1e8;border-radius:6px;font-size:13px;font-family:inherit;">'+
+        (_editSaleItems.length>1?'<button type="button" onclick="_removeEditSaleItem('+i+')" style="background:#fee2e2;color:#dc2626;border:none;border-radius:6px;padding:0 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">&#10005;</button>':'')+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">'+
+        '<input type="number" placeholder="Qty" value="'+(it.qty!=null?it.qty:"")+'" oninput="_updateEditSaleItem('+i+',\'qty\',this.value)" style="padding:8px;border:1.5px solid #dce1e8;border-radius:6px;font-size:13px;font-family:inherit;">'+
+        '<input type="number" placeholder="Price/unit" value="'+(it.price!=null?it.price:"")+'" oninput="_updateEditSaleItem('+i+',\'price\',this.value)" style="padding:8px;border:1.5px solid #dce1e8;border-radius:6px;font-size:13px;font-family:inherit;">'+
+      '</div>'+
+    '</div>';
+  }).join("");
+  var total=_editSaleItems.reduce(function(s,it){return s+(parseFloat(it.qty)||0)*(parseFloat(it.price)||0);},0);
+  var totalEl=g("editSaleTotalDisplay");if(totalEl)totalEl.textContent="Rs."+total.toFixed(2);
+}
+function _updateEditSaleItem(i,field,value){if(_editSaleItems[i]){_editSaleItems[i][field]=value;_renderEditSaleItems();}}
+window._updateEditSaleItem=_updateEditSaleItem;
+function _addEditSaleItem(){_editSaleItems.push({name:"",qty:"",price:"",stockId:""});_renderEditSaleItems();}
+window._addEditSaleItem=_addEditSaleItem;
+function _removeEditSaleItem(i){if(_editSaleItems.length<=1)return;_editSaleItems.splice(i,1);_renderEditSaleItems();}
+window._removeEditSaleItem=_removeEditSaleItem;
+
 function openEdit(type,idx){
   _editCtx={type,idx};let h="";
   const ttl=g("editTitle"),flds=g("editFields");
-  if(type==="sales"){const s=db.sales[idx];ttl.innerText="Edit Sale";h=_ef("Customer Name","n",s.n)+`<div class="edit-row">`+_ef("Phone","phone",s.phone,"tel")+_ef("Sale Date","date",s.date,"date")+`</div>`+_ef("Item / Product","item",s.item)+`<div class="edit-row">`+_ef("Total Amount","amt",s.amt,"number")+_ef("Amount Paid","adv",s.adv||0,"number")+`</div>`+`<div class="edit-row">`+_ef("Due Date","dueDate",s.dueDate,"date")+_efs("Mode","mode",s.mode,["Cash","UPI","Card","Bank Transfer","Credit/EMI","Cheque","Mixed"])+`</div>`+_efta("Note","note",s.note);}
+  if(type==="sales"){
+    const s=db.sales[idx];ttl.innerText="Edit Sale";
+    _editSaleItems=(s.items&&s.items.length)?s.items.map(function(it){return {name:it.name,qty:it.qty,price:it.price,stockId:it.stockId||""};}):[{name:s.item||"",qty:1,price:s.amt||0,stockId:""}];
+    h=_ef("Customer Name","n",s.n)+`<div class="edit-row">`+_ef("Phone","phone",s.phone,"tel")+_ef("Sale Date","date",s.date,"date")+`</div>`+
+      `<div class="fg"><label>Products</label><div id="editSaleItemsBox"></div>`+
+      `<button type="button" onclick="_addEditSaleItem()" style="width:100%;padding:9px;background:#eff6ff;color:#2563eb;border:1.5px dashed #93c5fd;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:2px;">&#43; Add Product Line</button></div>`+
+      `<div class="fg" style="background:#f0fdf4;border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;"><span style="font-weight:700;font-size:13px;color:#15803d;">Total Amount</span><span id="editSaleTotalDisplay" style="font-weight:800;color:#15803d;">Rs.0.00</span></div>`+
+      `<div class="edit-row">`+_ef("Amount Paid","adv",s.adv||0,"number")+_ef("Due Date","dueDate",s.dueDate,"date")+`</div>`+_efs("Mode","mode",s.mode,["Cash","UPI","Card","Bank Transfer","Credit/EMI","Cheque","Mixed"])+_efta("Note","note",s.note);
+  }
   else if(type==="leads"){const l=db.leads[idx];ttl.innerText="Edit Lead";h=_ef("Customer Name","n",l.n)+`<div class="edit-row">`+_ef("Phone","phone",l.phone,"tel")+_ef("Follow-up Date","d",l.d,"date")+`</div>`+_ef("Interested In","item",l.item)+`<div class="edit-row">`+_ef("Budget","budget",l.budget||0,"number")+_efs("Priority","priority",l.priority,["Hot","Warm","Cold"])+`</div>`+_efs("Source","source",l.source,["Walk-in","Referral","Social Media","Phone Enquiry","IM Lead","Other"])+_efta("Note","note",l.note);}
   else if(type==="payments"){const x=db.payments[idx];ttl.innerText="Edit Payment";h=_ef("Customer Name","n",x.n)+`<div class="edit-row">`+_ef("Phone","phone",x.phone,"tel")+_ef("Amount","amt",x.amt!=null?x.amt:x.a,"number")+`</div>`+`<div class="edit-row">`+_ef("Due Date","d",x.d,"date")+_ef("Ref No.","bill",x.bill)+`</div>`+_efta("Note","note",x.note);}
   else if(type==="expenses"){const x=db.expenses[idx];ttl.innerText="Edit Expense";h=_efs("Category","cat",x.cat,["Transport","Salary","Rent","Electricity","Stock Purchase","Maintenance","Marketing","Other"])+_ef("Amount","amt",x.a,"number")+_ef("Description","desc",x.desc)+_efta("Note","note",x.note);}
   flds.innerHTML=h;g("editOv").style.display="block";
+  if(type==="sales")_renderEditSaleItems();
 }
 function saveEdit(){
   if(!_editCtx)return;const{type,idx}=_editCtx;
-  if(type==="sales"){const s=db.sales[idx];const n=_gef("n");if(n)s.n=n;s.phone=_gef("phone");const it=_gef("item");if(it)s.item=it;const am=parseFloat(_gef("amt"));if(am>0)s.amt=am;const ad=parseFloat(_gef("adv"));if(!isNaN(ad))s.adv=ad;const dt=_gef("date");if(dt)s.date=dt;s.dueDate=_gef("dueDate");s.mode=_gef("mode");s.note=_gef("note");}
+  if(type==="sales"){
+    const s=db.sales[idx];const n=_gef("n");if(n)s.n=n;s.phone=_gef("phone");
+    const validItems=_editSaleItems.filter(function(it){return it.name&&String(it.name).trim()&&parseFloat(it.qty)>0&&parseFloat(it.price)>=0;});
+    if(validItems.length===0){alert("Add at least one product with name, qty, and price.");return;}
+    const items=validItems.map(function(it){return {name:String(it.name).trim(),qty:parseFloat(it.qty),price:parseFloat(it.price),stockId:it.stockId||""};});
+    s.items=items;
+    s.item=items[0].name+(items.length>1?" +"+(items.length-1)+" more":"");
+    s.amt=items.reduce(function(sum,it){return sum+it.qty*it.price;},0);
+    const ad=parseFloat(_gef("adv"));if(!isNaN(ad))s.adv=ad;
+    const dt=_gef("date");if(dt)s.date=dt;s.dueDate=_gef("dueDate");s.mode=_gef("mode");s.note=_gef("note");
+  }
   else if(type==="leads"){const l=db.leads[idx];const n=_gef("n");if(n)l.n=n;l.phone=_gef("phone");l.item=_gef("item");const d=_gef("d");if(d)l.d=d;const b=parseFloat(_gef("budget"));if(!isNaN(b))l.budget=b;l.priority=_gef("priority");l.source=_gef("source");l.note=_gef("note");}
   else if(type==="payments"){const x=db.payments[idx];const n=_gef("n");if(n)x.n=n;x.phone=_gef("phone");const am=parseFloat(_gef("amt"));if(am>0){x.amt=am;delete x.a;}const d=_gef("d");if(d)x.d=d;x.bill=_gef("bill");x.note=_gef("note");}
   else if(type==="expenses"){const x=db.expenses[idx];x.cat=_gef("cat");const am=parseFloat(_gef("amt"));if(am>0)x.a=am;const ds=_gef("desc");if(ds)x.desc=ds;x.note=_gef("note");}
