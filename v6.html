@@ -647,9 +647,8 @@ function onExpCatChange(){
     </div>
     <div id="pExtraFields"></div>
     <div class="fg"><label>Note</label><textarea id="pNote" placeholder="Any remarks..."></textarea></div>
-    <div class="fg" style="display:flex;align-items:center;gap:8px;">
-      <input type="checkbox" id="pAlreadyPaid" style="width:18px;height:18px;">
-      <label for="pAlreadyPaid" style="margin:0;">This payment is already made (not a pending due)</label>
+    <div class="fg"><label>Payment Status</label>
+      <button type="button" id="pAlreadyPaidToggle" onclick="togglePAlreadyPaid()" data-checked="false" style="width:100%;padding:13px;border-radius:10px;border:2px solid #dc2626;background:#fef2f2;color:#dc2626;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;text-align:center;touch-action:manipulation;">&#9675; PENDING &mdash; tap to mark as Already Paid</button>
     </div>
     <button class="btn btn-save" id="btnAP">Save Payment</button>
   </div>
@@ -1180,7 +1179,7 @@ const BIZ = {
   mobile:"9676353000 | 9912243300",
   gstin:"36AIEPK3901A1ZX",
   gstRate:0.09,
-  mapLink:"https://maps.app.goo.gl/B4bDvsT47zLZvYPt9"
+  mapLink:"https://maps.app.goo.gl/2oPV2zjc7u6Zm1xPA?g_st=ic"
 };
 const VCARD_URL = "https://srisaihomeneeds.github.io/srisai/contact.vcf";
 const VCARD_LINE = "\u{1F4C7} Save our number: "+VCARD_URL+"\n(Tap the link, then tap 'Add Contact')";
@@ -1479,6 +1478,34 @@ function addLead(){
   ["lName","lPhone","lItem","lDate","lBudget","lNote"].forEach(id=>g(id).value="");
   saveDB();render();checkRem();alert("Lead saved!");
 }
+function togglePAlreadyPaid(){
+  var btn=g("pAlreadyPaidToggle");if(!btn)return;
+  var checked=btn.dataset.checked==="true";
+  checked=!checked;
+  btn.dataset.checked=checked?"true":"false";
+  if(checked){
+    btn.style.border="2px solid #16a34a";
+    btn.style.background="#f0fdf4";
+    btn.style.color="#16a34a";
+    btn.innerHTML="&#10003; ALREADY PAID &mdash; tap to mark as Pending";
+  } else {
+    btn.style.border="2px solid #dc2626";
+    btn.style.background="#fef2f2";
+    btn.style.color="#dc2626";
+    btn.innerHTML="&#9675; PENDING &mdash; tap to mark as Already Paid";
+  }
+}
+window.togglePAlreadyPaid=togglePAlreadyPaid;
+
+function _resetPAlreadyPaidToggle(){
+  var btn=g("pAlreadyPaidToggle");if(!btn)return;
+  btn.dataset.checked="false";
+  btn.style.border="2px solid #dc2626";
+  btn.style.background="#fef2f2";
+  btn.style.color="#dc2626";
+  btn.innerHTML="&#9675; PENDING &mdash; tap to mark as Already Paid";
+}
+
 function addPayment(){
   const cat=g("pCategory").value;
   const date=g("pDate").value;
@@ -1486,12 +1513,12 @@ function addPayment(){
   if(!amt||!date){alert("Amount and Due Date required.");return;}
   const name=g("pName").value.trim();
   if(!name){alert("Name / Description required.");return;}
-  const alreadyPaid=g("pAlreadyPaid")?g("pAlreadyPaid").checked:false;
+  const alreadyPaid=g("pAlreadyPaidToggle")?g("pAlreadyPaidToggle").dataset.checked==="true":false;
   const entry={n:name,phone:g("pPhone").value.trim(),amt:amt,paidAmt:alreadyPaid?amt:0,d:date,bill:g("pBill").value.trim(),note:g("pNote").value.trim(),done:alreadyPaid,category:cat,mode:g("pMode")?g("pMode").value:""};
   if(alreadyPaid)entry.history=[{amt:amt,date:date}];
   db.payments.push(entry);
   ["pName","pPhone","pAmt","pDate","pBill","pNote"].forEach(id=>g(id).value="");
-  if(g("pAlreadyPaid"))g("pAlreadyPaid").checked=false;
+  _resetPAlreadyPaidToggle();
   saveDB();render();checkRem();alert(alreadyPaid?"Payment saved as already paid!":"Payment due saved!");
 }
 function addExpense(){
@@ -1581,7 +1608,7 @@ window.sendSaleThankYou=sendSaleThankYou;
 function waLead(i){
   const l=db.leads[i];
   if(!l.phone){alert("No phone saved.");return;}
-  let msg="*Sri Sai Home Needs - Furniture, Interiors & Lifestyle*\nhttps://maps.app.goo.gl/B4bDvsT47zLZvYPt9\n\n";
+  let msg="*Sri Sai Home Needs - Furniture, Interiors & Lifestyle*\nhttps://maps.app.goo.gl/2oPV2zjc7u6Zm1xPA?g_st=ic\n\n";
   if(l.n) msg+="Customer: "+l.n+"\n";
   if(l.item) msg+="Interested In: "+l.item+"\n";
   if(l.budget) msg+="Budget: Rs."+l.budget+"\n";
@@ -1593,7 +1620,7 @@ function waLead(i){
   window.open("https://wa.me/"+p+"?text="+encodeURIComponent(msg),"_blank");
 }
 
-function waPayment(i){const x=db.payments[i];if(!x.phone){alert("No phone number for this payment.");return;}const extra=prompt("Add custom message (optional):","")||"";const amt=x.amt||x.a||0;const msg="*Sri Sai Home Needs - Payment Reminder*\n\nDear "+x.n+",\n\nThis is a reminder that *Rs."+amt.toFixed(2)+"* is due on *"+x.d+"*."+(x.bill?"\n\nReference: "+x.bill:"")+(extra?"\n\n"+extra:"")+"\n\nPlease pay at your earliest. Thank you!\n\nFind us: https://maps.app.goo.gl/B4bDvsT47zLZvYPt9\n\n"+VCARD_LINE;const p=x.phone.replace(/[^0-9]/g,"");window.open("https://wa.me/"+(p.length===10?"91"+p:p)+"?text="+encodeURIComponent(msg),"_blank");}
+function waPayment(i){const x=db.payments[i];if(!x.phone){alert("No phone number for this payment.");return;}const extra=prompt("Add custom message (optional):","")||"";const amt=x.amt||x.a||0;const msg="*Sri Sai Home Needs - Payment Reminder*\n\nDear "+x.n+",\n\nThis is a reminder that *Rs."+amt.toFixed(2)+"* is due on *"+x.d+"*."+(x.bill?"\n\nReference: "+x.bill:"")+(extra?"\n\n"+extra:"")+"\n\nPlease pay at your earliest. Thank you!\n\nFind us: https://maps.app.goo.gl/2oPV2zjc7u6Zm1xPA?g_st=ic\n\n"+VCARD_LINE;const p=x.phone.replace(/[^0-9]/g,"");window.open("https://wa.me/"+(p.length===10?"91"+p:p)+"?text="+encodeURIComponent(msg),"_blank");}
 function waPaymentMade(i){
   const x=db.payments[i];
   if(!x.phone){alert("No phone number for this payment.");return;}
@@ -2283,7 +2310,7 @@ function waSaleMsg(i) {
   if(d > 0) msg += "*Balance Due:* Rs." + d.toFixed(2) + (s.dueDate ? " (by " + s.dueDate + ")" : "") + "\n";
   else msg += "*Status:* Fully Paid\n";
   if(s.bill) msg += "*Bill No:* " + s.bill + "\n";
-  msg += "\nWe look forward to serving you again!\n\nOur Store: https://maps.app.goo.gl/B4bDvsT47zLZvYPt9\n\n\u{1F4C7} Save our number: " + VCARD_URL;
+  msg += "\nWe look forward to serving you again!\n\nOur Store: https://maps.app.goo.gl/2oPV2zjc7u6Zm1xPA?g_st=ic\n\n\u{1F4C7} Save our number: " + VCARD_URL;
   var p = s.phone.replace(/[^0-9]/g,"");
   if(p.length === 10) p = "91" + p;
   window.open("https://wa.me/" + p + "?text=" + encodeURIComponent(msg), "_blank");
@@ -2392,7 +2419,7 @@ var FESTIVALS = [
 ];
 
 var SHOP_HDR = "*Sri Sai Home Needs - Furniture, Interiors & Lifestyle*";
-var SHOP_LOC = "\n\nOur Store: https://maps.app.goo.gl/B4bDvsT47zLZvYPt9";
+var SHOP_LOC = "\n\nOur Store: https://maps.app.goo.gl/2oPV2zjc7u6Zm1xPA?g_st=ic";
 var CAMP_MSGS = {
   "Diwali":   SHOP_HDR + "\nwishes you a very *Happy Diwali!*"   + SHOP_LOC,
   "Ugadi":    SHOP_HDR + "\nwishes you a very *Happy Ugadi!*"    + SHOP_LOC,
@@ -3283,8 +3310,10 @@ window.addSupplier=addSupplier;
 function updateSupplierSelect(){
   var sel=g("supSelect");
   if(sel){
+    var curSel=sel.value;
     sel.innerHTML='<option value="">Select supplier...</option>'+
       (db.suppliers||[]).map(function(s,i){return '<option value="'+i+'">'+esc(s.name)+(s.balance>0?" (Bal: Rs."+s.balance.toFixed(0)+")":"")+'</option>';}).join("");
+    if(curSel && sel.querySelector('option[value="'+curSel+'"]'))sel.value=curSel;
     updateSupplierPrevBalance();
   }
   var stSel=g("stSupplier");
@@ -3489,7 +3518,7 @@ function sendSupplierWA(){
   if(lastBill)msg+="Last Bill: Rs."+lastBill.amt.toFixed(0)+(lastBill.ref?" ("+lastBill.ref+")":"")+"\n";
   if(lastPay)msg+="Last Payment: Rs."+lastPay.amt.toFixed(0)+"\n";
   msg+="*Balance Due: Rs."+sup.balance.toFixed(0)+"*\n\n";
-  msg+="Our Store: https://maps.app.goo.gl/B4bDvsT47zLZvYPt9";
+  msg+="Our Store: https://maps.app.goo.gl/2oPV2zjc7u6Zm1xPA?g_st=ic";
   var p=sup.phone.replace(/[^0-9]/g,"");if(p.length===10)p="91"+p;
   window.open("https://wa.me/"+p+"?text="+encodeURIComponent(msg),"_blank");
 }
@@ -3616,6 +3645,11 @@ async function shareVoucherPDF(){
 g("btnShareVoucherPDF").addEventListener("click",shareVoucherPDF);
 window.shareVoucherPDF=shareVoucherPDF;
 
+var _expandedSupplierTxn=null;
+function _supplierTxnHistBoxHtml(ri){
+  if(_expandedSupplierTxn!==ri)return '<div id="supTxnHist_'+ri+'" style="display:none;margin-top:8px;border-top:1px solid var(--border);padding-top:8px;"></div>';
+  return '<div id="supTxnHist_'+ri+'" style="display:block;margin-top:8px;border-top:1px solid var(--border);padding-top:8px;">'+_supplierTxnRowsHtml(ri)+'</div>';
+}
 function _supplierRowHtml(s,ri){
   var totalBilled=(s.txns||[]).filter(function(t){return t.type==="bill";}).reduce(function(a,t){return a+t.amt;},0);
   var totalPaid=(s.txns||[]).filter(function(t){return t.type==="payment";}).reduce(function(a,t){return a+t.amt;},0);
@@ -3638,13 +3672,18 @@ function _supplierRowHtml(s,ri){
       '<button class="btn btn-sm" style="background:#f5f3ff;color:#7c3aed;" onclick="toggleSupplierTxnHistory('+ri+')" id="supTxnToggle_'+ri+'">&#128203; Transactions</button>'+
       '<button class="btn btn-teal btn-sm" onclick="selectSupplierInForm('+ri+')">&#128196; Generate Voucher (PDF)</button>'+
       '<button class="btn btn-del btn-sm" onclick="deleteSupplier('+ri+')">&#128465;</button></div>'+
-    '<div id="supTxnHist_'+ri+'" style="display:none;margin-top:8px;border-top:1px solid var(--border);padding-top:8px;"></div>'+
+    _supplierTxnHistBoxHtml(ri)+
   '</div>';
 }
 function toggleSupplierTxnHistory(ri){
   var box=g("supTxnHist_"+ri);if(!box)return;
-  var showing=box.style.display!=="none";
-  if(showing){box.style.display="none";return;}
+  var showing=_expandedSupplierTxn===ri;
+  if(showing){
+    _expandedSupplierTxn=null;
+    box.style.display="none";
+    return;
+  }
+  _expandedSupplierTxn=ri;
   box.style.display="block";
   renderSupplierTxnHistoryBox(ri);
 }
