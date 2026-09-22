@@ -1825,7 +1825,7 @@ function openEdit(type,idx){
       `<div class="edit-row">`+_ef("Amount Paid","adv",s.adv||0,"number")+_ef("Due Date","dueDate",s.dueDate,"date")+`</div>`+_efs("Mode","mode",s.mode,["Cash","UPI","Card","Bank Transfer","Credit/EMI","Cheque","Mixed"])+_efta("Note","note",s.note);
   }
   else if(type==="leads"){const l=db.leads[idx];ttl.innerText="Edit Lead";h=_ef("Customer Name","n",l.n)+`<div class="edit-row">`+_ef("Phone","phone",l.phone,"tel")+_ef("Follow-up Date","d",l.d,"date")+`</div>`+_ef("Interested In","item",l.item)+`<div class="edit-row">`+_ef("Budget","budget",l.budget||0,"number")+_efs("Priority","priority",l.priority,["Hot","Warm","Cold"])+`</div>`+_efs("Source","source",l.source,["Walk-in","Referral","Social Media","Phone Enquiry","IM Lead","Other"])+_efta("Note","note",l.note);}
-  else if(type==="payments"){const x=db.payments[idx];ttl.innerText="Edit Payment";h=_ef("Customer Name","n",x.n)+`<div class="edit-row">`+_ef("Phone","phone",x.phone,"tel")+_ef("Amount","amt",x.amt!=null?x.amt:x.a,"number")+`</div>`+`<div class="edit-row">`+_ef("Due Date","d",x.d,"date")+_ef("Ref No.","bill",x.bill)+`</div>`+_efta("Note","note",x.note);}
+  else if(type==="payments"){const x=db.payments[idx];ttl.innerText="Edit Payment";h=_ef("Customer Name","n",x.n)+`<div class="edit-row">`+_ef("Phone","phone",x.phone,"tel")+`</div>`+`<div class="edit-row">`+_ef("Total Amount","amt",x.amt!=null?x.amt:x.a,"number")+_ef("Amount Paid","paidAmt",x.paidAmt||0,"number")+`</div>`+`<div class="edit-row">`+_ef("Due Date","d",x.d,"date")+_ef("Ref No.","bill",x.bill)+`</div>`+_efta("Note","note",x.note);}
   else if(type==="expenses"){const x=db.expenses[idx];ttl.innerText="Edit Expense";h=_efs("Category","cat",x.cat,["Transport","Salary","Rent","Electricity","Stock Purchase","Maintenance","Marketing","Other"])+_ef("Amount","amt",x.a,"number")+_ef("Description","desc",x.desc)+_efta("Note","note",x.note);}
   flds.innerHTML=h;g("editOv").style.display="block";
   if(type==="sales")_renderEditSaleItems();
@@ -1844,7 +1844,13 @@ function saveEdit(){
     const dt=_gef("date");if(dt)s.date=dt;s.dueDate=_gef("dueDate");s.mode=_gef("mode");s.note=_gef("note");
   }
   else if(type==="leads"){const l=db.leads[idx];const n=_gef("n");if(n)l.n=n;l.phone=_gef("phone");l.item=_gef("item");const d=_gef("d");if(d)l.d=d;const b=parseFloat(_gef("budget"));if(!isNaN(b))l.budget=b;l.priority=_gef("priority");l.source=_gef("source");l.note=_gef("note");}
-  else if(type==="payments"){const x=db.payments[idx];const n=_gef("n");if(n)x.n=n;x.phone=_gef("phone");const am=parseFloat(_gef("amt"));if(am>0){x.amt=am;delete x.a;}const d=_gef("d");if(d)x.d=d;x.bill=_gef("bill");x.note=_gef("note");}
+  else if(type==="payments"){
+    const x=db.payments[idx];const n=_gef("n");if(n)x.n=n;x.phone=_gef("phone");
+    const am=parseFloat(_gef("amt"));if(am>0){x.amt=am;delete x.a;}
+    const pa=parseFloat(_gef("paidAmt"));if(!isNaN(pa)&&pa>=0)x.paidAmt=pa;
+    x.done=(x.paidAmt||0)>=(x.amt||0)&&(x.amt||0)>0;
+    const d=_gef("d");if(d)x.d=d;x.bill=_gef("bill");x.note=_gef("note");
+  }
   else if(type==="expenses"){const x=db.expenses[idx];x.cat=_gef("cat");const am=parseFloat(_gef("amt"));if(am>0)x.a=am;const ds=_gef("desc");if(ds)x.desc=ds;x.note=_gef("note");}
   closeEdit();saveDB();render();checkRem();
 }
